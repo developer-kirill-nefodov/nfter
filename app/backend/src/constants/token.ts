@@ -1,30 +1,23 @@
-export type INameTokens = 'confirm' | 'accessToken' | 'refreshToken'
+import type {CookieOptions} from 'express';
 
-export type I_TOKENS_NAME_DATA = {
-  [key in INameTokens]: {
-    name: string;
-    age: number;
-  }
-}
+import {env} from '../config';
 
-export const LIFETIME_REFRESH_TOKEN =
-  +process.env.SECOND_DAY * +(process.env.JWT_REFRASH_TIME.split('d').join(''));
+export const REFRESH_COOKIE_NAME = 'refreshToken';
 
-export const LIFETIME_ACCESS_TOKEN = +(process.env.JWT_ACCESS_TIME.split('s').join(''));
+// The refresh cookie is only ever sent to /api/auth/* — no other route needs it,
+// and scoping it there shrinks the CSRF surface.
+export const REFRESH_COOKIE_PATH = '/api/auth';
 
-export const LIFETIME_EMAIL_TOKEN = 300;
+export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
+  httpOnly: true,
+  secure: env.isProduction,
+  sameSite: env.isProduction ? 'none' : 'lax',
+  path: REFRESH_COOKIE_PATH,
+  // Express counts maxAge in milliseconds while Redis TTLs are in seconds.
+  // Doing the conversion in exactly one place is what keeps them from drifting.
+  maxAge: env.jwt.refreshTtlSec * 1000,
+};
 
-export const TOKENS_NAME_DATA: I_TOKENS_NAME_DATA = {
-  confirm: {
-    name: 'confirm',
-    age: LIFETIME_EMAIL_TOKEN
-  },
-  accessToken: {
-    name: 'accessToken',
-    age: LIFETIME_ACCESS_TOKEN
-  },
-  refreshToken: {
-    name:  'refreshToken',
-    age: LIFETIME_REFRESH_TOKEN
-  }
-}
+export const LIFETIME_RESET_TOKEN_SEC = 15 * 60;
+export const LIFETIME_NONCE_SEC = 5 * 60;
+export const LIFETIME_NFT_CACHE_SEC = 5 * 60;
