@@ -1,30 +1,23 @@
-import crypto from "crypto";
-import {gen} from 'n-digit-token';
+import argon2 from 'argon2';
 
-type INumberToken = number | undefined
+// OWASP 2024 baseline for Argon2id. Each hash carries its own random salt and
+// these parameters, so raising them later does not invalidate existing hashes.
+const ARGON2_OPTIONS: argon2.Options = {
+  type: argon2.argon2id,
+  memoryCost: 19456,
+  timeCost: 2,
+  parallelism: 1,
+};
 
-export const generatorNumberToken = (num: INumberToken = 6): string => {
-  return gen(num).toString();
-}
+export const hashPassword = (password: string): Promise<string> =>
+  argon2.hash(password, ARGON2_OPTIONS);
 
-export const generateTextToken = (): string => {
-  return crypto.randomBytes(50).toString('base64');
-}
+export const verifyPassword = async (hash: string, password: string): Promise<boolean> => {
+  try {
+    return await argon2.verify(hash, password);
+  } catch {
+    return false;
+  }
+};
 
-interface IUser {
-  password: string
-}
-
-export function validatePassword(user: IUser, inputPassword: string): boolean {
-  return user.password === userPassword(inputPassword);
-}
-
-export const userPassword = (password: string): string => {
-  return crypto.pbkdf2Sync(
-    password,
-    '(_xxx_)(SALT)(_xxx_)',
-    1000,
-    64,
-    'sha512'
-  ).toString('hex')
-}
+export const needsRehash = (hash: string): boolean => argon2.needsRehash(hash, ARGON2_OPTIONS);
