@@ -1,47 +1,41 @@
-import Joi from "joi";
+import Joi from 'joi';
 
-export const emailValidator = {
-  email: Joi.string()
-    .email({minDomainSegments: 2})
-    .max(42)
-    .required(),
-}
+const email = Joi.string().email({minDomainSegments: 2}).max(255).lowercase().trim().required();
 
-export const passwordValidator = {
-  password: Joi.string()
-    .min(4)
-    .max(255)
-    .required()
-}
+// 12 characters with mixed classes, per NIST SP 800-63B. The old 4-character
+// floor made the login form brute-forceable no matter how strong the hashing was.
+const password = Joi.string()
+  .min(12)
+  .max(128)
+  .pattern(/[a-z]/, 'lowercase letter')
+  .pattern(/[A-Z]/, 'uppercase letter')
+  .pattern(/\d/, 'digit')
+  .required()
+  .messages({
+    'string.pattern.name': 'Password must contain at least one {#name}',
+    'string.min': 'Password must be at least 12 characters',
+  });
 
+export const registerValidator = Joi.object({email, password});
+
+// Login must not enforce the policy — it only checks what the user already has,
+// and rejecting a legacy password with a validation error would leak that it exists.
 export const loginValidator = Joi.object({
- ...emailValidator,
- ...passwordValidator
+  email,
+  password: Joi.string().max(128).required(),
 });
 
-export const authCreateValidator = Joi.object({
-  ...emailValidator,
-  ...passwordValidator,
-  nickname: Joi.string()
-    .max(16)
-    .required(),
-});
-
-export const authConfirmValidator = Joi.object({
-  ...emailValidator,
-  code:  Joi.string()
-    .length(6)
-    .required()
-});
-
-export const forgotPasswordValidator = Joi.object(emailValidator);
+export const forgotPasswordValidator = Joi.object({email});
 
 export const resetPasswordValidator = Joi.object({
-  ...passwordValidator,
-  reset: Joi.string()
-    .min(40)
-    .message('Damaged token!')
-    .max(100)
-    .message('Damaged token!')
+  token: Joi.string().max(128).required(),
+  password,
+});
+
+export const siweValidator = Joi.object({
+  message: Joi.string().max(2000).required(),
+  signature: Joi.string()
+    .pattern(/^0x[a-fA-F0-9]{130}$/)
     .required()
+    .messages({'string.pattern.base': 'Malformed signature'}),
 });
