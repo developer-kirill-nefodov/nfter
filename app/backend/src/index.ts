@@ -1,35 +1,37 @@
-import 'dotenv/config';
-import express from 'express';
-import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
+import {createApp} from './app';
+import {env} from './config';
+import {db, redis} from './db';
+import {logger} from './lib/logger';
+import {emailWorker} from './workers/email.worker';
 
-import {db, redis} from "./db";
-import {routers} from "./routers";
-
-const createServer = async () => {
-  const app = express();
-  const port = process.env.PORT || 3001;
-
-  app.use(cors({credentials: true, origin: [process.env.FRONEND_URL]}));
-  app.use(bodyParser.json());
-  app.use(cookieParser());
-
+const start = async () => {
+  // A server that boots without its database only turns every request into a
+  // 500, so a failed connection is fatal here rather than a logged warning.
   await redis.connect();
+  logger.info('redis connected');
 
-  await db.authenticate()
-    .then(() => console.log('\x1b[36m[<<PostgreSQL connected>>]\x1b[0m'))
-    .catch((e) => console.log('\x1b[31m[<<Error Connected>>]\x1b[0m: ', e.message));
+  await db.authenticate();
+  logger.info('postgres connected');
 
-  app.use('/api', routers());
-
-  app.listen(port, () => {
-    console.log(`\x1b[34m[<<Successfully>>]\x1b[0m: server works - http://localhost:${port}`);
+  const server = createApp().listen(env.port, () => {
+    logger.info(`server listening on http://localhost:${env.port}`);
   });
-}
 
-createServer()
-  .catch((e) => {
-    console.log('[\x1b[31m Error \x1b[0m]: server error - ', e.message);
-    process.exit(1);
-  });
+  const shutdown = async (signal: string) => {
+    logger.info({signal}, 'shutting down');
+
+    server.close();
+
+    await Promise.allSettled([emailWorker.close(), redis.quit(), db.close()]);
+
+    process.exit(0);
+  };
+
+  process.on('SIGTERM', () => void shutdown('SIGTERM'));
+  process.on('SIGINT', () => void shutdown('SIGINT'));
+};
+
+start().catch((err: unknown) => {
+  logger.fatal({err}, 'server failed to start');
+  process.exit(1);
+});

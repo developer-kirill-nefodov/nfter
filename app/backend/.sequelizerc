@@ -1,9 +1,11 @@
-require("babel-register");
 const path = require('path');
 
+// Migrations and seeders are plain CommonJS, so sequelize-cli runs them
+// directly — the old babel-register hook (Babel 6, unmaintained since 2018)
+// was never needed.
 module.exports = {
-  'config': path.resolve('./src/migrations/config.js'),
+  config: path.resolve('./src/migrations/config.js'),
   'migrations-path': path.resolve('./src/migrations/migrations'),
   'seeders-path': path.resolve('./src/migrations/seeders'),
-  'models-path': path.resolve('./src/models')
+  'models-path': path.resolve('./src/models'),
 };
