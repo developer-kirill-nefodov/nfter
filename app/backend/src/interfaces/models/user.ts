@@ -1,22 +1,31 @@
-import {Optional, Model} from "sequelize";
-import {ModelAttributes} from "./";
+import type {Model, Optional} from 'sequelize';
+
+import type {ModelAttributes} from './';
 
 export type INamePermissions = 'block_user' | 'delete_user' | 'assign_roles';
 
+export type IRoleName = 'ADMIN' | 'USER' | 'MODERATOR';
+
 export interface IRole {
-  name: 'ADMIN' | 'USER' | 'MODERATOR' | 'CUSTOM_ROLE'
+  name: IRoleName;
   permissions: {
-    [key in INamePermissions]?: boolean
-  }
+    [key in INamePermissions]?: boolean;
+  };
 }
 
-interface IUserModelData extends ModelAttributes {
-  email: string
-  role: IRole
-  password: string
+/**
+ * An account is reachable through either credential — email+password or a wallet
+ * — so both sides are nullable and the row is identified by `id` alone. A
+ * wallet-first user has no email until they choose to add one.
+ */
+export interface IUserModelData extends ModelAttributes {
+  email: string | null;
+  password: string | null;
+  /** Lowercased checksum-validated address, or null until a wallet is linked. */
+  wallet_address: string | null;
+  role: IRole;
 }
 
-interface IRoleModelData extends ModelAttributes, IRole {}
+type IUserCreation = Optional<IUserModelData, 'id' | 'email' | 'password' | 'wallet_address'>;
 
-export interface IUserModel extends Model<IUserModelData, Optional<IUserModelData, 'id'>>, IUserModelData {}
-export interface IRoleModel extends Model<IRoleModelData, Optional<IRoleModelData, 'id'>>, IRoleModelData {}
+export interface IUserModel extends Model<IUserModelData, IUserCreation>, IUserModelData {}

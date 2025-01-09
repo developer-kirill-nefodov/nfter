@@ -1,12 +1,14 @@
-import {Optional, Model} from "sequelize";
-import {ModelAttributes} from "./";
+import type {Model, Optional} from 'sequelize';
 
-interface ICountryModelData extends ModelAttributes {
+import type {ModelAttributes} from './';
+
+export interface ICountryModelData extends ModelAttributes {
   countries: string;
   iso2: string;
   iso3: string;
   lang: string;
 }
 
-
-export interface ICountryModel extends Model<ICountryModelData, Optional<ICountryModelData, 'id'>>, ICountryModelData {}
+export interface ICountryModel
+  extends Model<ICountryModelData, Optional<ICountryModelData, 'id'>>,
+    ICountryModelData {}

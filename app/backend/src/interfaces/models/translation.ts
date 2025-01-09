@@ -1,11 +1,14 @@
-import {Optional, Model} from "sequelize";
-import {ModelAttributes} from "./";
+import type {Model, Optional} from 'sequelize';
 
-type JSONValue = { [x: string]: string | number | boolean };
+import type {ModelAttributes} from './';
 
-interface ITranslationModelData extends ModelAttributes {
+export type JSONValue = {[key: string]: string | number | boolean};
+
+export interface ITranslationModelData extends ModelAttributes {
   language: string;
   data: JSONValue;
 }
 
-export interface ITranslationModel extends Model<ITranslationModelData, Optional<ITranslationModelData, 'id'>>, ITranslationModelData {}
+export interface ITranslationModel
+  extends Model<ITranslationModelData, Optional<ITranslationModelData, 'id'>>,
+    ITranslationModelData {}

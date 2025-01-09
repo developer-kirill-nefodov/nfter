@@ -1,93 +1,33 @@
 const data = require('../data/translations.json');
 
+const COUNTRIES = [
+  {countries: 'United States', iso2: 'US', iso3: 'USA', lang: 'English'},
+  {countries: 'Germany', iso2: 'DE', iso3: 'DEU', lang: 'German'},
+  {countries: 'China', iso2: 'CN', iso3: 'CHN', lang: 'Chinese'},
+  {countries: 'Ukraine', iso2: 'UA', iso3: 'UKR', lang: 'Ukrainian'},
+];
+
+const timestamps = () => ({created_at: new Date(), updated_at: new Date()});
+
 module.exports = {
   async up(queryInterface) {
-    await queryInterface.bulkInsert('roles', [
-      {
-        name: 'ADMIN',
-        permissions: JSON.stringify({block_user: true, delete_user: true, delete_post: true, assign_roles: true}),
-        created_at: new Date(), updated_at: new Date()
-      },
-      {
-        name: 'MODERATOR',
-        permissions: JSON.stringify({block_user: true, delete_post: true}),
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        name: 'USER',
-        permissions: JSON.stringify({}),
-        created_at: new Date(),
-        updated_at: new Date()
-      }
-    ], {});
+    await queryInterface.bulkInsert(
+      'countries',
+      COUNTRIES.map((country) => ({...country, ...timestamps()})),
+    );
 
-    await queryInterface.bulkInsert('countries', [
-      {
-        countries: 'United States',
-        iso2: 'US',
-        iso3: 'USA',
-        lang: 'English',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        countries: 'Germany',
-        iso2: 'DE',
-        iso3: 'DEU',
-        lang: 'German',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        countries: 'China',
-        iso2: 'CN',
-        iso3: 'CHA',
-        lang: 'Chinese',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        countries: 'Ukraine',
-        iso2: 'UA',
-        iso3: 'UKR',
-        lang: 'Ukrainian',
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-    ], {});
-
-    await queryInterface.bulkInsert('translations', [
-      {
-        language: 'US',
-        data: JSON.stringify(data.US),
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        language: 'DE',
-        data: JSON.stringify(data.DE),
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        language: 'CN',
-        data: JSON.stringify(data.CN),
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-      {
-        language: 'UA',
-        data: JSON.stringify(data.UA),
-        created_at: new Date(),
-        updated_at: new Date()
-      },
-    ], {});
+    await queryInterface.bulkInsert(
+      'translations',
+      COUNTRIES.map(({iso2}) => ({
+        language: iso2,
+        data: JSON.stringify(data[iso2]),
+        ...timestamps(),
+      })),
+    );
   },
 
   async down(queryInterface) {
-    await queryInterface.bulkDelete('roles', null, {});
-    await queryInterface.bulkDelete('countries', null, {});
     await queryInterface.bulkDelete('translations', null, {});
-  }
+    await queryInterface.bulkDelete('countries', null, {});
+  },
 };

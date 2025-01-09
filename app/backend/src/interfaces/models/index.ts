@@ -1,7 +1,5 @@
-import {ColumnReference} from "sequelize";
-
 export interface ModelAttributes {
-  id: ColumnReference
+  id: number;
   created_at?: Date;
   updated_at?: Date;
 }
