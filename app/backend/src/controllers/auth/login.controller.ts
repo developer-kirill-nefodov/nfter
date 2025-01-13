@@ -1,24 +1,27 @@
-import {Response} from "express";
+import type {Request, Response} from 'express';
 
-import UserModel from "../../models/user.model";
+import {MESSAGE_INVALID_CREDENTIALS, MESSAGE_LOGGED_IN} from '../../constants';
+import {AppError} from '../../errors/app-error';
+import {readBody} from '../../helpers/request';
+import {hashPassword, needsRehash, verifyPassword} from '../../helpers/user';
+import UserModel from '../../models/user.model';
+import {issueSession} from '../../services/auth/session.service';
 
-import {validatePassword} from "../../helpers/user";
-import {authLoginService} from "../../services/auth";
+export const loginController = async (req: Request, res: Response) => {
+  const {email, password} = readBody<{email: string; password: string}>(req);
 
-import type {ILoginReq} from "../../middlewares/auth/login.middlewares";
+  const user = await UserModel.scope('withPassword').findOne({where: {email}});
 
-export const loginController = async (req: ILoginReq, res: Response) => {
-  try {
-    const {email, password} = req.body;
-
-    const user = await UserModel.findOne({where: {email}});
-
-    if(!user || !validatePassword(user, password)) {
-      return res.status(400).send('Email or password is not correct!');
-    }
-
-    await authLoginService(res, user.dataValues);
-  } catch (e) {
-    res.status(400).send(e.message);
+  // One identical error for "no such user" and "wrong password" — anything else
+  // turns the login form into an account-enumeration oracle.
+  if (!user?.password || !(await verifyPassword(user.password, password))) {
+    throw AppError.unauthorized(MESSAGE_INVALID_CREDENTIALS);
   }
-}
+
+  // Transparently upgrade hashes when the Argon2 cost parameters are raised.
+  if (needsRehash(user.password)) {
+    await user.update({password: await hashPassword(password)});
+  }
+
+  await issueSession(res, user, MESSAGE_LOGGED_IN);
+};

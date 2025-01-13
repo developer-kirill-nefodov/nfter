@@ -1,25 +1,24 @@
-import {Response} from "express";
+import type {Response} from 'express';
 
-import {createTokens} from "../../helpers/token/token";
-import {TOKENS_NAME_DATA} from "../../constants";
-
-import type {IRequestAuth} from "../../middlewares/guard/user";
+import {
+  MESSAGE_TOKEN_UPDATED,
+  REFRESH_COOKIE_NAME,
+  REFRESH_COOKIE_OPTIONS,
+} from '../../constants';
+import {createTokens, revokeSession} from '../../helpers/token/token';
+import type {IRequestAuth} from '../../middlewares/guard/authorized';
 
 export const refreshTokenController = async (req: IRequestAuth, res: Response) => {
-  try {
-    const tokens = await createTokens(req.userData);
+  const {sid, ...data} = req.session;
 
-    res.status(200)
-      .cookie(TOKENS_NAME_DATA.refreshToken.name, tokens.refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: TOKENS_NAME_DATA.refreshToken.age,
-      })
-      .json({
-        token: tokens.accessToken,
-        message: 'Token updated!'
-      });
-  } catch (e) {
-    res.status(400).send(e.message);
-  }
-}
+  // Rotation: the old session id dies with the request that used it, so a
+  // refresh token can be spent exactly once.
+  await revokeSession(data.id, sid);
+
+  const tokens = await createTokens(data);
+
+  res
+    .status(200)
+    .cookie(REFRESH_COOKIE_NAME, tokens.refreshToken, REFRESH_COOKIE_OPTIONS)
+    .json({token: tokens.accessToken, user: data, message: MESSAGE_TOKEN_UPDATED});
+};

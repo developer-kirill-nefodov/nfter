@@ -1,21 +1,33 @@
-import {Response} from "express";
-import {redis} from "../../db";
+import type {Request, Response} from 'express';
 
-import {resetPasswordService} from "../../services/auth";
-import type {IResetReq} from "../../middlewares/auth/reset-password.middlewares";
+import {MESSAGE_PASSWORD_CHANGED} from '../../constants';
+import {AppError} from '../../errors/app-error';
+import {readBody} from '../../helpers/request';
+import {revokeAllSessions} from '../../helpers/token/token';
+import {hashPassword} from '../../helpers/user';
+import UserModel from '../../models/user.model';
+import {consumeResetToken} from '../../services/auth/forgot-password.service';
 
-export const resetPasswordController = async (req: IResetReq, res: Response) => {
-  try {
-    const {reset, password} = req.body;
+export const resetPasswordController = async (req: Request, res: Response) => {
+  const {token, password} = readBody<{token: string; password: string}>(req);
 
-    const user = await redis.get(`forgot-password:${reset}`);
+  const userId = await consumeResetToken(token);
 
-    if(!user) {
-      return res.status(400).send('Token not valid!');
-    }
-
-    await resetPasswordService(res, JSON.parse(user), password);
-  } catch (e) {
-    res.status(400).send(e.message);
+  if (!userId) {
+    throw AppError.badRequest('This reset link is invalid or has expired');
   }
-}
+
+  const user = await UserModel.findByPk(userId);
+
+  if (!user) {
+    throw AppError.badRequest('This reset link is invalid or has expired');
+  }
+
+  await user.update({password: await hashPassword(password)});
+
+  // A password change is also how a user locks out someone who already stole a
+  // session, so every device must be signed out — not just this one.
+  await revokeAllSessions(user.id);
+
+  res.status(200).json({message: MESSAGE_PASSWORD_CHANGED});
+};

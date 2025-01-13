@@ -1,20 +1,18 @@
-import {Response} from "express";
-import {redis} from "../../db";
+import type {Response} from 'express';
 
-import {TOKENS_NAME_DATA} from "../../constants";
-import type {IRequestAuth} from "../../middlewares/guard/user";
+import {MESSAGE_LOGGED_OUT, REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS} from '../../constants';
+import {revokeSession} from '../../helpers/token/token';
+import type {IRequestAuth} from '../../middlewares/guard/authorized';
 
 export const logoutController = async (req: IRequestAuth, res: Response) => {
-  try {
-   const {email} = req.userData;
+  const {id, sid} = req.session;
 
-   await redis.del(`session-access:${email}`);
-   await redis.del(`session-refresh:${email}`);
+  // Revoking the Redis entries is what actually kills the tokens; clearing the
+  // cookie alone would leave a copied refresh token usable until it expired.
+  await revokeSession(id, sid);
 
-   res.clearCookie(TOKENS_NAME_DATA.refreshToken.name);
-
-   res.status(200).send('You have successfully exited!');
-  } catch (e) {
-    res.status(400).send(e.message);
-  }
-}
+  res
+    .clearCookie(REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS)
+    .status(200)
+    .json({message: MESSAGE_LOGGED_OUT});
+};
