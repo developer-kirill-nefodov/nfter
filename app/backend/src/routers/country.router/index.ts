@@ -1,6 +1,6 @@
-import type {IAnyRouter} from "../";
-
-import {getCountriesLangController} from "../../controllers/country";
+import {getCountriesLangController} from '../../controllers/country';
+import {apiLimiter} from '../../middlewares/rate-limit';
+import type {IAnyRouter} from '../index';
 
 const CountryRouter: IAnyRouter = {
   prefix: 'countries',
@@ -8,9 +8,10 @@ const CountryRouter: IAnyRouter = {
     {
       method: 'get',
       path: 'lang',
-      handler: [getCountriesLangController]
-    }
-  ]
-}
+      middleware: [apiLimiter],
+      handler: getCountriesLangController,
+    },
+  ],
+};
 
 export default CountryRouter;

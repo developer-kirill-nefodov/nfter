@@ -1,29 +1,33 @@
-import {Router} from "express";
+import {Router, type RequestHandler} from 'express';
 
-import AuthRouters from "./auth.router";
-import TranslationRouter from "./translation.router";
-import CountryRouter from "./country.router";
+import AuthRouters from './auth.router';
+import CountryRouter from './country.router';
+import NftRouter from './nft.router';
+import TranslationRouter from './translation.router';
+
+export type IHttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
+
+export interface IRoute {
+  method: IHttpMethod;
+  path: string;
+  /** Runs in order: rate limit → guard → body validation → handler. */
+  middleware?: RequestHandler[];
+  handler: RequestHandler;
+}
 
 export interface IAnyRouter {
   prefix: string;
-  routeData: {
-    method: 'get' | 'post';
-    path: string;
-    authorization?: any;
-    middleware?: any;
-    handler: any;
-  }[]
+  routeData: IRoute[];
 }
 
-export const routers = () => {
+export const routers = (): Router => {
   const router = Router();
-  const routers = [AuthRouters, CountryRouter, TranslationRouter];
 
-  routers.map(({prefix, routeData}) => {
-    routeData.map(({method, path, authorization = [], middleware = [], handler = []}) => {
-      router[method](`/${prefix}/${path}`, ...authorization, ...middleware, ...handler);
-    })
-  });
+  for (const {prefix, routeData} of [AuthRouters, CountryRouter, TranslationRouter, NftRouter]) {
+    for (const {method, path, middleware = [], handler} of routeData) {
+      router[method](`/${prefix}/${path}`, ...middleware, handler);
+    }
+  }
 
   return router;
-}
+};

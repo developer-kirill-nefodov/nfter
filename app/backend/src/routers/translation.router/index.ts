@@ -1,18 +1,17 @@
-import type {IAnyRouter} from "../";
-
-import {getByLanguageController} from "../../controllers/translation";
-import {getByLanguageMiddlewares} from "../../middlewares/translation";
+import {getByLanguageController} from '../../controllers/translation';
+import {apiLimiter} from '../../middlewares/rate-limit';
+import type {IAnyRouter} from '../index';
 
 const TranslationRouter: IAnyRouter = {
   prefix: 'translations',
   routeData: [
     {
-      method: 'post',
-      path: 'getByLanguage',
-      middleware: [getByLanguageMiddlewares],
-      handler: [getByLanguageController]
-    }
-  ]
-}
+      method: 'get',
+      path: ':lang',
+      middleware: [apiLimiter],
+      handler: getByLanguageController,
+    },
+  ],
+};
 
 export default TranslationRouter;

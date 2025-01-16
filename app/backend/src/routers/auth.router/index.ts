@@ -1,62 +1,91 @@
-import {accessRole, isAuthorized, isRefreshToken, isVisitor} from "../../middlewares/guard";
-
 import {
+  forgotPasswordController,
   loginController,
   logoutController,
+  meController,
+  nonceController,
   refreshTokenController,
-  forgotPasswordController,
+  registerController,
   resetPasswordController,
-} from "../../controllers/auth";
-
+  walletLinkController,
+  walletLoginController,
+} from '../../controllers/auth';
+import {authed, isAuthorized, isRefreshToken} from '../../middlewares/guard';
+import {authLimiter, forgotPasswordLimiter} from '../../middlewares/rate-limit';
+import {validate} from '../../middlewares/validate';
 import {
-  loginMiddleware,
-  forgotPasswordMiddleware,
-  resetPasswordMiddleware,
-} from "../../middlewares/auth";
-
-import type {IAnyRouter} from "../index";
+  forgotPasswordValidator,
+  loginValidator,
+  registerValidator,
+  resetPasswordValidator,
+  siweValidator,
+} from '../../middlewares/validators/auth.validators';
+import type {IAnyRouter} from '../index';
 
 const AuthRouters: IAnyRouter = {
   prefix: 'auth',
   routeData: [
     {
       method: 'get',
-      path: 'access-role',
-      handler: [accessRole],
+      path: 'me',
+      handler: meController,
+    },
+    {
+      method: 'post',
+      path: 'register',
+      middleware: [authLimiter, validate(registerValidator)],
+      handler: registerController,
     },
     {
       method: 'post',
       path: 'login',
-      authorization: [isVisitor],
-      middleware: [loginMiddleware],
-      handler: [loginController],
+      middleware: [authLimiter, validate(loginValidator)],
+      handler: loginController,
     },
     {
       method: 'post',
       path: 'logout',
-      authorization: [isAuthorized],
-      handler: [logoutController],
+      middleware: [isAuthorized],
+      handler: authed(logoutController),
     },
     {
       method: 'post',
       path: 'refresh-token',
-      authorization: [isRefreshToken],
-      handler: [refreshTokenController],
+      middleware: [isRefreshToken],
+      handler: authed(refreshTokenController),
     },
     {
       method: 'post',
       path: 'forgot-password',
-      authorization: [isVisitor],
-      middleware: [forgotPasswordMiddleware],
-      handler: [forgotPasswordController],
+      middleware: [forgotPasswordLimiter, validate(forgotPasswordValidator)],
+      handler: forgotPasswordController,
     },
     {
       method: 'post',
       path: 'reset-password',
-      authorization: [isVisitor],
-      middleware: [resetPasswordMiddleware],
-      handler: [resetPasswordController],
-    }
+      middleware: [authLimiter, validate(resetPasswordValidator)],
+      handler: resetPasswordController,
+    },
+    // Sign-In with Ethereum: fetch a nonce, sign it in the wallet, hand the
+    // signature back. No password ever crosses the wire.
+    {
+      method: 'get',
+      path: 'nonce',
+      middleware: [authLimiter],
+      handler: nonceController,
+    },
+    {
+      method: 'post',
+      path: 'wallet-login',
+      middleware: [authLimiter, validate(siweValidator)],
+      handler: walletLoginController,
+    },
+    {
+      method: 'post',
+      path: 'wallet-link',
+      middleware: [isAuthorized, validate(siweValidator)],
+      handler: authed(walletLinkController),
+    },
   ],
 };
 
