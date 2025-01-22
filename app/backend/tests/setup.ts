@@ -1,0 +1,28 @@
+// The app validates its environment at import time, so the suite has to provide
+// a complete one before anything under src/ is loaded.
+Object.assign(process.env, {
+  NODE_ENV: 'test',
+  LOG_LEVEL: 'fatal',
+  PORT: '3001',
+  FRONTEND_URL: 'http://localhost:3000',
+
+  DB_HOST: 'localhost',
+  DB_PORT: '5432',
+  DB_NAME: 'ethers_web3_test',
+  DB_USERNAME: 'postgres',
+  DB_PASSWORD: 'postgres',
+
+  REDIS_HOST: 'localhost',
+  REDIS_PORT: '6379',
+  REDIS_PASSWORD: '',
+
+  JWT_ACCESS_SECRET: 'test-access-secret-that-is-long-enough-000',
+  JWT_REFRESH_SECRET: 'test-refresh-secret-that-is-long-enough-0',
+  JWT_ACCESS_TTL: '15m',
+  JWT_REFRESH_TTL: '7d',
+
+  RPC_URL: 'http://localhost:8545',
+  CHAIN_ID: '11155111',
+  NFT_CONTRACT_ADDRESS: '0x1111111111111111111111111111111111111111',
+  IPFS_GATEWAY: 'https://ipfs.io/ipfs/',
+});
