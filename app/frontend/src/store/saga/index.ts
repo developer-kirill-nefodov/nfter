@@ -1,15 +1,9 @@
-import {all} from "@redux-saga/core/effects";
+import {all, call} from 'redux-saga/effects';
 
-import {
-  accessRoleWatcher,
-  loginWatcher,
-  logoutWatcher
-} from "./auth";
+import {authSaga} from './auth.saga';
+import {nftSaga} from './nft.saga';
+import {walletSaga} from './wallet.saga';
 
 export default function* rootSaga() {
-  yield all([
-    accessRoleWatcher(),
-    loginWatcher(),
-    logoutWatcher()
-  ]);
+  yield all([call(authSaga), call(walletSaga), call(nftSaga)]);
 }

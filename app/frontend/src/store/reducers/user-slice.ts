@@ -1,44 +1,38 @@
-import {createSlice} from '@reduxjs/toolkit'
-import type {PayloadAction} from '@reduxjs/toolkit'
+import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 
-export type IRoles = 'ADMIN' | 'MODERATOR' | 'USER' | 'VISITOR';
-export type INamePermissions = 'block_user' | 'delete_user' | 'assign_roles';
+import {VISITOR, type IUser} from '../../types/user';
 
-export interface IUserData {
-  id?: number
-  email?: string;
-}
-
-export interface IUserState extends IUserData {
-  role: {
-    name: IRoles
-    permissions: {
-      [key in INamePermissions]?: boolean
-    }
-  }
+export interface IUserState {
+  user: IUser;
+  /** True until the app has asked the API who the current user is. */
+  loading: boolean;
 }
 
 const initialState: IUserState = {
-  email: '',
-  role: {
-    name: 'VISITOR',
-    permissions: {}
-  }
-}
+  user: VISITOR,
+  loading: true,
+};
 
 export const userSlice = createSlice({
-  name: 'userSlice',
+  name: 'user',
   initialState,
   reducers: {
-    setUserData: (state: IUserState, data: PayloadAction<IUserState>) => {
-      return {
-        ...state,
-        ...data.payload
-      }
-    }
+    setUser: (state, {payload}: PayloadAction<IUser>) => {
+      state.user = payload;
+      state.loading = false;
+    },
+    setVisitor: (state) => {
+      state.user = VISITOR;
+      state.loading = false;
+    },
+    // The session lookup used to clear this flag only on success, so any API
+    // failure left the whole app stuck rendering nothing.
+    setUserLoading: (state, {payload}: PayloadAction<boolean>) => {
+      state.loading = payload;
+    },
   },
 });
 
-export const {setUserData} = userSlice.actions;
+export const {setUser, setVisitor, setUserLoading} = userSlice.actions;
 
 export default userSlice.reducer;

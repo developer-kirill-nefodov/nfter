@@ -1,25 +1,34 @@
-import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit';
-import createSagaMiddleware from "redux-saga";
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
 
-import rootReducer from "./reducers";
-import rootSaga from "./saga";
+import nftReducer from './reducers/nft-slice';
+import userReducer from './reducers/user-slice';
+import walletReducer from './reducers/wallet-slice';
+import rootSaga from './saga';
 
-const sagaMiddleware = createSagaMiddleware();
-
-export const store = configureStore({
-  reducer: rootReducer,
-  middleware: (getDefaultMiddleWare) => {
-  return getDefaultMiddleWare({ thunk: false }).prepend(sagaMiddleware);
-}
+export const rootReducer = combineReducers({
+  user: userReducer,
+  wallet: walletReducer,
+  nft: nftReducer,
 });
 
-sagaMiddleware.run(rootSaga);
+export const createStore = (preloadedState?: Partial<ReturnType<typeof rootReducer>>) => {
+  const sagaMiddleware = createSagaMiddleware();
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-  ReturnType,
-  RootState,
-  unknown,
-  Action<string>
->;
+  const store = configureStore({
+    reducer: rootReducer,
+    preloadedState,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({thunk: false}).concat(sagaMiddleware),
+  });
+
+  sagaMiddleware.run(rootSaga);
+
+  return store;
+};
+
+export const store = createStore();
+
+export type AppStore = ReturnType<typeof createStore>;
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = AppStore['dispatch'];
