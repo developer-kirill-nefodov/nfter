@@ -1,85 +1,91 @@
-import styled, {createGlobalStyle} from 'styled-components';
-import {Link} from "react-router-dom";
+import styled, {createGlobalStyle, css} from 'styled-components';
+import {Link} from 'react-router-dom';
 
 export const AppGlobalStyles = createGlobalStyle`
-  html, body {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
     margin: 0;
     padding: 0;
+    min-height: 100%;
   }
 
   body {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', system-ui, sans-serif;
+    background: ${({theme}) => theme.colors.background};
+    color: ${({theme}) => theme.colors.text};
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* One visible focus ring for everything, so keyboard users are never lost. */
+  :focus-visible {
+    outline: 2px solid ${({theme}) => theme.colors.accent};
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 `;
 
-interface IElement {
-  width?: string
-  height?: string
-  margin?: string
-  padding?: string
-}
-
-interface IElementDiv extends IElement {
-  display?: 'flex' | 'block'
-  flexDirection?: 'column' | 'row'
-  flexWrap?: 'wrap' | 'nowrap'
-  alignItems?: 'center' | 'flex-start' | 'flex-end'
-  justifyContent?: 'center' | 'flex-start' | 'flex-end' | 'space-between'
-}
-
-interface IElementLink {
-  color?: string
-  margin?: string
-  disabled?: boolean
-}
-
-export const Img = styled.img<IElement>`
-  ${(({width}) => width && `width: ${width}`)};
-  ${(({height}) => height && `height: ${height}`)};
-  ${(({margin}) => margin && `margin: ${margin}`)};
-  ${(({padding}) => padding && `padding: ${padding}`)};
-  pointer-events: none;
-`;
-
-export const Div = styled.div<IElementDiv>`
-  ${(({display}) => display && `display: ${display}`)};
-  ${(({flexDirection}) => flexDirection && `flex-direction: ${flexDirection};`)};
-  ${(({flexWrap}) => flexWrap && `flex-wrap: ${flexWrap};`)};
-  ${(({width}) => width && `width: ${width};`)};
-  ${(({height}) => height && `height: ${height};`)};
-  ${(({margin}) => margin && `margin: ${margin};`)};
-  ${(({padding}) => padding && `padding: ${padding};`)};
-  ${(({alignItems}) => alignItems && `align-items: ${alignItems};`)};
-  ${(({justifyContent}) => justifyContent && `justify-content: ${justifyContent};`)};
-`;
-
-export const CustomLink = styled(Link)<IElementLink>`
-  ${(({color}) => color && `color: ${color};`)};
-  ${(({margin}) => margin && `margin: ${margin};`)};
-  ${(({disabled}) => disabled && `opacity: .5; pointer-events: none;`)};
-  text-align: center;
-  text-decoration: none;
-`;
-
-export const Btn = styled.button`
-  font-size: .75rem;
-  cursor: pointer;
-  letter-spacing: .1em;
-  padding: .5rem 1rem;
-  border-color: transparent;
-  border-radius: 0.375rem;
-`;
-
-export const Input = styled.input`
-  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  font-size: 1rem;
-  border: 1px ${({theme}) => theme.colors.border} solid;
-  padding: .75rem;
-  border-radius: .5rem;
-
+export const focusRing = css`
   &:focus-visible {
-    outline-color: #6366f1;
+    outline: 2px solid ${({theme}) => theme.colors.accent};
+    outline-offset: 2px;
+  }
+`;
+
+export const Stack = styled.div<{$gap?: string; $align?: string; $justify?: string}>`
+  display: flex;
+  flex-direction: column;
+  gap: ${({$gap, theme}) => $gap ?? theme.space.md};
+  align-items: ${({$align}) => $align ?? 'stretch'};
+  justify-content: ${({$justify}) => $justify ?? 'flex-start'};
+`;
+
+export const Row = styled.div<{$gap?: string; $align?: string; $justify?: string; $wrap?: boolean}>`
+  display: flex;
+  flex-direction: row;
+  gap: ${({$gap, theme}) => $gap ?? theme.space.md};
+  align-items: ${({$align}) => $align ?? 'center'};
+  justify-content: ${({$justify}) => $justify ?? 'flex-start'};
+  flex-wrap: ${({$wrap}) => ($wrap ? 'wrap' : 'nowrap')};
+`;
+
+export const Card = styled.section`
+  background: ${({theme}) => theme.colors.surface};
+  border: 1px solid ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.lg};
+  box-shadow: ${({theme}) => theme.shadows.md};
+  padding: ${({theme}) => theme.space.lg};
+`;
+
+export const Title = styled.h1`
+  margin: 0;
+  font-size: ${({theme}) => theme.fontSizes.xl};
+  font-weight: 700;
+`;
+
+export const Subtitle = styled.p`
+  margin: 0;
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+`;
+
+export const NavLink = styled(Link)`
+  color: ${({theme}) => theme.colors.text};
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: ${({theme}) => theme.radii.sm};
+  transition: color ${({theme}) => theme.transitions.fast};
+  ${focusRing};
+
+  &:hover {
+    color: ${({theme}) => theme.colors.primaryHover};
   }
 `;
