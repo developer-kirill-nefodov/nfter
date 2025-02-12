@@ -1,38 +1,41 @@
-import React from 'react';
-import {useField} from "formik";
+import {useField} from 'formik';
 
-import {ErrorInfo, InputForm, InputWrapper, LabelInput} from "./styles";
+import {Field, FieldError, Input, Label} from './styles';
 
 export interface IInputText {
-  name: string
-  label: string
-  required: boolean
-  placeholder: string
-  disabled?: boolean
-  type: 'text' | 'email' | 'password'
+  name: string;
+  label: string;
+  type: 'text' | 'email' | 'password';
+  placeholder?: string;
+  autoComplete?: string;
+  disabled?: boolean;
 }
 
-const InputText = ({name, label, required, type, placeholder, disabled}: IInputText) => {
+const InputText = ({name, label, type, placeholder, autoComplete, disabled}: IInputText) => {
   const [field, meta] = useField(name);
 
+  const invalid = Boolean(meta.touched && meta.error);
+  const errorId = `${name}-error`;
+
   return (
-    <InputWrapper>
-      <LabelInput htmlFor={name}>
-        {label}
-      </LabelInput>
-      <InputForm
+    <Field>
+      <Label htmlFor={name}>{label}</Label>
+      <Input
+        {...field}
         id={name}
         type={type}
-        required={required}
-        disabled={disabled}
         placeholder={placeholder}
-        {...field}
-        {...type === 'password' ? {autoComplete: 'on'} : {}}
+        autoComplete={autoComplete}
+        disabled={disabled}
+        $invalid={invalid}
+        // Screen readers announce the message only if the input points at it.
+        aria-invalid={invalid}
+        aria-describedby={invalid ? errorId : undefined}
       />
-      {meta.touched && meta.error ? (
-        <ErrorInfo>{meta.error}</ErrorInfo>
-      ) : null}
-    </InputWrapper>
+      <FieldError id={errorId} role={invalid ? 'alert' : undefined}>
+        {invalid ? meta.error : ''}
+      </FieldError>
+    </Field>
   );
 };
 

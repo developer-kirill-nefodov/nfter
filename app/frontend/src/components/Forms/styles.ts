@@ -1,61 +1,52 @@
-import styled from "styled-components";
-import {Btn, Input} from "../../styles";
+import styled from 'styled-components';
 
-export const CardShadow = styled.div`
-  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-`;
+import {focusRing} from '../../styles';
+import {media} from '../../theme';
 
-export const CardWrapper = styled(CardShadow)`
-  position: absolute;
-  top: 30%;
-  display: flex;
-  padding: 20px 40px;
+/**
+ * Centred by the page's flex column, not by `position: absolute; top: 30%`,
+ * which is what used to drop the form on top of the header on short viewports.
+ */
+export const FormCard = styled.div`
+  width: 100%;
+  max-width: 420px;
 
-  form {
-    width: 100%;
-  }
-
-  @media (min-width: ${({theme}) => theme.breakpoints.sm}px) {
-    width: 25rem;
-  }
-
-  @media (max-width: ${({theme}) => theme.breakpoints.sm}px) {
-    width: 75%;
+  ${media.down('sm')} {
+    max-width: none;
   }
 `;
 
-export const InputWrapper = styled.div`
-  position: relative;
+export const Field = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  gap: ${({theme}) => theme.space.xs};
 `;
 
-
-export const LabelInput = styled.label`
-  color: ${({theme}) => theme.colors.label};
-  font-size: .875rem;
-  font-weight: 500;
-  line-height: 1.25rem;
+export const Label = styled.label`
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+  font-weight: 600;
 `;
 
-export const InputForm = styled(Input)`
-  margin-top: 5px;
+export const Input = styled.input<{$invalid: boolean}>`
+  font: inherit;
+  color: ${({theme}) => theme.colors.text};
+  background: ${({theme}) => theme.colors.surfaceRaised};
+  border: 1px solid
+    ${({theme, $invalid}) => ($invalid ? theme.colors.error : theme.colors.border)};
+  border-radius: ${({theme}) => theme.radii.md};
+  padding: ${({theme}) => theme.space.sm};
+  transition: border-color ${({theme}) => theme.transitions.fast};
+  ${focusRing};
+
+  &::placeholder {
+    color: ${({theme}) => theme.colors.textMuted};
+  }
 `;
 
-export const ErrorInfo = styled.div`
-  position: absolute;
+/** In normal flow under the input — the old one was absolutely positioned over the label. */
+export const FieldError = styled.span`
   color: ${({theme}) => theme.colors.error};
-  top: 5px;
-  right: 5px;
-  font-size: 12px;
-`;
-
-export const ButtonSubmit = styled(Btn)`
-  color: white;
-  text-transform: uppercase;
-  font-weight: 700;
-  background: ${({theme}) => theme.colors.navigate};
+  font-size: ${({theme}) => theme.fontSizes.xs};
+  min-height: 1em;
 `;

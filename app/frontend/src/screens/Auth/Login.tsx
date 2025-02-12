@@ -1,52 +1,51 @@
-import React from 'react';
-import {useTranslation} from "react-i18next";
+import {useTranslation} from 'react-i18next';
 
-import BaseForm from "../../components/Forms";
-import InputText from "../../components/Forms/InputText";
+import Button from '../../components/Button';
+import BaseForm from '../../components/Forms';
+import InputText from '../../components/Forms/InputText';
+import ConnectButton from '../../components/Wallet/ConnectButton';
+import {loginRequest} from '../../store/actions';
+import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {NavLink, Stack} from '../../styles';
+import {NavigateUrls} from '../../utils/navigate-urls';
+import {loginFields, loginInitial, loginSchema, type ILoginValues} from '../../validations/auth';
 
-import {loginAction} from "../../store/saga/actions/auth.actions";
-import {useStoreDispatch} from "../../store/hooks";
-import {NavigateUrls} from "../../utils/constants/navigate-urls";
-import {IStateLogin, initialLogin, inputsArrLogin, validateLogin} from "../../utils/validations/auth/login";
-
-import {ButtonSubmit} from "../../components/Forms/styles";
-import {CustomLink, Div} from "../../styles";
+import {AuthShell, Divider, FormActions} from './styles';
 
 const LoginPage = () => {
-  const dispatch = useStoreDispatch();
   const {t} = useTranslation();
+  const dispatch = useStoreDispatch();
 
-  const onSubmit = (value: IStateLogin) => {
-    dispatch(loginAction(value));
-  }
+  const loading = useStoreSelector((state) => state.user.loading);
 
   return (
-    <Div display='flex' justifyContent='center' alignItems='center'>
-      <BaseForm
-        initialValues={initialLogin}
-        validationSchema={validateLogin}
-        onSubmit={onSubmit}
+    <AuthShell>
+      <BaseForm<ILoginValues>
+        title={t('auth.login')}
+        subtitle={t('auth.loginSubtitle')}
+        initialValues={loginInitial}
+        validationSchema={loginSchema}
+        onSubmit={(values) => dispatch(loginRequest(values))}
       >
-        {inputsArrLogin.map((v, i) => (
-          <InputText
-            key={'InputText_' + i}
-            {...v}
-            label={t(`auth.label.${v.name}`)}
-            placeholder={t(`auth.placeholder.${v.name}`)}
-          />
+        {loginFields.map((field) => (
+          <InputText key={field.name} {...field} />
         ))}
-        <Div display='flex' alignItems='center' justifyContent='flex-end'>
-          <div>
-            <CustomLink margin='0 10px 0 0' to={NavigateUrls.auth.forgotPassword}>
-              {t('auth.forgotPassword')}
-            </CustomLink>
-          </div>
-          <ButtonSubmit type='submit'>
+
+        <FormActions>
+          <NavLink to={NavigateUrls.auth.forgotPassword}>{t('auth.forgotPassword')}</NavLink>
+          <Button type="submit" loading={loading}>
             {t('auth.login')}
-          </ButtonSubmit>
-        </Div>
+          </Button>
+        </FormActions>
+
+        <Stack $gap="16px">
+          <Divider>{t('auth.or')}</Divider>
+          {/* SIWE: no password ever leaves the browser. */}
+          <ConnectButton />
+          <NavLink to={NavigateUrls.auth.register}>{t('auth.noAccount')}</NavLink>
+        </Stack>
       </BaseForm>
-    </Div>
+    </AuthShell>
   );
 };
 
