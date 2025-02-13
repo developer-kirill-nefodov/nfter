@@ -1,24 +1,27 @@
-import React from 'react';
-import {Route, Routes} from "react-router-dom";
+import {useEffect} from 'react';
 
-import AppPages from "./screens";
-import Layout from "./components/Layout";
-import {AppGlobalStyles} from "./styles";
+import Layout from './components/Layout';
+import {useWalletEvents} from './hooks/useWalletEvents';
+import AppRoutes from './routes';
+import {bootstrapSession} from './store/actions';
+import {useStoreDispatch} from './store/hooks';
 
-function App() {
+const App = () => {
+  const dispatch = useStoreDispatch();
+
+  useWalletEvents();
+
+  useEffect(() => {
+    // Asks the API who we are. With no access token in memory, the refresh
+    // cookie is spent and the session survives a page reload.
+    dispatch(bootstrapSession());
+  }, [dispatch]);
+
   return (
-    <>
-      <AppGlobalStyles/>
-      <Layout>
-        <Routes>
-          <Route
-            path={'*'}
-            element={<AppPages/>}
-          />
-        </Routes>
-      </Layout>
-    </>
+    <Layout>
+      <AppRoutes />
+    </Layout>
   );
-}
+};
 
 export default App;

@@ -1,29 +1,35 @@
-import React, {Suspense} from 'react';
-import ReactDOM from 'react-dom/client';
-import {Provider} from 'react-redux'
-import {BrowserRouter} from "react-router-dom";
-import {ThemeProvider} from "styled-components";
+import {StrictMode} from 'react';
+import {createRoot} from 'react-dom/client';
+import {Provider} from 'react-redux';
+import {BrowserRouter} from 'react-router-dom';
+import {ThemeProvider} from 'styled-components';
 
-import {store} from './store';
-import {theme} from "./theme";
+import 'react-toastify/dist/ReactToastify.css';
+
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
+import {store} from './store';
+import {AppGlobalStyles} from './styles';
+import {theme} from './theme';
+import './i18n';
 
-import './bootstrap';
+const container = document.getElementById('root');
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+if (!container) {
+  throw new Error('Root element is missing from index.html');
+}
 
-root.render(
-  <React.StrictMode>
-    <BrowserRouter>
+createRoot(container).render(
+  <StrictMode>
+    <ErrorBoundary>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <Suspense fallback={<div/>}>
-            <App/>
-          </Suspense>
+          <BrowserRouter>
+            <AppGlobalStyles />
+            <App />
+          </BrowserRouter>
         </ThemeProvider>
       </Provider>
-    </BrowserRouter>
-  </React.StrictMode>
+    </ErrorBoundary>
+  </StrictMode>,
 );
