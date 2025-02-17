@@ -1,14 +1,12 @@
-import {Request, Response} from "express";
-import CountryModel from "../../models/country.model";
+import type {Request, Response} from 'express';
 
-export const getCountriesLangController = async (req: Request, res: Response) => {
-  try {
-    const languages = await CountryModel.findAll({
-      attributes: ['iso2', 'lang']
-    });
+import CountryModel from '../../models/country.model';
 
-    res.status(200).json(languages);
-  } catch (e) {
-    res.status(400).send(e.error);
-  }
-}
+export const getCountriesLangController = async (_req: Request, res: Response) => {
+  const languages = await CountryModel.findAll({
+    attributes: ['iso2', 'lang'],
+    order: [['lang', 'ASC']],
+  });
+
+  res.status(200).json(languages);
+};

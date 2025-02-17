@@ -1,24 +1,23 @@
-import React from 'react';
+import type {ReactNode} from 'react';
 
-import LayoutHeader from "./LayoutHeader";
-import LayoutFooter from "./LayoutFooter";
+import Toastify from '../Toastify';
 
-import {WrapperLayout} from "./styles";
-import Toastify from "../Toastify";
+import LayoutFooter from './LayoutFooter';
+import LayoutHeader from './LayoutHeader';
+import {Main, Shell} from './styles';
 
 interface ILayout {
-  children:  React.ReactElement | null
+  children: ReactNode;
 }
 
-const Layout = ({children}: ILayout) => {
-  return (
-    <WrapperLayout>
-      <LayoutHeader/>
-      <Toastify/>
-        {children}
-      <LayoutFooter/>
-    </WrapperLayout>
-  );
-};
+const Layout = ({children}: ILayout) => (
+  <Shell>
+    <LayoutHeader />
+    {/* A real <main> landmark: screen readers can jump straight to the content. */}
+    <Main id="main">{children}</Main>
+    <LayoutFooter />
+    <Toastify />
+  </Shell>
+);
 
 export default Layout;

@@ -1,50 +1,194 @@
 {
   "US": {
-    "auth.login": "Sign In",
-    "auth.create": "Sing Up",
-    "auth.label.email": "Email",
-    "auth.label.password": "Password",
-    "auth.placeholder.email": "Your email please...",
-    "auth.placeholder.password": "Your password please...",
-    "auth.forgotPassword": "Forgot your password?",
-
-    "user.connect": "Connect",
-    "user.logout": "Logout"
+    "auth": {
+      "login": "Sign in",
+      "loginSubtitle": "Use your email, or sign in with your wallet.",
+      "logout": "Sign out",
+      "register": "Sign up",
+      "registerSubtitle": "Create an account with an email and password.",
+      "forgotPassword": "Forgot password?",
+      "forgotSubtitle": "We will email you a link to choose a new password.",
+      "resetPassword": "Set a new password",
+      "resetSubtitle": "Choose a password you have not used before.",
+      "sendLink": "Send reset link",
+      "backToLogin": "Back to sign in",
+      "noAccount": "No account yet? Sign up",
+      "haveAccount": "Already have an account?",
+      "or": "or"
+    },
+    "wallet": {
+      "connect": "Connect wallet",
+      "link": "Link wallet",
+      "signing": "Check your wallet…",
+      "install": "Install MetaMask"
+    },
+    "home": {
+      "title": "Your Ethereum wallet, in one place",
+      "connectPrompt": "Connect a wallet to sign in and see the ERC-721 tokens it holds.",
+      "wallet": "Wallet",
+      "network": "Network",
+      "balance": "Balance",
+      "tokens": "Tokens"
+    },
+    "nft": {
+      "title": "Your collection",
+      "owned": "{{count}} {{symbol}} token owned",
+      "owned_other": "{{count}} {{symbol}} tokens owned",
+      "empty": "No tokens from this collection in your wallet yet.",
+      "loading": "Loading your collection",
+      "refresh": "Refresh",
+      "retry": "Try again"
+    },
+    "notFound": {
+      "message": "That page does not exist.",
+      "home": "Go home"
+    },
+    "footer": {
+      "network": "Running on {{chain}}"
+    }
   },
   "DE": {
-    "auth.login": "Anmelden",
-    "auth.create": "Anmeldung",
-    "auth.label.email": "Email",
-    "auth.label.password": "Passwort",
-    "auth.placeholder.email": "Deine email...",
-    "auth.placeholder.password": "Ihr passwort...",
-    "auth.forgotPassword": "Haben Sie Ihr Passwort vergessen?",
-
-    "user.connect": "Connect",
-    "user.logout": "Logout"
+    "auth": {
+      "login": "Anmelden",
+      "loginSubtitle": "Mit E-Mail anmelden oder direkt mit deiner Wallet.",
+      "logout": "Abmelden",
+      "register": "Registrieren",
+      "registerSubtitle": "Konto mit E-Mail und Passwort erstellen.",
+      "forgotPassword": "Passwort vergessen?",
+      "forgotSubtitle": "Wir senden dir einen Link, um ein neues Passwort zu wählen.",
+      "resetPassword": "Neues Passwort setzen",
+      "resetSubtitle": "Wähle ein Passwort, das du noch nicht verwendet hast.",
+      "sendLink": "Link senden",
+      "backToLogin": "Zurück zur Anmeldung",
+      "noAccount": "Noch kein Konto? Registrieren",
+      "haveAccount": "Bereits ein Konto?",
+      "or": "oder"
+    },
+    "wallet": {
+      "connect": "Wallet verbinden",
+      "link": "Wallet verknüpfen",
+      "signing": "Prüfe deine Wallet…",
+      "install": "MetaMask installieren"
+    },
+    "home": {
+      "title": "Deine Ethereum-Wallet an einem Ort",
+      "connectPrompt": "Verbinde eine Wallet, um dich anzumelden und deine ERC-721-Token zu sehen.",
+      "wallet": "Wallet",
+      "network": "Netzwerk",
+      "balance": "Guthaben",
+      "tokens": "Token"
+    },
+    "nft": {
+      "title": "Deine Sammlung",
+      "owned": "{{count}} {{symbol}}-Token im Besitz",
+      "owned_other": "{{count}} {{symbol}}-Token im Besitz",
+      "empty": "Noch keine Token aus dieser Sammlung in deiner Wallet.",
+      "loading": "Sammlung wird geladen",
+      "refresh": "Aktualisieren",
+      "retry": "Erneut versuchen"
+    },
+    "notFound": {
+      "message": "Diese Seite existiert nicht.",
+      "home": "Zur Startseite"
+    },
+    "footer": {
+      "network": "Läuft auf {{chain}}"
+    }
   },
   "CN": {
-    "auth.login": "登入",
-    "auth.create": "报名",
-    "auth.label.email": "电子邮件",
-    "auth.label.password": "密码",
-    "auth.placeholder.email": "你的邮件...",
-    "auth.placeholder.password": "你的密码...",
-    "auth.forgotPassword": "忘记密码了吗？",
-
-    "user.connect": "Connect",
-    "user.logout": "Logout"
+    "auth": {
+      "login": "登录",
+      "loginSubtitle": "使用邮箱登录，或直接用钱包登录。",
+      "logout": "退出登录",
+      "register": "注册",
+      "registerSubtitle": "使用邮箱和密码创建账户。",
+      "forgotPassword": "忘记密码？",
+      "forgotSubtitle": "我们会发送一个重置密码的链接到你的邮箱。",
+      "resetPassword": "设置新密码",
+      "resetSubtitle": "请选择一个你没用过的密码。",
+      "sendLink": "发送重置链接",
+      "backToLogin": "返回登录",
+      "noAccount": "还没有账户？注册",
+      "haveAccount": "已经有账户了？",
+      "or": "或"
+    },
+    "wallet": {
+      "connect": "连接钱包",
+      "link": "绑定钱包",
+      "signing": "请查看你的钱包…",
+      "install": "安装 MetaMask"
+    },
+    "home": {
+      "title": "你的以太坊钱包，一站式管理",
+      "connectPrompt": "连接钱包即可登录并查看其中的 ERC-721 代币。",
+      "wallet": "钱包",
+      "network": "网络",
+      "balance": "余额",
+      "tokens": "代币"
+    },
+    "nft": {
+      "title": "你的收藏",
+      "owned": "持有 {{count}} 个 {{symbol}} 代币",
+      "owned_other": "持有 {{count}} 个 {{symbol}} 代币",
+      "empty": "你的钱包中还没有该系列的代币。",
+      "loading": "正在加载你的收藏",
+      "refresh": "刷新",
+      "retry": "重试"
+    },
+    "notFound": {
+      "message": "该页面不存在。",
+      "home": "返回首页"
+    },
+    "footer": {
+      "network": "运行于 {{chain}}"
+    }
   },
   "UA": {
-    "auth.login": "Увійти",
-    "auth.create": "Зареєструватися",
-    "auth.label.email": "Електронна пошта",
-    "auth.label.password": "Пароль",
-    "auth.placeholder.email": "Ваша електронна адреса...",
-    "auth.placeholder.password": "Ваш пароль...",
-    "auth.forgotPassword": "Забули свій пароль?",
-
-    "user.connect": "Connect",
-    "user.logout": "Logout"
+    "auth": {
+      "login": "Увійти",
+      "loginSubtitle": "Увійдіть через пошту або одразу гаманцем.",
+      "logout": "Вийти",
+      "register": "Зареєструватися",
+      "registerSubtitle": "Створіть акаунт з поштою та паролем.",
+      "forgotPassword": "Забули пароль?",
+      "forgotSubtitle": "Надішлемо на пошту посилання для зміни пароля.",
+      "resetPassword": "Встановити новий пароль",
+      "resetSubtitle": "Оберіть пароль, який ви ще не використовували.",
+      "sendLink": "Надіслати посилання",
+      "backToLogin": "Повернутися до входу",
+      "noAccount": "Ще немає акаунта? Зареєструйтеся",
+      "haveAccount": "Вже маєте акаунт?",
+      "or": "або"
+    },
+    "wallet": {
+      "connect": "Підключити гаманець",
+      "link": "Прив'язати гаманець",
+      "signing": "Перевірте свій гаманець…",
+      "install": "Встановити MetaMask"
+    },
+    "home": {
+      "title": "Ваш Ethereum-гаманець в одному місці",
+      "connectPrompt": "Підключіть гаманець, щоб увійти та побачити свої ERC-721 токени.",
+      "wallet": "Гаманець",
+      "network": "Мережа",
+      "balance": "Баланс",
+      "tokens": "Токени"
+    },
+    "nft": {
+      "title": "Ваша колекція",
+      "owned": "У власності {{count}} токен {{symbol}}",
+      "owned_other": "У власності {{count}} токенів {{symbol}}",
+      "empty": "У вашому гаманці ще немає токенів цієї колекції.",
+      "loading": "Завантажуємо вашу колекцію",
+      "refresh": "Оновити",
+      "retry": "Спробувати ще раз"
+    },
+    "notFound": {
+      "message": "Такої сторінки не існує.",
+      "home": "На головну"
+    },
+    "footer": {
+      "network": "Працює в мережі {{chain}}"
+    }
   }
 }

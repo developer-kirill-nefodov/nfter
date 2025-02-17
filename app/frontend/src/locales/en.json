@@ -1,0 +1,48 @@
+{
+  "auth": {
+    "login": "Sign in",
+    "loginSubtitle": "Use your email, or sign in with your wallet.",
+    "logout": "Sign out",
+    "register": "Sign up",
+    "registerSubtitle": "Create an account with an email and password.",
+    "forgotPassword": "Forgot password?",
+    "forgotSubtitle": "We will email you a link to choose a new password.",
+    "resetPassword": "Set a new password",
+    "resetSubtitle": "Choose a password you have not used before.",
+    "sendLink": "Send reset link",
+    "backToLogin": "Back to sign in",
+    "noAccount": "No account yet? Sign up",
+    "haveAccount": "Already have an account?",
+    "or": "or"
+  },
+  "wallet": {
+    "connect": "Connect wallet",
+    "link": "Link wallet",
+    "signing": "Check your wallet…",
+    "install": "Install MetaMask"
+  },
+  "home": {
+    "title": "Your Ethereum wallet, in one place",
+    "connectPrompt": "Connect a wallet to sign in and see the ERC-721 tokens it holds.",
+    "wallet": "Wallet",
+    "network": "Network",
+    "balance": "Balance",
+    "tokens": "Tokens"
+  },
+  "nft": {
+    "title": "Your collection",
+    "owned": "{{count}} {{symbol}} token owned",
+    "owned_other": "{{count}} {{symbol}} tokens owned",
+    "empty": "No tokens from this collection in your wallet yet.",
+    "loading": "Loading your collection",
+    "refresh": "Refresh",
+    "retry": "Try again"
+  },
+  "notFound": {
+    "message": "That page does not exist.",
+    "home": "Go home"
+  },
+  "footer": {
+    "network": "Running on {{chain}}"
+  }
+}
