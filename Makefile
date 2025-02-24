@@ -3,52 +3,54 @@
 include .env
 
 #----------- Make Environment ----------------------
-docker_compose_bin= $(shell command -v docker-compose 2> /dev/null)
-SITE_NODE_SERVICE=site
-API_NODE_SERVICE=api
-COMPOSE_CONFIG=--env-file .env -p $(PROJECT_NAME) -f docker/docker-compose.yml
+docker_compose_bin = $(shell command -v docker-compose 2> /dev/null || echo "docker compose")
+SITE_SERVICE = site
+API_SERVICE = api
+COMPOSE = --env-file .env -p $(PROJECT_NAME) -f docker/docker-compose.yml
 
 .DEFAULT_GOAL := help
 
 help: ## Show this help
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[92m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "  \033[92m%-16s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+---------------: ## ------[ SETUP ]---------
+init: ## Copy the .env files into place and generate JWT secrets
+	@cp -n .env.example .env || true
+	@cp -n app/backend/.env.example app/backend/.env || true
+	@cp -n app/frontend/.env.example app/frontend/.env || true
+	@sed -i "s|^JWT_ACCESS_SECRET=.*|JWT_ACCESS_SECRET=$$(openssl rand -base64 48 | tr -d '\n')|" app/backend/.env
+	@sed -i "s|^JWT_REFRESH_SECRET=.*|JWT_REFRESH_SECRET=$$(openssl rand -base64 48 | tr -d '\n')|" app/backend/.env
+	@echo "Env files ready. Set NFT_CONTRACT_ADDRESS in app/backend/.env, then run: make up migrate seed"
 
 ---------------: ## ------[ ACTIONS ]---------
-#Actions --------------------------------------------------
-check:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) config
-build-img:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) build
-up:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) up --no-recreate -d
-up-force:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) up -d
-up-runtime:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) up
-down:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) down || true
-restart:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) restart
-install:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(SITE_NODE_SERVICE) npm install
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(API_NODE_SERVICE) npm install
-migrate:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(API_NODE_SERVICE) npm run migrate
-down-migrate:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(API_NODE_SERVICE) npm run down-migrate
-seed:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(API_NODE_SERVICE) npm run seed
-deploy:
-	(cd app/frontend && npm install && npm run build) && (cd app/backend && npm install && pm2 restart npm -- run start)
-sh-node-site:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) exec $(SITE_NODE_SERVICE) bash
-sh-node-api:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) exec $(API_NODE_SERVICE) bash
-sh-run-site:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) stop $(SITE_NODE_SERVICE)
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(SITE_NODE_SERVICE) bash
-	$(docker_compose_bin) $(COMPOSE_CONFIG) start $(SITE_NODE_SERVICE)
-sh-run-api:
-	$(docker_compose_bin) $(COMPOSE_CONFIG) stop $(API_NODE_SERVICE)
-	$(docker_compose_bin) $(COMPOSE_CONFIG) run --rm $(API_NODE_SERVICE) bash
-	$(docker_compose_bin) $(COMPOSE_CONFIG) start $(API_NODE_SERVICE)
+build-img: ## Build the docker images
+	$(docker_compose_bin) $(COMPOSE) build
+up: ## Start every service
+	$(docker_compose_bin) $(COMPOSE) up -d
+down: ## Stop every service
+	$(docker_compose_bin) $(COMPOSE) down || true
+restart: ## Restart every service
+	$(docker_compose_bin) $(COMPOSE) restart
+logs: ## Tail the api and site logs
+	$(docker_compose_bin) $(COMPOSE) logs -f $(API_SERVICE) $(SITE_SERVICE)
+migrate: ## Run the database migrations
+	$(docker_compose_bin) $(COMPOSE) run --rm $(API_SERVICE) npm run migrate
+down-migrate: ## Roll every migration back
+	$(docker_compose_bin) $(COMPOSE) run --rm $(API_SERVICE) npm run down-migrate
+seed: ## Seed countries, translations and the demo users
+	$(docker_compose_bin) $(COMPOSE) run --rm $(API_SERVICE) npm run seed
+
+---------------: ## ------[ QUALITY ]---------
+test: ## Run both test suites
+	(cd app/backend && npm test) && (cd app/frontend && npm test)
+lint: ## Lint both packages
+	(cd app/backend && npm run lint) && (cd app/frontend && npm run lint)
+typecheck: ## Typecheck both packages
+	(cd app/backend && npm run typecheck) && (cd app/frontend && npm run typecheck)
+check: lint typecheck test ## Everything CI runs, but locally
+
+---------------: ## ------[ SHELL ]---------
+sh-api: ## Open a shell in the api container
+	$(docker_compose_bin) $(COMPOSE) exec $(API_SERVICE) bash
+sh-site: ## Open a shell in the site container
+	$(docker_compose_bin) $(COMPOSE) exec $(SITE_SERVICE) bash
