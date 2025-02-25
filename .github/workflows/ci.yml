@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [master, dev]
+  pull_request:
+
+jobs:
+  check:
+    name: ${{ matrix.package }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Both packages always report, so one failure does not hide the other.
+      fail-fast: false
+      matrix:
+        package: [backend, frontend]
+
+    defaults:
+      run:
+        working-directory: app/${{ matrix.package }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/${{ matrix.package }}/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+  build:
+    name: build images
+    runs-on: ubuntu-latest
+    needs: check
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Proves the production images still build — the thing that silently rots
+      # while everyone runs the app in dev mode.
+      - name: Build API image
+        run: docker build -f docker/prod/api.Dockerfile -t ethers-web3-api .
+
+      - name: Build site image
+        run: |
+          docker build -f docker/prod/site.Dockerfile \
+            --build-arg VITE_API_URL=http://localhost:3001/api \
+            --build-arg VITE_CHAIN_ID=11155111 \
+            --build-arg VITE_CHAIN_NAME=Sepolia \
+            -t ethers-web3-site .
