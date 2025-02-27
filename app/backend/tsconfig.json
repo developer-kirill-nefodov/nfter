@@ -1,4 +1,10 @@
 {
+  "ts-node": {
+    // Without this, ts-node compiles file-by-file and never loads the ambient
+    // declarations in src/types — so req.session looks undeclared at runtime
+    // even though `tsc` is perfectly happy.
+    "files": true
+  },
   "compilerOptions": {
     "target": "ES2022",
     "lib": ["ES2022"],
