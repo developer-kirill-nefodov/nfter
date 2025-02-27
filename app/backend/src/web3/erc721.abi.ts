@@ -10,4 +10,5 @@ export const ERC721_ABI = [
   'function tokenURI(uint256 tokenId) view returns (string)',
   'function tokenOfOwnerByIndex(address owner, uint256 index) view returns (uint256)',
   'function totalSupply() view returns (uint256)',
+  'function supportsInterface(bytes4 interfaceId) view returns (bool)',
 ];

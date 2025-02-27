@@ -3,6 +3,7 @@ import {Contract, getAddress} from 'ethers';
 import {env} from '../config';
 import {LIFETIME_NFT_CACHE_SEC} from '../constants';
 import {redis} from '../db';
+import {AppError} from '../errors/app-error';
 import {logger} from '../lib/logger';
 
 import {ERC721_ABI} from './erc721.abi';
@@ -42,6 +43,7 @@ interface IErc721 {
   balanceOf(owner: string): Promise<bigint>;
   tokenURI(tokenId: string): Promise<string>;
   tokenOfOwnerByIndex(owner: string, index: number): Promise<bigint>;
+  supportsInterface(interfaceId: string): Promise<boolean>;
 }
 
 const contract = new Contract(env.web3.nftContract, ERC721_ABI, provider) as unknown as IErc721;
@@ -87,7 +89,43 @@ const fetchMetadata = async (tokenId: string, tokenUri: string): Promise<INft> =
   }
 };
 
+/** ERC-165 id of the ERC721Enumerable extension. */
+const ERC721_ENUMERABLE_INTERFACE = '0x780e9d63';
+
+let enumerable: Promise<boolean> | null = null;
+
+/**
+ * Walking a wallet's tokens needs tokenOfOwnerByIndex, which is an optional
+ * extension. Asking up front turns "execution reverted" — which tells the user
+ * nothing — into a sentence they can act on. The answer is a property of the
+ * contract, so it is asked once per process, not once per request.
+ */
+const assertEnumerable = async (): Promise<void> => {
+  enumerable ??= contract
+    .supportsInterface(ERC721_ENUMERABLE_INTERFACE)
+    .catch(() => false)
+    .then((supported) => {
+      if (!supported) {
+        logger.error(
+          {contract: env.web3.nftContract},
+          'configured contract does not implement ERC721Enumerable',
+        );
+      }
+
+      return supported;
+    });
+
+  if (!(await enumerable)) {
+    throw AppError.badRequest(
+      'The configured collection does not implement ERC721Enumerable, ' +
+        'so its tokens cannot be listed by owner.',
+    );
+  }
+};
+
 const readCollection = async (owner: string): Promise<INftCollection> => {
+  await assertEnumerable();
+
   const [name, symbol, rawBalance] = await Promise.all([
     contract.name(),
     contract.symbol(),
