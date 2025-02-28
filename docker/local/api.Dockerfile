@@ -15,6 +15,10 @@ RUN npm ci
 COPY app/backend/src ./src
 COPY app/backend/tsconfig.json app/backend/.sequelizerc ./
 
+# Same reason as the site image: npm ci runs as root, and ts-node needs to be
+# able to write its incremental cache into the project directory.
+RUN chown -R node:node /home/nodejs/api
+
 USER node
 
 EXPOSE 3001
