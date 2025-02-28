@@ -10,6 +10,14 @@ export default defineConfig({
     host: true,
     port: 3000,
   },
+  optimizeDeps: {
+    // ethers and siwe are only reached through a dynamic import(), so Vite does
+    // not see them when it pre-bundles on boot. It would discover them the first
+    // time someone clicks Connect, re-run the optimizer mid-session, and answer
+    // every already-loaded module with "504 Outdated Optimize Dep". Declaring
+    // them up front means the optimizer runs exactly once.
+    include: ['ethers', 'siwe'],
+  },
   build: {
     outDir: 'build',
     sourcemap: true,
