@@ -1,9 +1,12 @@
 import {useTranslation} from 'react-i18next';
 
+import {useHasWallet} from '../../hooks/useHasWallet';
 import {walletLinkRequest, walletLoginRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
-import {CHAIN_NAME, formatAddress, hasWallet} from '../../web3/wallet';
+import {Row} from '../../styles';
+import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
 import Button from '../Button';
+import {toast} from '../Toastify';
 
 import {AddressPill} from './styles';
 
@@ -16,18 +19,33 @@ import {AddressPill} from './styles';
 const ConnectButton = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
+  const {installed, recheck} = useHasWallet();
 
   const user = useStoreSelector((state) => state.user.user);
   const {status} = useStoreSelector((state) => state.wallet);
 
-  if (!hasWallet()) {
+  if (!installed) {
     return (
-      <Button
-        variant="ghost"
-        onClick={() => window.open('https://metamask.io/download/', '_blank', 'noopener')}
-      >
-        {t('wallet.install')}
-      </Button>
+      <Row $gap="8px">
+        <Button
+          variant="ghost"
+          onClick={() => window.open('https://metamask.io/download/', '_blank', 'noopener')}
+        >
+          {t('wallet.install')}
+        </Button>
+        {/* Installing a wallet does not reload this tab, so give the user a way
+            to say "it's there now" without hunting for the refresh button. */}
+        <Button
+          variant="ghost"
+          onClick={() => {
+            if (!recheck()) {
+              toast(t('wallet.notDetected'), 'warning');
+            }
+          }}
+        >
+          {t('wallet.recheck')}
+        </Button>
+      </Row>
     );
   }
 
@@ -45,6 +63,7 @@ const ConnectButton = () => {
   return (
     <Button
       loading={busy}
+      disabled={busy}
       onClick={() => dispatch(isVisitor ? walletLoginRequest() : walletLinkRequest())}
     >
       {status === 'signing' ? t('wallet.signing') : t(isVisitor ? 'wallet.connect' : 'wallet.link')}
