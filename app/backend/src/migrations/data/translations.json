@@ -20,7 +20,9 @@
       "connect": "Connect wallet",
       "link": "Link wallet",
       "signing": "Check your wallet…",
-      "install": "Install MetaMask"
+      "install": "Install MetaMask",
+      "recheck": "Check again",
+      "notDetected": "Still no wallet detected. Reload the page after installing MetaMask."
     },
     "home": {
       "title": "Your Ethereum wallet, in one place",
@@ -68,7 +70,9 @@
       "connect": "Wallet verbinden",
       "link": "Wallet verknüpfen",
       "signing": "Prüfe deine Wallet…",
-      "install": "MetaMask installieren"
+      "install": "MetaMask installieren",
+      "recheck": "Erneut prüfen",
+      "notDetected": "Weiterhin keine Wallet gefunden. Lade die Seite nach der Installation neu."
     },
     "home": {
       "title": "Deine Ethereum-Wallet an einem Ort",
@@ -116,7 +120,9 @@
       "connect": "连接钱包",
       "link": "绑定钱包",
       "signing": "请查看你的钱包…",
-      "install": "安装 MetaMask"
+      "install": "安装 MetaMask",
+      "recheck": "重新检测",
+      "notDetected": "仍未检测到钱包。安装 MetaMask 后请刷新页面。"
     },
     "home": {
       "title": "你的以太坊钱包，一站式管理",
@@ -164,7 +170,9 @@
       "connect": "Підключити гаманець",
       "link": "Прив'язати гаманець",
       "signing": "Перевірте свій гаманець…",
-      "install": "Встановити MetaMask"
+      "install": "Встановити MetaMask",
+      "recheck": "Перевірити ще раз",
+      "notDetected": "Гаманець досі не знайдено. Перезавантажте сторінку після встановлення MetaMask."
     },
     "home": {
       "title": "Ваш Ethereum-гаманець в одному місці",

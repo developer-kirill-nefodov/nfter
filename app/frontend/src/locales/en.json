@@ -19,7 +19,9 @@
     "connect": "Connect wallet",
     "link": "Link wallet",
     "signing": "Check your wallet…",
-    "install": "Install MetaMask"
+    "install": "Install MetaMask",
+    "recheck": "Check again",
+    "notDetected": "Still no wallet detected. Reload the page after installing MetaMask."
   },
   "home": {
     "title": "Your Ethereum wallet, in one place",
