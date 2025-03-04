@@ -1,5 +1,5 @@
 import type {JsonRpcSigner} from 'ethers';
-import {call, put, takeLatest} from 'redux-saga/effects';
+import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {authApi} from '../../api/auth';
 import {errorMessage} from '../../api/client';
@@ -12,9 +12,11 @@ import {
   connectWallet,
   signMessage,
   switchChain,
+  WalletBusyError,
   WalletError,
   type IWalletConnection,
 } from '../../web3/wallet';
+import type {RootState} from '../';
 import {
   fetchNftsRequest,
   walletAccountChanged,
@@ -48,11 +50,12 @@ interface ISignedSiwe {
 function* signIn(): Generator<unknown, ISignedSiwe, never> {
   yield put(setWalletStatus('connecting'));
 
-  const connection = (yield call(connectWallet)) as IWalletConnection;
+  let connection = (yield call(connectWallet)) as IWalletConnection;
 
   if (connection.chainId !== CHAIN_ID) {
     toast(`Switching your wallet to ${CHAIN_NAME}…`, 'info');
-    yield call(switchChain, CHAIN_ID);
+    // Returns a signer bound to the new chain — the pre-switch one is stale.
+    connection = (yield call(switchChain, CHAIN_ID)) as IWalletConnection;
   }
 
   yield put(setWallet({address: connection.address, chainId: CHAIN_ID}));
@@ -70,8 +73,20 @@ function* signIn(): Generator<unknown, ISignedSiwe, never> {
 }
 
 const failed = function* (error: unknown) {
-  const message =
-    error instanceof WalletError ? error.message : errorMessage(error, 'Wallet sign-in failed');
+  // A rejected prompt is a decision, not a fault: say it plainly and quietly.
+  if (error instanceof WalletError) {
+    yield put(setWalletError(error.message));
+    toast(error.message, 'info');
+    return;
+  }
+
+  if (error instanceof WalletBusyError) {
+    yield put(setWalletError(error.message));
+    toast(error.message, 'warning');
+    return;
+  }
+
+  const message = errorMessage(error, 'Wallet sign-in failed');
 
   yield put(setWalletError(message));
   toast(message, 'error');
@@ -107,23 +122,55 @@ function* walletLinkSaga() {
   }
 }
 
-/** The user switched accounts (or disconnected) inside MetaMask itself. */
+/**
+ * MetaMask fires accountsChanged as part of granting access, i.e. in the middle
+ * of our own connect flow — and it fires again with the same address on a
+ * reconnect. Treating either as "the user switched accounts" is what made the
+ * app tear down the session it was busy establishing. Only a genuinely different
+ * address, on a session that is already signed in, means anything here.
+ */
 function* accountChangedSaga({payload}: ReturnType<typeof walletAccountChanged>) {
-  if (!payload) {
-    yield put(disconnectWallet());
-    yield put(clearNfts());
+  const {status} = yield select((state: RootState) => state.wallet);
+  const signedInAddress: string | null = yield select(
+    (state: RootState) => state.user.user.walletAddress,
+  );
+
+  if (status === 'connecting' || status === 'signing') {
     return;
   }
 
-  // The signed-in session belongs to the previous address, so it is no longer
-  // the one holding these NFTs — make the user prove the new one.
+  if (!signedInAddress) {
+    return;
+  }
+
+  const next = payload?.toLowerCase() ?? null;
+
+  if (next === signedInAddress.toLowerCase()) {
+    return;
+  }
+
+  // The session belongs to the previous address, so it is no longer the account
+  // holding these tokens — make the new one prove itself.
   yield put(disconnectWallet());
   yield put(clearNfts());
-  toast('Wallet account changed — please sign in again.', 'warning');
+
+  toast(
+    next
+      ? 'Wallet account changed — please sign in again.'
+      : 'Wallet disconnected — please sign in again.',
+    'warning',
+  );
 }
 
 function* chainChangedSaga({payload}: ReturnType<typeof walletChainChanged>) {
+  const {status} = yield select((state: RootState) => state.wallet);
+
   yield put(setChainId(payload));
+
+  // Our own switch triggers this event; warning about it mid-flow is noise.
+  if (status === 'connecting' || status === 'signing') {
+    return;
+  }
 
   if (payload !== CHAIN_ID) {
     toast(`This app runs on ${CHAIN_NAME}. Switch networks to see your collection.`, 'warning');
