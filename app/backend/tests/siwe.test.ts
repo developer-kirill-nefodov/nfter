@@ -29,6 +29,62 @@ const sign = async (message: SiweMessage) => {
   return {message: prepared, signature: await wallet.signMessage(prepared)};
 };
 
+/**
+ * Byte-for-byte what app/frontend/src/web3/siwe.ts emits.
+ *
+ * The browser cannot use the `siwe` package — it depends on apg-js, which needs
+ * Node's Buffer — so the client formats the EIP-4361 message itself. This test
+ * is the contract between the two: if the client's template ever drifts from
+ * what the server's parser accepts, wallet sign-in breaks in production and
+ * nowhere else. It fails here instead.
+ */
+const clientSideMessage = (address: string, nonce: string, issuedAt: string) =>
+  [
+    `localhost:3000 wants you to sign in with your Ethereum account:`,
+    address,
+    '',
+    'Sign in to ethers-web3. This request will not trigger a transaction.',
+    '',
+    `URI: http://localhost:3000`,
+    'Version: 1',
+    `Chain ID: 11155111`,
+    `Nonce: ${nonce}`,
+    `Issued At: ${issuedAt}`,
+  ].join('\n');
+
+describe('the message the browser builds by hand', () => {
+  beforeEach(() => {
+    redis.store.clear();
+  });
+
+  it('parses and verifies through the real siwe library', async () => {
+    const nonce = await issueNonce();
+    const message = clientSideMessage(wallet.address, nonce, new Date().toISOString());
+    const signature = await wallet.signMessage(message);
+
+    await expect(verifySiweMessage(message, signature)).resolves.toBe(
+      wallet.address.toLowerCase(),
+    );
+  });
+
+  it('is field-for-field what siwe itself would have produced', async () => {
+    const nonce = await issueNonce();
+    const issuedAt = new Date().toISOString();
+
+    const parsed = new SiweMessage(clientSideMessage(wallet.address, nonce, issuedAt));
+
+    expect(parsed).toMatchObject({
+      domain: 'localhost:3000',
+      address: wallet.address,
+      uri: 'http://localhost:3000',
+      version: '1',
+      chainId: 11155111,
+      nonce,
+      issuedAt,
+    });
+  });
+});
+
 describe('Sign-In with Ethereum', () => {
   beforeEach(() => {
     redis.store.clear();

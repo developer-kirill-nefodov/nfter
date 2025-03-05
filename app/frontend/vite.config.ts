@@ -11,12 +11,12 @@ export default defineConfig({
     port: 3000,
   },
   optimizeDeps: {
-    // ethers and siwe are only reached through a dynamic import(), so Vite does
-    // not see them when it pre-bundles on boot. It would discover them the first
-    // time someone clicks Connect, re-run the optimizer mid-session, and answer
-    // every already-loaded module with "504 Outdated Optimize Dep". Declaring
-    // them up front means the optimizer runs exactly once.
-    include: ['ethers', 'siwe'],
+    // ethers is only reached through a dynamic import(), so Vite does not see it
+    // when it pre-bundles on boot. It would discover it the first time someone
+    // clicks Connect, re-run the optimizer mid-session, and answer every
+    // already-loaded module with "504 Outdated Optimize Dep". Declaring it up
+    // front means the optimizer runs exactly once.
+    include: ['ethers'],
   },
   build: {
     outDir: 'build',
@@ -32,14 +32,7 @@ export default defineConfig({
             return undefined;
           }
 
-          // siwe drags in @spruceid/siwe-parser → apg-js, which is as big as the
-          // parser itself. It belongs with the wallet code, not in the chunk a
-          // visitor downloads before they have even seen the login form.
-          if (
-            /node_modules\/(ethers|siwe|@spruceid|apg-js|@stablelib|@noble|@adraffy|aes-js|@scure)/.test(
-              id,
-            )
-          ) {
+          if (/node_modules\/(ethers|@noble|@adraffy|aes-js|@scure)/.test(id)) {
             return 'wallet';
           }
 
