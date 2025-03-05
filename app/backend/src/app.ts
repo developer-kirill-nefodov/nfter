@@ -16,6 +16,16 @@ export const createApp = (): Express => {
   // from X-Forwarded-For rather than the proxy's own socket address.
   app.set('trust proxy', 1);
 
+  // Express ETags turn "who am I?" into a conditional request, and the browser
+  // then answers a fresh /auth/me from cache with a 304 — potentially replaying
+  // a stale identity after a login or a logout. Nothing this API returns is
+  // worth caching.
+  app.set('etag', false);
+  app.use((_req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+  });
+
   app.use(helmet());
   app.use(cors({origin: env.frontendUrl, credentials: true}));
   app.use(express.json({limit: '100kb'}));
