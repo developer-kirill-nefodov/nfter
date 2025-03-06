@@ -14,6 +14,15 @@ export const createRedisMock = () => {
       store.set(key, value);
       return 'OK';
     }),
+    /** Only the NX flag matters to the code under test: "set it if it is not there". */
+    set: vi.fn(async (key: string, value: string, options?: {NX?: boolean}) => {
+      if (options?.NX && store.has(key)) {
+        return null;
+      }
+
+      store.set(key, value);
+      return 'OK';
+    }),
     get: vi.fn(async (key: string) => store.get(key) ?? null),
     del: vi.fn(async (keys: string | string[]) => {
       const list = Array.isArray(keys) ? keys : [keys];

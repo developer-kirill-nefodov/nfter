@@ -1,7 +1,7 @@
 import type {Request, Response} from 'express';
 import {readBody} from '../../helpers/request';
 
-import {MESSAGE_RESET_PASSWORD} from '../../constants';
+import {MESSAGE_RESET_PASSWORD, RESET_COOLDOWN_SEC} from '../../constants';
 import UserModel from '../../models/user.model';
 import {createResetToken} from '../../services/auth/forgot-password.service';
 
@@ -16,5 +16,5 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
 
   // Always the same answer, whether or not the address is registered — otherwise
   // this endpoint tells an attacker which emails have accounts.
-  res.status(200).json({message: MESSAGE_RESET_PASSWORD});
+  res.status(200).json({message: MESSAGE_RESET_PASSWORD, retryAfter: RESET_COOLDOWN_SEC});
 };

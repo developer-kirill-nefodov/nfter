@@ -19,5 +19,8 @@ export const REFRESH_COOKIE_OPTIONS: CookieOptions = {
 };
 
 export const LIFETIME_RESET_TOKEN_SEC = 15 * 60;
+
+/** How long a mailbox must wait before it can be sent another reset link. */
+export const RESET_COOLDOWN_SEC = 30;
 export const LIFETIME_NONCE_SEC = 5 * 60;
 export const LIFETIME_NFT_CACHE_SEC = 5 * 60;
