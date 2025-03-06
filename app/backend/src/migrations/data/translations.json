@@ -14,7 +14,9 @@
       "backToLogin": "Back to sign in",
       "noAccount": "No account yet? Sign up",
       "haveAccount": "Already have an account?",
-      "or": "or"
+      "or": "or",
+      "resendIn": "A link was just sent. You can ask for another in {{seconds}}s.",
+      "resendCountdown": "Resend in {{seconds}}s"
     },
     "wallet": {
       "connect": "Connect wallet",
@@ -64,7 +66,9 @@
       "backToLogin": "Zurück zur Anmeldung",
       "noAccount": "Noch kein Konto? Registrieren",
       "haveAccount": "Bereits ein Konto?",
-      "or": "oder"
+      "or": "oder",
+      "resendIn": "Ein Link wurde gerade gesendet. Ein neuer ist in {{seconds}}s möglich.",
+      "resendCountdown": "Erneut senden in {{seconds}}s"
     },
     "wallet": {
       "connect": "Wallet verbinden",
@@ -114,7 +118,9 @@
       "backToLogin": "返回登录",
       "noAccount": "还没有账户？注册",
       "haveAccount": "已经有账户了？",
-      "or": "或"
+      "or": "或",
+      "resendIn": "链接刚刚已发送。{{seconds}} 秒后可再次请求。",
+      "resendCountdown": "{{seconds}} 秒后可重发"
     },
     "wallet": {
       "connect": "连接钱包",
@@ -164,7 +170,9 @@
       "backToLogin": "Повернутися до входу",
       "noAccount": "Ще немає акаунта? Зареєструйтеся",
       "haveAccount": "Вже маєте акаунт?",
-      "or": "або"
+      "or": "або",
+      "resendIn": "Посилання щойно надіслано. Наступне можна запросити через {{seconds}}с.",
+      "resendCountdown": "Надіслати ще раз через {{seconds}}с"
     },
     "wallet": {
       "connect": "Підключити гаманець",
