@@ -1,6 +1,12 @@
 import {api, setAccessToken} from './client';
 import type {IUser} from '../types/user';
 
+export interface IForgotResult {
+  message: string;
+  /** Seconds the caller must wait before another link can be sent to that mailbox. */
+  retryAfter: number;
+}
+
 interface ISessionResponse {
   token: string;
   user: IUser;
@@ -33,9 +39,9 @@ export const authApi = {
     setAccessToken(null);
   },
 
-  forgotPassword: async (payload: {email: string}): Promise<string> => {
-    const {data} = await api.post<{message: string}>('/auth/forgot-password', payload);
-    return data.message;
+  forgotPassword: async (payload: {email: string}): Promise<IForgotResult> => {
+    const {data} = await api.post<IForgotResult>('/auth/forgot-password', payload);
+    return data;
   },
 
   resetPassword: async (payload: {token: string; password: string}): Promise<string> => {

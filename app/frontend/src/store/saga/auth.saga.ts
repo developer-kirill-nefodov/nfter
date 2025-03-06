@@ -1,6 +1,6 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
-import {authApi} from '../../api/auth';
+import {authApi, type IForgotResult} from '../../api/auth';
 import {errorMessage, setAccessToken} from '../../api/client';
 import {toast} from '../../components/Toastify';
 import type {IUser} from '../../types/user';
@@ -12,6 +12,7 @@ import {
   registerRequest,
   resetPasswordRequest,
 } from '../actions';
+import {setResetCooldown} from '../reducers/auth-slice';
 import {clearNfts} from '../reducers/nft-slice';
 import {setUser, setUserLoading, setVisitor} from '../reducers/user-slice';
 import {disconnectWallet} from '../reducers/wallet-slice';
@@ -73,9 +74,13 @@ function* logoutSaga() {
 
 function* forgotPasswordSaga({payload}: ReturnType<typeof forgotPasswordRequest>) {
   try {
-    const message: string = yield call(authApi.forgotPassword, payload);
-    toast(message, 'info', 8000);
+    const result: IForgotResult = yield call(authApi.forgotPassword, payload);
+
+    yield put(setResetCooldown(result.retryAfter));
+    toast(result.message, 'info', 8000);
   } catch (error) {
+    // A refused attempt still burns the cooldown, so the button has to come back.
+    yield put(setResetCooldown(0));
     toast(errorMessage(error), 'error');
   }
 }

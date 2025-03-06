@@ -13,7 +13,9 @@
     "backToLogin": "Back to sign in",
     "noAccount": "No account yet? Sign up",
     "haveAccount": "Already have an account?",
-    "or": "or"
+    "or": "or",
+    "resendIn": "A link was just sent. You can ask for another in {{seconds}}s.",
+    "resendCountdown": "Resend in {{seconds}}s"
   },
   "wallet": {
     "connect": "Connect wallet",

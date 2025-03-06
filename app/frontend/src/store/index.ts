@@ -1,12 +1,14 @@
 import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
+import authReducer from './reducers/auth-slice';
 import nftReducer from './reducers/nft-slice';
 import userReducer from './reducers/user-slice';
 import walletReducer from './reducers/wallet-slice';
 import rootSaga from './saga';
 
 export const rootReducer = combineReducers({
+  auth: authReducer,
   user: userReducer,
   wallet: walletReducer,
   nft: nftReducer,
