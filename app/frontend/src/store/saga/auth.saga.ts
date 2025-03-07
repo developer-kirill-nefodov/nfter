@@ -12,7 +12,7 @@ import {
   registerRequest,
   resetPasswordRequest,
 } from '../actions';
-import {setResetCooldown} from '../reducers/auth-slice';
+import {setForgotStatus, setResetCooldown, setResetStatus} from '../reducers/auth-slice';
 import {clearNfts} from '../reducers/nft-slice';
 import {setUser, setUserLoading, setVisitor} from '../reducers/user-slice';
 import {disconnectWallet} from '../reducers/wallet-slice';
@@ -73,23 +73,34 @@ function* logoutSaga() {
 }
 
 function* forgotPasswordSaga({payload}: ReturnType<typeof forgotPasswordRequest>) {
+  yield put(setForgotStatus('pending'));
+
   try {
     const result: IForgotResult = yield call(authApi.forgotPassword, payload);
 
     yield put(setResetCooldown(result.retryAfter));
+    yield put(setForgotStatus('success'));
     toast(result.message, 'info', 8000);
   } catch (error) {
-    // A refused attempt still burns the cooldown, so the button has to come back.
+    // A refused attempt must not leave the button counting down forever.
     yield put(setResetCooldown(0));
+    yield put(setForgotStatus('error'));
     toast(errorMessage(error), 'error');
   }
 }
 
 function* resetPasswordSaga({payload}: ReturnType<typeof resetPasswordRequest>) {
+  yield put(setResetStatus('pending'));
+
   try {
     const message: string = yield call(authApi.resetPassword, payload);
+
+    // The screen watches this to send the user to the sign-in form. Navigation
+    // belongs to the component; the saga only reports what happened.
+    yield put(setResetStatus('success'));
     toast(message, 'success');
   } catch (error) {
+    yield put(setResetStatus('error'));
     toast(errorMessage(error), 'error');
   }
 }
