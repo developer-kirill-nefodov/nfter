@@ -49,6 +49,39 @@
     },
     "footer": {
       "network": "Running on {{chain}}"
+    },
+    "pass": {
+      "title": "Claim your pass",
+      "subtitle": "A free, one-per-wallet NFT. The artwork is generated inside the contract from your address — no IPFS, nothing to go missing.",
+      "claim": "Claim pass"
+    },
+    "tx": {
+      "claiming": "Minting your pass",
+      "tipping": "Sending your tip",
+      "gas": "Estimated gas: {{amount}} ETH",
+      "viewOnExplorer": "View on Etherscan →",
+      "dismiss": "Dismiss",
+      "stage": {
+        "estimating": "Pricing the transaction",
+        "signing": "Waiting for your wallet",
+        "pending": "Broadcast — waiting for the chain",
+        "confirmed": "Confirmed on chain"
+      }
+    },
+    "tip": {
+      "nav": "Tip",
+      "title": "Buy me a coffee, on chain",
+      "subtitle": "Tips run through a contract on {{chain}}, so every one of them is public and every message is stored in the event log. Testnet ETH — no real money changes hands.",
+      "amount": "Amount (ETH)",
+      "message": "Message",
+      "messagePlaceholder": "Say something nice (optional)",
+      "messageHint": "{{left}} characters left",
+      "send": "Send {{amount}} ETH",
+      "connectFirst": "Connect a wallet to send a tip.",
+      "jar": "Tip jar:",
+      "raised": "{{amount}} ETH from {{count}} tips",
+      "recent": "Recent tips",
+      "empty": "No tips yet. Be the first."
     }
   },
   "DE": {
@@ -101,6 +134,39 @@
     },
     "footer": {
       "network": "Läuft auf {{chain}}"
+    },
+    "pass": {
+      "title": "Hol dir deinen Pass",
+      "subtitle": "Ein kostenloses NFT, eines pro Wallet. Die Grafik entsteht im Contract aus deiner Adresse — kein IPFS, nichts kann verloren gehen.",
+      "claim": "Pass holen"
+    },
+    "tx": {
+      "claiming": "Pass wird geprägt",
+      "tipping": "Trinkgeld wird gesendet",
+      "gas": "Geschätztes Gas: {{amount}} ETH",
+      "viewOnExplorer": "Auf Etherscan ansehen →",
+      "dismiss": "Schließen",
+      "stage": {
+        "estimating": "Transaktion wird bepreist",
+        "signing": "Warte auf deine Wallet",
+        "pending": "Gesendet — warte auf die Chain",
+        "confirmed": "Auf der Chain bestätigt"
+      }
+    },
+    "tip": {
+      "nav": "Trinkgeld",
+      "title": "Spendier mir einen Kaffee — on chain",
+      "subtitle": "Trinkgelder laufen über einen Contract auf {{chain}}: alles öffentlich, jede Nachricht im Event-Log. Testnet-ETH — es fließt kein echtes Geld.",
+      "amount": "Betrag (ETH)",
+      "message": "Nachricht",
+      "messagePlaceholder": "Sag etwas Nettes (optional)",
+      "messageHint": "Noch {{left}} Zeichen",
+      "send": "{{amount}} ETH senden",
+      "connectFirst": "Verbinde eine Wallet, um Trinkgeld zu senden.",
+      "jar": "Trinkgeldglas:",
+      "raised": "{{amount}} ETH aus {{count}} Trinkgeldern",
+      "recent": "Letzte Trinkgelder",
+      "empty": "Noch keine Trinkgelder. Sei die/der Erste."
     }
   },
   "CN": {
@@ -153,6 +219,39 @@
     },
     "footer": {
       "network": "运行于 {{chain}}"
+    },
+    "pass": {
+      "title": "领取你的通行证",
+      "subtitle": "免费 NFT，每个钱包限领一个。图案由合约根据你的地址生成——不依赖 IPFS，永不失效。",
+      "claim": "领取通行证"
+    },
+    "tx": {
+      "claiming": "正在铸造通行证",
+      "tipping": "正在发送打赏",
+      "gas": "预估 Gas：{{amount}} ETH",
+      "viewOnExplorer": "在 Etherscan 查看 →",
+      "dismiss": "关闭",
+      "stage": {
+        "estimating": "正在估算费用",
+        "signing": "等待你的钱包确认",
+        "pending": "已广播——等待链上确认",
+        "confirmed": "已在链上确认"
+      }
+    },
+    "tip": {
+      "nav": "打赏",
+      "title": "请我喝杯咖啡，链上直达",
+      "subtitle": "打赏通过 {{chain}} 上的合约进行：全部公开，留言存入事件日志。测试网 ETH——不涉及真实资金。",
+      "amount": "金额（ETH）",
+      "message": "留言",
+      "messagePlaceholder": "说点好听的（可选）",
+      "messageHint": "还可输入 {{left}} 个字符",
+      "send": "发送 {{amount}} ETH",
+      "connectFirst": "请先连接钱包再打赏。",
+      "jar": "打赏罐：",
+      "raised": "共 {{amount}} ETH，来自 {{count}} 次打赏",
+      "recent": "最近的打赏",
+      "empty": "还没有打赏，来做第一个吧。"
     }
   },
   "UA": {
@@ -205,6 +304,39 @@
     },
     "footer": {
       "network": "Працює в мережі {{chain}}"
+    },
+    "pass": {
+      "title": "Отримайте свій пас",
+      "subtitle": "Безкоштовний NFT, один на гаманець. Зображення генерується всередині контракту з вашої адреси — без IPFS, нічого не загубиться.",
+      "claim": "Отримати пас"
+    },
+    "tx": {
+      "claiming": "Карбуємо ваш пас",
+      "tipping": "Надсилаємо ваш донат",
+      "gas": "Орієнтовний газ: {{amount}} ETH",
+      "viewOnExplorer": "Переглянути на Etherscan →",
+      "dismiss": "Закрити",
+      "stage": {
+        "estimating": "Оцінюємо вартість транзакції",
+        "signing": "Чекаємо на ваш гаманець",
+        "pending": "Надіслано — чекаємо на мережу",
+        "confirmed": "Підтверджено в мережі"
+      }
+    },
+    "tip": {
+      "nav": "Донат",
+      "title": "Купіть мені каву — просто в мережі",
+      "subtitle": "Донати йдуть через контракт у мережі {{chain}}: усе публічно, кожне повідомлення зберігається в лозі подій. Тестові ETH — справжні гроші не рухаються.",
+      "amount": "Сума (ETH)",
+      "message": "Повідомлення",
+      "messagePlaceholder": "Скажіть щось приємне (необовʼязково)",
+      "messageHint": "Залишилось символів: {{left}}",
+      "send": "Надіслати {{amount}} ETH",
+      "connectFirst": "Підключіть гаманець, щоб надіслати донат.",
+      "jar": "Скарбничка:",
+      "raised": "{{amount}} ETH від {{count}} донатів",
+      "recent": "Останні донати",
+      "empty": "Донатів ще немає. Будьте першим."
     }
   }
 }

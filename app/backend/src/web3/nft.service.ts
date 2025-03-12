@@ -61,10 +61,40 @@ const emptyMetadata = (tokenId: string): Omit<INft, 'tokenId' | 'tokenUri'> => (
   attributes: [],
 });
 
+/**
+ * Our own pass returns its metadata as a base64 `data:` URI — the JSON *is* the
+ * chain's answer, there is nothing to go and fetch. Decoding it locally skips a
+ * network round trip that would only ever fail.
+ */
+const decodeDataUri = (uri: string): unknown => {
+  const comma = uri.indexOf(',');
+  const meta = uri.slice(5, comma); // strip "data:"
+  const payload = uri.slice(comma + 1);
+
+  const raw = meta.endsWith(';base64')
+    ? Buffer.from(payload, 'base64').toString('utf8')
+    : decodeURIComponent(payload);
+
+  return JSON.parse(raw);
+};
+
 const fetchMetadata = async (tokenId: string, tokenUri: string): Promise<INft> => {
   const url = resolveUri(tokenUri);
 
   try {
+    if (tokenUri.startsWith('data:')) {
+      const metadata = decodeDataUri(tokenUri) as Partial<INft>;
+
+      return {
+        tokenId,
+        tokenUri,
+        name: metadata.name ?? `#${tokenId}`,
+        description: metadata.description ?? '',
+        image: metadata.image ?? '',
+        attributes: Array.isArray(metadata.attributes) ? metadata.attributes : [],
+      };
+    }
+
     const response = await fetch(url, {signal: AbortSignal.timeout(METADATA_FETCH_TIMEOUT_MS)});
 
     if (!response.ok) {

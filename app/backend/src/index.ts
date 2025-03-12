@@ -3,6 +3,7 @@ import {env} from './config';
 import {db, redis} from './db';
 import {logger} from './lib/logger';
 import {emailWorker} from './workers/email.worker';
+import {startTipIndexer, tipIndexerWorker} from './workers/tip-indexer.worker';
 
 const start = async () => {
   // A server that boots without its database only turns every request into a
@@ -13,6 +14,8 @@ const start = async () => {
   await db.authenticate();
   logger.info('postgres connected');
 
+  await startTipIndexer();
+
   const server = createApp().listen(env.port, () => {
     logger.info(`server listening on http://localhost:${env.port}`);
   });
@@ -22,7 +25,12 @@ const start = async () => {
 
     server.close();
 
-    await Promise.allSettled([emailWorker.close(), redis.quit(), db.close()]);
+    await Promise.allSettled([
+      emailWorker.close(),
+      tipIndexerWorker.close(),
+      redis.quit(),
+      db.close(),
+    ]);
 
     process.exit(0);
   };
