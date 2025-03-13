@@ -6,12 +6,15 @@ export interface INftState {
   collection: INftCollection | null;
   loading: boolean;
   error: string | null;
+  /** null until the chain has been asked whether this wallet claimed its pass. */
+  claimed: boolean | null;
 }
 
 const initialState: INftState = {
   collection: null,
   loading: false,
   error: null,
+  claimed: null,
 };
 
 export const nftSlice = createSlice({
@@ -31,10 +34,14 @@ export const nftSlice = createSlice({
       state.loading = false;
       state.error = payload;
     },
+    setClaimed: (state, {payload}: PayloadAction<boolean>) => {
+      state.claimed = payload;
+    },
     clearNfts: () => initialState,
   },
 });
 
-export const {setNftLoading, setNftCollection, setNftError, clearNfts} = nftSlice.actions;
+export const {setNftLoading, setNftCollection, setNftError, setClaimed, clearNfts} =
+  nftSlice.actions;
 
 export default nftSlice.reducer;

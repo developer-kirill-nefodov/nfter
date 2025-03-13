@@ -24,3 +24,11 @@ export const walletAccountChanged = createAction<string | null>('wallet/accountC
 export const walletChainChanged = createAction<number>('wallet/chainChanged');
 
 export const fetchNftsRequest = createAction<{refresh?: boolean} | undefined>('nft/fetch');
+
+/** Mint the one-per-wallet generative pass. */
+export const claimPassRequest = createAction('tx/claimPass');
+/** Ask the chain whether this wallet already has one. */
+export const checkClaimRequest = createAction<string>('tx/checkClaim');
+/** Tip the jar: amount in wei, plus an optional note stored in the event log. */
+export const sendTipRequest = createAction<{amountWei: string; message: string}>('tx/sendTip');
+export const fetchTipsRequest = createAction<{refresh?: boolean} | undefined>('tip/fetch');

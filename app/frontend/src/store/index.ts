@@ -3,6 +3,8 @@ import createSagaMiddleware from 'redux-saga';
 
 import authReducer from './reducers/auth-slice';
 import nftReducer from './reducers/nft-slice';
+import tipReducer from './reducers/tip-slice';
+import txReducer from './reducers/tx-slice';
 import userReducer from './reducers/user-slice';
 import walletReducer from './reducers/wallet-slice';
 import rootSaga from './saga';
@@ -12,6 +14,8 @@ export const rootReducer = combineReducers({
   user: userReducer,
   wallet: walletReducer,
   nft: nftReducer,
+  tip: tipReducer,
+  tx: txReducer,
 });
 
 export const createStore = (preloadedState?: Partial<ReturnType<typeof rootReducer>>) => {
