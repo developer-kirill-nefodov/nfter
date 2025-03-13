@@ -10,6 +10,7 @@ import RequireRole, {type IRouteAccess} from './RequireRole';
 // Route-level code splitting: a visitor on the login screen never downloads the
 // gallery, and the gallery chunk is where ethers lives.
 const HomePage = lazy(() => import('../screens/Home'));
+const TipPage = lazy(() => import('../screens/Tip'));
 const LoginPage = lazy(() => import('../screens/Auth/Login'));
 const RegisterPage = lazy(() => import('../screens/Auth/Register'));
 const ForgotPasswordPage = lazy(() => import('../screens/Auth/ForgotPassword'));
@@ -25,6 +26,7 @@ interface IAppRoute {
 
 export const appRoutes: IAppRoute[] = [
   {path: NavigateUrls.home, element: <HomePage />, access: 'public'},
+  {path: NavigateUrls.tip, element: <TipPage />, access: 'public'},
   {
     path: NavigateUrls.auth.login,
     element: <LoginPage />,

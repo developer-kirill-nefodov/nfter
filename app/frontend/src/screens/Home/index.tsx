@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import ClaimPass from '../../components/Nft/ClaimPass';
 import NftGallery from '../../components/Nft/NftGallery';
 import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchNftsRequest} from '../../store/actions';
@@ -64,6 +65,8 @@ const HomePage = () => {
           </Stat>
         </Row>
       </Card>
+
+      <ClaimPass />
 
       <Stack $gap="16px">
         <Title as="h2">{t('nft.title')}</Title>

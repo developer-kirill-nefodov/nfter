@@ -91,3 +91,14 @@ export const EmptyState = styled.div`
     opacity: 0.6;
   }
 `;
+
+export const ClaimCard = styled.section`
+  padding: ${({theme}) => theme.space.lg};
+  border-radius: ${({theme}) => theme.radii.lg};
+  border: 1px solid ${({theme}) => theme.colors.primary};
+  background: linear-gradient(
+    135deg,
+    ${({theme}) => theme.colors.surface},
+    ${({theme}) => theme.colors.surfaceRaised}
+  );
+`;

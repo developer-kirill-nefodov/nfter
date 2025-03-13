@@ -31,6 +31,7 @@ const LayoutHeader = () => {
       </Link>
 
       <Row as="nav" $gap="12px" $wrap>
+        <NavLink to={NavigateUrls.tip}>{t('tip.nav')}</NavLink>
         {loading ? (
           <Spinner />
         ) : (

@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 
 import Layout from './components/Layout';
+import TxStatus from './components/Tx/TxStatus';
 import {useWalletEvents} from './hooks/useWalletEvents';
 import AppRoutes from './routes';
 import {bootstrapSession} from './store/actions';
@@ -20,6 +21,7 @@ const App = () => {
   return (
     <Layout>
       <AppRoutes />
+      <TxStatus />
     </Layout>
   );
 };
