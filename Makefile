@@ -40,9 +40,17 @@ down-migrate: ## Roll every migration back
 seed: ## Seed countries, translations and the demo users
 	$(docker_compose_bin) $(COMPOSE) run --rm $(API_SERVICE) npm run seed
 
+---------------: ## ------[ CONTRACTS ]---------
+contracts-test: ## Run the Solidity test suite
+	(cd app/contracts && npm test)
+contracts-preview: ## Render a sheet of generated passes to app/contracts/preview.html
+	(cd app/contracts && npm run preview)
+deploy-contracts: ## Deploy EthersWeb3Pass + TipJar to Sepolia (needs app/contracts/.env)
+	(cd app/contracts && npm run deploy:sepolia)
+
 ---------------: ## ------[ QUALITY ]---------
-test: ## Run both test suites
-	(cd app/backend && npm test) && (cd app/frontend && npm test)
+test: ## Run every test suite
+	(cd app/backend && npm test) && (cd app/frontend && npm test) && (cd app/contracts && npm test)
 lint: ## Lint both packages
 	(cd app/backend && npm run lint) && (cd app/frontend && npm run lint)
 typecheck: ## Typecheck both packages

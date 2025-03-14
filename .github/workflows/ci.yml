@@ -40,6 +40,31 @@ jobs:
       - name: Test
         run: npm test
 
+  contracts:
+    name: contracts
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: app/contracts
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/contracts/package-lock.json
+
+      - run: npm ci
+
+      - name: Compile
+        run: npm run build
+
+      - name: Test
+        run: npm test
+
   build:
     name: build images
     runs-on: ubuntu-latest

@@ -15,6 +15,12 @@ Express 5 · Sequelize · PostgreSQL · Redis · BullMQ · Argon2 · Joi · Pino
 
 ## What it does
 
+**Its own contracts.** `EthersWeb3Pass` is a free, one-per-wallet ERC-721 whose artwork is
+generated *inside the contract* — a symmetric identicon derived from `keccak256(your address)`,
+returned from `tokenURI` as a `data:` URI. No IPFS, no metadata server, nothing that can rot.
+`TipJar` takes tips with a note attached and emits an event for each, which is what makes the
+tip feed a `queryFilter` away instead of an indexer subscription.
+
 **Two ways in, one session.** A user can sign in with an email and password, or by signing
 a message with their wallet. Both paths end at the same place: a short-lived access token in
 memory plus an httpOnly refresh cookie, with the session allow-listed in Redis.
@@ -23,6 +29,11 @@ memory plus an httpOnly refresh cookie, with the session allow-listed in Redis.
 message containing it; the server verifies the signature, burns the nonce, and mints a session.
 The signature stays cryptographically valid forever, so single-use nonces are the only thing
 standing between a captured message and a replay — the test suite asserts exactly that.
+
+**Transactions, not just reads.** Claiming a pass and sending a tip both run the full lifecycle:
+the gas is estimated *before* the wallet opens (so the user can still walk away), then signing,
+then broadcast with the hash on screen, then confirmation — with a rejected prompt, an
+out-of-gas, and a revert each explained in a sentence rather than as `execution reverted`.
 
 **Your collection.** The API reads `balanceOf` → `tokenOfOwnerByIndex` → `tokenURI` from the
 contract, resolves `ipfs://` metadata onto a gateway, and caches the whole collection per owner
@@ -42,8 +53,12 @@ git clone git@github.com:developer-kirill-nefodov/ethers-web3.git
 cd ethers-web3
 
 make init                 # writes the .env files, generates JWT secrets
-# set NFT_CONTRACT_ADDRESS in app/backend/.env to any ERC-721 on Sepolia
 make build-img up migrate seed
+
+# Then deploy the contracts (needs a throwaway key with Sepolia ETH):
+#   1. put DEPLOYER_PRIVATE_KEY in app/contracts/.env
+#   2. fund it from a faucet — sepolia-faucet.pk910.de
+make deploy-contracts     # prints the addresses to paste into the .env files
 
 open http://localhost:3000
 ```
@@ -67,8 +82,13 @@ make down
 ## How it fits together
 
 ```
+app/contracts
+  contracts/         EthersWeb3Pass (on-chain generative art) · TipJar
+  test/              23 Hardhat tests — mint rules, SVG validity, tip accounting
+  scripts/           deploy · preview (renders a sheet of passes to look at)
+
 app/backend
-  src/web3/          SIWE verification, ERC-721 reads, the RPC provider
+  src/web3/          SIWE verification, ERC-721 reads, tip indexer, the RPC provider
   src/helpers/token/ JWT + the Redis session allow-list
   src/controllers/   thin: read the body, call a service, answer
   src/middlewares/   guards · rate limits · Joi validation · error handler
@@ -103,7 +123,7 @@ process with a readable error, rather than surfacing as a `NaN` token lifetime a
 ## Tests
 
 ```shell
-make test     # 51 tests
+make test     # backend · frontend · contracts
 ```
 
 The suite covers what would actually hurt if it broke: that a logged-out token is refused, that
