@@ -48,5 +48,38 @@
   },
   "footer": {
     "network": "Running on {{chain}}"
+  },
+  "pass": {
+    "title": "Claim your pass",
+    "subtitle": "A free, one-per-wallet NFT. The artwork is generated inside the contract from your address — no IPFS, nothing to go missing.",
+    "claim": "Claim pass"
+  },
+  "tx": {
+    "claiming": "Minting your pass",
+    "tipping": "Sending your tip",
+    "gas": "Estimated gas: {{amount}} ETH",
+    "viewOnExplorer": "View on Etherscan →",
+    "dismiss": "Dismiss",
+    "stage": {
+      "estimating": "Pricing the transaction",
+      "signing": "Waiting for your wallet",
+      "pending": "Broadcast — waiting for the chain",
+      "confirmed": "Confirmed on chain"
+    }
+  },
+  "tip": {
+    "nav": "Tip",
+    "title": "Buy me a coffee, on chain",
+    "subtitle": "Tips run through a contract on {{chain}}, so every one of them is public and every message is stored in the event log. Testnet ETH — no real money changes hands.",
+    "amount": "Amount (ETH)",
+    "message": "Message",
+    "messagePlaceholder": "Say something nice (optional)",
+    "messageHint": "{{left}} characters left",
+    "send": "Send {{amount}} ETH",
+    "connectFirst": "Connect a wallet to send a tip.",
+    "jar": "Tip jar:",
+    "raised": "{{amount}} ETH from {{count}} tips",
+    "recent": "Recent tips",
+    "empty": "No tips yet. Be the first."
   }
 }
