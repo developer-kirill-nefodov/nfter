@@ -4,3 +4,6 @@ cache/
 typechain-types/
 preview.html
 .env
+
+# Deployment records are public facts, and the indexer needs the block number.
+!deployments/
