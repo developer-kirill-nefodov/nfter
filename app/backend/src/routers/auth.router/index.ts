@@ -8,7 +8,7 @@ import {
   registerController,
   resetPasswordController,
   walletLinkController,
-  walletLoginController,
+  walletUnlinkController,
 } from '../../controllers/auth';
 import {authed, isAuthorized, isRefreshToken} from '../../middlewares/guard';
 import {authLimiter, forgotPasswordLimiter} from '../../middlewares/rate-limit';
@@ -66,25 +66,26 @@ const AuthRouters: IAnyRouter = {
       middleware: [authLimiter, validate(resetPasswordValidator)],
       handler: resetPasswordController,
     },
-    // Sign-In with Ethereum: fetch a nonce, sign it in the wallet, hand the
-    // signature back. No password ever crosses the wire.
+    // Sign-In with Ethereum, used to prove ownership of an address — never to
+    // create a session. Both routes demand an authenticated caller: a wallet is
+    // something an account has, not a way to become one.
     {
       method: 'get',
       path: 'nonce',
-      middleware: [authLimiter],
+      middleware: [authLimiter, isAuthorized],
       handler: nonceController,
-    },
-    {
-      method: 'post',
-      path: 'wallet-login',
-      middleware: [authLimiter, validate(siweValidator)],
-      handler: walletLoginController,
     },
     {
       method: 'post',
       path: 'wallet-link',
       middleware: [isAuthorized, validate(siweValidator)],
       handler: authed(walletLinkController),
+    },
+    {
+      method: 'post',
+      path: 'wallet-unlink',
+      middleware: [isAuthorized],
+      handler: authed(walletUnlinkController),
     },
   ],
 };

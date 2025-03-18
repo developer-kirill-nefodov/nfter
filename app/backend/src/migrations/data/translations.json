@@ -24,7 +24,9 @@
       "signing": "Check your wallet…",
       "install": "Install MetaMask",
       "recheck": "Check again",
-      "notDetected": "Still no wallet detected. Reload the page after installing MetaMask."
+      "notDetected": "Still no wallet detected. Reload the page after installing MetaMask.",
+      "disconnect": "Disconnect",
+      "signInFirst": "Sign in to connect a wallet"
     },
     "home": {
       "title": "Your Ethereum wallet, in one place",
@@ -32,7 +34,8 @@
       "wallet": "Wallet",
       "network": "Network",
       "balance": "Balance",
-      "tokens": "Tokens"
+      "tokens": "Tokens",
+      "signInPrompt": "Sign in first — a wallet belongs to an account, and links to it in one click."
     },
     "nft": {
       "title": "Your collection",
@@ -81,7 +84,8 @@
       "jar": "Tip jar:",
       "raised": "{{amount}} ETH from {{count}} tips",
       "recent": "Recent tips",
-      "empty": "No tips yet. Be the first."
+      "empty": "No tips yet. Be the first.",
+      "signInFirst": "Sign in and connect a wallet to send a tip."
     }
   },
   "DE": {
@@ -109,7 +113,9 @@
       "signing": "Prüfe deine Wallet…",
       "install": "MetaMask installieren",
       "recheck": "Erneut prüfen",
-      "notDetected": "Weiterhin keine Wallet gefunden. Lade die Seite nach der Installation neu."
+      "notDetected": "Weiterhin keine Wallet gefunden. Lade die Seite nach der Installation neu.",
+      "disconnect": "Trennen",
+      "signInFirst": "Anmelden, um eine Wallet zu verbinden"
     },
     "home": {
       "title": "Deine Ethereum-Wallet an einem Ort",
@@ -117,7 +123,8 @@
       "wallet": "Wallet",
       "network": "Netzwerk",
       "balance": "Guthaben",
-      "tokens": "Token"
+      "tokens": "Token",
+      "signInPrompt": "Melde dich zuerst an — eine Wallet gehört zu einem Konto und wird mit einem Klick verknüpft."
     },
     "nft": {
       "title": "Deine Sammlung",
@@ -166,7 +173,8 @@
       "jar": "Trinkgeldglas:",
       "raised": "{{amount}} ETH aus {{count}} Trinkgeldern",
       "recent": "Letzte Trinkgelder",
-      "empty": "Noch keine Trinkgelder. Sei die/der Erste."
+      "empty": "Noch keine Trinkgelder. Sei die/der Erste.",
+      "signInFirst": "Melde dich an und verbinde eine Wallet, um Trinkgeld zu senden."
     }
   },
   "CN": {
@@ -194,7 +202,9 @@
       "signing": "请查看你的钱包…",
       "install": "安装 MetaMask",
       "recheck": "重新检测",
-      "notDetected": "仍未检测到钱包。安装 MetaMask 后请刷新页面。"
+      "notDetected": "仍未检测到钱包。安装 MetaMask 后请刷新页面。",
+      "disconnect": "断开连接",
+      "signInFirst": "登录后才能连接钱包"
     },
     "home": {
       "title": "你的以太坊钱包，一站式管理",
@@ -202,7 +212,8 @@
       "wallet": "钱包",
       "network": "网络",
       "balance": "余额",
-      "tokens": "代币"
+      "tokens": "代币",
+      "signInPrompt": "请先登录——钱包属于账户，登录后一键即可绑定。"
     },
     "nft": {
       "title": "你的收藏",
@@ -251,7 +262,8 @@
       "jar": "打赏罐：",
       "raised": "共 {{amount}} ETH，来自 {{count}} 次打赏",
       "recent": "最近的打赏",
-      "empty": "还没有打赏，来做第一个吧。"
+      "empty": "还没有打赏，来做第一个吧。",
+      "signInFirst": "请先登录并连接钱包，然后再打赏。"
     }
   },
   "UA": {
@@ -279,7 +291,9 @@
       "signing": "Перевірте свій гаманець…",
       "install": "Встановити MetaMask",
       "recheck": "Перевірити ще раз",
-      "notDetected": "Гаманець досі не знайдено. Перезавантажте сторінку після встановлення MetaMask."
+      "notDetected": "Гаманець досі не знайдено. Перезавантажте сторінку після встановлення MetaMask.",
+      "disconnect": "Відʼєднати",
+      "signInFirst": "Увійдіть, щоб підключити гаманець"
     },
     "home": {
       "title": "Ваш Ethereum-гаманець в одному місці",
@@ -287,7 +301,8 @@
       "wallet": "Гаманець",
       "network": "Мережа",
       "balance": "Баланс",
-      "tokens": "Токени"
+      "tokens": "Токени",
+      "signInPrompt": "Спершу увійдіть — гаманець належить акаунту й привʼязується одним кліком."
     },
     "nft": {
       "title": "Ваша колекція",
@@ -336,7 +351,8 @@
       "jar": "Скарбничка:",
       "raised": "{{amount}} ETH від {{count}} донатів",
       "recent": "Останні донати",
-      "empty": "Донатів ще немає. Будьте першим."
+      "empty": "Донатів ще немає. Будьте першим.",
+      "signInFirst": "Увійдіть і підключіть гаманець, щоб надіслати донат."
     }
   }
 }

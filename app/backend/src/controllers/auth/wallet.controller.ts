@@ -12,27 +12,14 @@ export const nonceController = async (_req: Request, res: Response) => {
 };
 
 /**
- * Sign-In with Ethereum (EIP-4361). The wallet proves ownership of an address by
- * signing a one-time message; from there the user gets exactly the same JWT
- * session as a password login, so every downstream route stays auth-agnostic.
+ * Links a wallet to the account that is already signed in.
+ *
+ * Sign-In with Ethereum (EIP-4361) is used to prove ownership: the wallet signs
+ * a one-time nonce, and the server checks the signature. It proves the address,
+ * not the person — which is exactly why it cannot create a session on its own
+ * here. An account is an email and a password; a wallet is something an account
+ * *has*.
  */
-export const walletLoginController = async (req: Request, res: Response) => {
-  const {message, signature} = readBody<{message: string; signature: string}>(req);
-
-  const address = await verifySiweMessage(message, signature);
-
-  const [user] = await UserModel.findOrCreate({
-    where: {wallet_address: address},
-    defaults: {
-      wallet_address: address,
-      role: {name: 'USER', permissions: {}},
-    },
-  });
-
-  await issueSession(res, user, 'Wallet connected.');
-};
-
-/** Attaches a wallet to an account that already signed in with a password. */
 export const walletLinkController = async (req: IRequestAuth, res: Response) => {
   const {message, signature} = readBody<{message: string; signature: string}>(req);
 
@@ -52,5 +39,23 @@ export const walletLinkController = async (req: IRequestAuth, res: Response) => 
 
   await user.update({wallet_address: address});
 
+  // Re-issue the session: the old access token still says walletAddress: null.
   await issueSession(res, user, 'Wallet linked to your account.');
+};
+
+/** Unlinks the wallet, freeing it to be linked to a different account. */
+export const walletUnlinkController = async (req: IRequestAuth, res: Response) => {
+  const user = await UserModel.findByPk(req.session.id);
+
+  if (!user) {
+    throw AppError.unauthorized('Account no longer exists');
+  }
+
+  if (!user.wallet_address) {
+    throw AppError.badRequest('No wallet is linked to this account');
+  }
+
+  await user.update({wallet_address: null});
+
+  await issueSession(res, user, 'Wallet disconnected.');
 };

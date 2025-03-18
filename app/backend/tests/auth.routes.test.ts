@@ -168,11 +168,56 @@ describe('auth routes', () => {
     expect(emailJobs).toHaveLength(1);
   });
 
-  it('serves a nonce for wallet sign-in', async () => {
-    const res = await request(app).get('/api/auth/nonce');
+  it('refuses a wallet nonce to a caller who is not signed in', async () => {
+    // A wallet is something an account has, not a way to become one — so every
+    // wallet route, the nonce included, demands a session first.
+    await request(app).get('/api/auth/nonce').expect(403);
+    await request(app).post('/api/auth/wallet-link').send({}).expect(403);
+    await request(app).post('/api/auth/wallet-unlink').expect(403);
+  });
+
+  it('serves a nonce to a signed-in caller', async () => {
+    const {body} = await request(app)
+      .post('/api/auth/login')
+      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+
+    const res = await request(app)
+      .get('/api/auth/nonce')
+      .set('Authorization', `Bearer ${body.token}`);
 
     expect(res.status).toBe(200);
     expect(res.body.nonce).toEqual(expect.any(String));
+  });
+
+  it('unlinks a wallet and hands back a session that no longer claims one', async () => {
+    users[0]!.wallet_address = '0xc78383353cd8f5315d3e147bb607a3bdc844ef22';
+
+    const login = await request(app)
+      .post('/api/auth/login')
+      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+
+    expect(login.body.user.walletAddress).toBe('0xc78383353cd8f5315d3e147bb607a3bdc844ef22');
+
+    const res = await request(app)
+      .post('/api/auth/wallet-unlink')
+      .set('Authorization', `Bearer ${login.body.token}`);
+
+    expect(res.status).toBe(200);
+    // The old access token still says the wallet is attached, so the route has
+    // to mint a new session rather than just updating the row.
+    expect(res.body.user.walletAddress).toBeNull();
+    expect(users[0]!.wallet_address).toBeNull();
+  });
+
+  it('refuses to unlink when there is nothing linked', async () => {
+    const {body} = await request(app)
+      .post('/api/auth/login')
+      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+
+    await request(app)
+      .post('/api/auth/wallet-unlink')
+      .set('Authorization', `Bearer ${body.token}`)
+      .expect(400);
   });
 
   it('404s an unknown route as JSON instead of an HTML stack trace', async () => {
