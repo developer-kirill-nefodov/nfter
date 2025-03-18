@@ -10,6 +10,7 @@ import {
   CHAIN_ID,
   CHAIN_NAME,
   connectWallet,
+  revokeWalletAccess,
   signMessage,
   switchChain,
   WalletBusyError,
@@ -22,7 +23,7 @@ import {
   walletAccountChanged,
   walletChainChanged,
   walletLinkRequest,
-  walletLoginRequest,
+  walletUnlinkRequest,
 } from '../actions';
 import {clearNfts} from '../reducers/nft-slice';
 import {setUser} from '../reducers/user-slice';
@@ -92,10 +93,10 @@ const failed = function* (error: unknown) {
   toast(message, 'error');
 };
 
-function* walletLoginSaga() {
+function* walletLinkSaga() {
   try {
     const signed: ISignedSiwe = yield call(signIn);
-    const user: IUser = yield call(authApi.walletLogin, signed);
+    const user: IUser = yield call(authApi.walletLink, signed);
 
     yield put(setUser(user));
     yield put(setWalletStatus('connected'));
@@ -107,18 +108,21 @@ function* walletLoginSaga() {
   }
 }
 
-function* walletLinkSaga() {
+function* walletUnlinkSaga() {
   try {
-    const signed: ISignedSiwe = yield call(signIn);
-    const user: IUser = yield call(authApi.walletLink, signed);
+    const user: IUser = yield call(authApi.walletUnlink);
 
     yield put(setUser(user));
-    yield put(setWalletStatus('connected'));
-    yield put(fetchNftsRequest());
+    yield put(disconnectWallet());
+    yield put(clearNfts());
 
-    toast('Wallet linked to your account.', 'success');
+    // Detaching it from the account is only half the job — the wallet itself has
+    // to forget the site, or it hands the address straight back on reconnect.
+    yield call(revokeWalletAccess);
+
+    toast('Wallet disconnected.', 'success');
   } catch (error) {
-    yield* failed(error);
+    toast(errorMessage(error, 'Could not disconnect the wallet'), 'error');
   }
 }
 
@@ -178,8 +182,8 @@ function* chainChangedSaga({payload}: ReturnType<typeof walletChainChanged>) {
 }
 
 export function* walletSaga() {
-  yield takeLatest(walletLoginRequest.type, walletLoginSaga);
   yield takeLatest(walletLinkRequest.type, walletLinkSaga);
+  yield takeLatest(walletUnlinkRequest.type, walletUnlinkSaga);
   yield takeLatest(walletAccountChanged.type, accountChangedSaga);
   yield takeLatest(walletChainChanged.type, chainChangedSaga);
 }

@@ -4,6 +4,7 @@ import {authApi, type IForgotResult} from '../../api/auth';
 import {errorMessage, setAccessToken} from '../../api/client';
 import {toast} from '../../components/Toastify';
 import type {IUser} from '../../types/user';
+import {revokeWalletAccess} from '../../web3/wallet';
 import {
   bootstrapSession,
   forgotPasswordRequest,
@@ -64,11 +65,15 @@ function* logoutSaga() {
   } catch (error) {
     toast(errorMessage(error, 'Could not sign you out'), 'error');
   } finally {
-    // Whatever the server said, this browser is done with the session.
+    // Whatever the server said, this browser is done with the session — and so
+    // is the wallet. Leaving the site connected inside MetaMask after a sign-out
+    // is exactly the kind of thing that looks fine until someone else sits down
+    // at the machine.
     setAccessToken(null);
     yield put(setVisitor());
     yield put(disconnectWallet());
     yield put(clearNfts());
+    yield call(revokeWalletAccess);
   }
 }
 

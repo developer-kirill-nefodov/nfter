@@ -150,6 +150,29 @@ export const signMessage = async (signer: JsonRpcSigner, message: string): Promi
   }
 };
 
+/**
+ * Asks the wallet to forget that this site was ever allowed to see the account.
+ *
+ * Without it, "disconnect" is a lie the app tells itself: the address is gone
+ * from our database, but MetaMask still lists the site under connected accounts
+ * and hands it back silently on the next `eth_requestAccounts`. Not every wallet
+ * implements the method, and there is nothing to do about the ones that do not —
+ * so a failure here is logged into the void rather than shown to the user.
+ */
+export const revokeWalletAccess = async (): Promise<void> => {
+  if (!window.ethereum) {
+    return;
+  }
+
+  try {
+    const provider = await getProvider();
+
+    await provider.send('wallet_revokePermissions', [{eth_accounts: {}}]);
+  } catch {
+    // Older MetaMask, or a wallet that has no such method. Nothing to recover.
+  }
+};
+
 export const formatAddress = (address: string): string =>
   `${address.slice(0, 6)}…${address.slice(-4)}`;
 

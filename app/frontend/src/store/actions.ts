@@ -16,10 +16,10 @@ export const resetPasswordRequest = createAction<{token: string; password: strin
   'auth/resetPassword',
 );
 
-/** Connect the wallet and sign in with it (SIWE). */
-export const walletLoginRequest = createAction('wallet/login');
-/** Connect the wallet and attach it to the account already signed in. */
+/** Connect a wallet and attach it to the signed-in account (proved with SIWE). */
 export const walletLinkRequest = createAction('wallet/link');
+/** Detach it again, and drop the site's permission inside the wallet itself. */
+export const walletUnlinkRequest = createAction('wallet/unlink');
 export const walletAccountChanged = createAction<string | null>('wallet/accountChanged');
 export const walletChainChanged = createAction<number>('wallet/chainChanged');
 

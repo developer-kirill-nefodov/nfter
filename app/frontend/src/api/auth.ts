@@ -54,13 +54,13 @@ export const authApi = {
     return data.nonce;
   },
 
-  walletLogin: async (payload: {message: string; signature: string}): Promise<IUser> => {
-    const {data} = await api.post<ISessionResponse>('/auth/wallet-login', payload);
+  walletLink: async (payload: {message: string; signature: string}): Promise<IUser> => {
+    const {data} = await api.post<ISessionResponse>('/auth/wallet-link', payload);
     return startSession(data);
   },
 
-  walletLink: async (payload: {message: string; signature: string}): Promise<IUser> => {
-    const {data} = await api.post<ISessionResponse>('/auth/wallet-link', payload);
+  walletUnlink: async (): Promise<IUser> => {
+    const {data} = await api.post<ISessionResponse>('/auth/wallet-unlink');
     return startSession(data);
   },
 };
