@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import Button from '../../components/Button';
 import BaseForm from '../../components/Forms';
 import InputText from '../../components/Forms/InputText';
-import ConnectButton from '../../components/Wallet/ConnectButton';
 import {loginRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {NavLink, Stack} from '../../styles';
@@ -40,8 +39,6 @@ const LoginPage = () => {
 
         <Stack $gap="16px">
           <Divider>{t('auth.or')}</Divider>
-          {/* SIWE: no password ever leaves the browser. */}
-          <ConnectButton />
           <NavLink to={NavigateUrls.auth.register}>{t('auth.noAccount')}</NavLink>
         </Stack>
       </BaseForm>

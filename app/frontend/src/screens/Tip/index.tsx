@@ -104,7 +104,9 @@ const TipPage = () => {
             </Row>
           ) : (
             <Row $justify="space-between" $wrap>
-              <Subtitle>{t('tip.connectFirst')}</Subtitle>
+              <Subtitle>
+                {t(user.role.name === 'VISITOR' ? 'tip.signInFirst' : 'tip.connectFirst')}
+              </Subtitle>
               <ConnectButton />
             </Row>
           )}

@@ -27,11 +27,13 @@ const HomePage = () => {
   }, [dispatch, wallet]);
 
   if (!wallet) {
+    const isVisitor = user.role.name === 'VISITOR';
+
     return (
       <Card>
         <Stack $gap="16px" $align="flex-start">
           <Title>{t('home.title')}</Title>
-          <Subtitle>{t('home.connectPrompt')}</Subtitle>
+          <Subtitle>{t(isVisitor ? 'home.signInPrompt' : 'home.connectPrompt')}</Subtitle>
           <ConnectButton />
         </Stack>
       </Card>

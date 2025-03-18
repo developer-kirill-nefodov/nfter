@@ -1,9 +1,10 @@
 import {useTranslation} from 'react-i18next';
 
 import {useHasWallet} from '../../hooks/useHasWallet';
-import {walletLinkRequest, walletLoginRequest} from '../../store/actions';
+import {walletLinkRequest, walletUnlinkRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
-import {Row} from '../../styles';
+import {NavLink, Row} from '../../styles';
+import {NavigateUrls} from '../../utils/navigate-urls';
 import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
 import Button from '../Button';
 import {toast} from '../Toastify';
@@ -11,10 +12,9 @@ import {toast} from '../Toastify';
 import {AddressPill} from './styles';
 
 /**
- * One button, three jobs, decided by who is asking:
- *  - a visitor signs in with the wallet (SIWE creates the session);
- *  - a signed-in user without a wallet links one to their account;
- *  - a user who already has one just sees the address.
+ * A wallet is something an account *has*, not a way to become one — so a visitor
+ * is sent to sign in first, and every wallet route on the server demands an
+ * authenticated caller regardless of what this component decides to render.
  */
 const ConnectButton = () => {
   const {t} = useTranslation();
@@ -23,6 +23,10 @@ const ConnectButton = () => {
 
   const user = useStoreSelector((state) => state.user.user);
   const {status} = useStoreSelector((state) => state.wallet);
+
+  if (user.role.name === 'VISITOR') {
+    return <NavLink to={NavigateUrls.auth.login}>{t('wallet.signInFirst')}</NavLink>;
+  }
 
   if (!installed) {
     return (
@@ -49,24 +53,24 @@ const ConnectButton = () => {
     );
   }
 
+  const busy = status === 'connecting' || status === 'signing';
+
   if (user.walletAddress) {
     return (
-      <AddressPill title={`${user.walletAddress} · ${CHAIN_NAME}`}>
-        {formatAddress(user.walletAddress)}
-      </AddressPill>
+      <Row $gap="8px">
+        <AddressPill title={`${user.walletAddress} · ${CHAIN_NAME}`}>
+          {formatAddress(user.walletAddress)}
+        </AddressPill>
+        <Button variant="danger" onClick={() => dispatch(walletUnlinkRequest())}>
+          {t('wallet.disconnect')}
+        </Button>
+      </Row>
     );
   }
 
-  const isVisitor = user.role.name === 'VISITOR';
-  const busy = status === 'connecting' || status === 'signing';
-
   return (
-    <Button
-      loading={busy}
-      disabled={busy}
-      onClick={() => dispatch(isVisitor ? walletLoginRequest() : walletLinkRequest())}
-    >
-      {status === 'signing' ? t('wallet.signing') : t(isVisitor ? 'wallet.connect' : 'wallet.link')}
+    <Button loading={busy} disabled={busy} onClick={() => dispatch(walletLinkRequest())}>
+      {status === 'signing' ? t('wallet.signing') : t('wallet.connect')}
     </Button>
   );
 };
