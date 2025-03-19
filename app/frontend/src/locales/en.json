@@ -23,7 +23,9 @@
     "signing": "Check your wallet…",
     "install": "Install MetaMask",
     "recheck": "Check again",
-    "notDetected": "Still no wallet detected. Reload the page after installing MetaMask."
+    "notDetected": "Still no wallet detected. Reload the page after installing MetaMask.",
+    "disconnect": "Disconnect",
+    "signInFirst": "Sign in to connect a wallet"
   },
   "home": {
     "title": "Your Ethereum wallet, in one place",
@@ -31,7 +33,8 @@
     "wallet": "Wallet",
     "network": "Network",
     "balance": "Balance",
-    "tokens": "Tokens"
+    "tokens": "Tokens",
+    "signInPrompt": "Sign in first — a wallet belongs to an account, and links to it in one click."
   },
   "nft": {
     "title": "Your collection",
@@ -80,6 +83,7 @@
     "jar": "Tip jar:",
     "raised": "{{amount}} ETH from {{count}} tips",
     "recent": "Recent tips",
-    "empty": "No tips yet. Be the first."
+    "empty": "No tips yet. Be the first.",
+    "signInFirst": "Sign in and connect a wallet to send a tip."
   }
 }

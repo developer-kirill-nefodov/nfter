@@ -21,14 +21,19 @@ returned from `tokenURI` as a `data:` URI. No IPFS, no metadata server, nothing 
 `TipJar` takes tips with a note attached and emits an event for each, which is what makes the
 tip feed a `queryFilter` away instead of an indexer subscription.
 
-**Two ways in, one session.** A user can sign in with an email and password, or by signing
-a message with their wallet. Both paths end at the same place: a short-lived access token in
-memory plus an httpOnly refresh cookie, with the session allow-listed in Redis.
+**An account, and the wallet it owns.** Sessions come from email and password: a short-lived
+access token in memory plus an httpOnly refresh cookie, allow-listed in Redis. A wallet is
+something an account *has* — it is linked to a signed-in user, never a way to become one. Every
+wallet route on the server, the nonce included, refuses an anonymous caller.
 
-**Sign-In with Ethereum.** The server issues a single-use nonce; the wallet signs an EIP-4361
-message containing it; the server verifies the signature, burns the nonce, and mints a session.
-The signature stays cryptographically valid forever, so single-use nonces are the only thing
-standing between a captured message and a replay — the test suite asserts exactly that.
+**Sign-In with Ethereum.** Linking proves ownership of the address with EIP-4361: the server
+issues a single-use nonce, the wallet signs it, the server verifies the signature and burns the
+nonce. The signature stays cryptographically valid forever, so single-use nonces are the only
+thing standing between a captured message and a replay — the test suite asserts exactly that.
+
+Disconnecting works in both directions: the address is dropped from the account *and* the site's
+permission is revoked inside the wallet, so MetaMask stops handing the address back. Signing out
+does the same automatically.
 
 **Transactions, not just reads.** Claiming a pass and sending a tip both run the full lifecycle:
 the gas is estimated *before* the wallet opens (so the user can still walk away), then signing,
