@@ -1,0 +1,17 @@
+import {getStatsController} from '../../controllers/stats';
+import {apiLimiter} from '../../middlewares/rate-limit';
+import type {IAnyRouter} from '../index';
+
+const StatsRouter: IAnyRouter = {
+  prefix: 'stats',
+  routeData: [
+    {
+      method: 'get',
+      path: 'public',
+      middleware: [apiLimiter],
+      handler: getStatsController,
+    },
+  ],
+};
+
+export default StatsRouter;

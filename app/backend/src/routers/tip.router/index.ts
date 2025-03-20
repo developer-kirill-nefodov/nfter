@@ -1,4 +1,4 @@
-import {getTipsController} from '../../controllers/tip';
+import {getLeaderboardController, getTipsController} from '../../controllers/tip';
 import {apiLimiter} from '../../middlewares/rate-limit';
 import type {IAnyRouter} from '../index';
 
@@ -10,6 +10,12 @@ const TipRouter: IAnyRouter = {
       path: 'feed',
       middleware: [apiLimiter],
       handler: getTipsController,
+    },
+    {
+      method: 'get',
+      path: 'leaderboard',
+      middleware: [apiLimiter],
+      handler: getLeaderboardController,
     },
   ],
 };

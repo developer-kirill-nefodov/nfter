@@ -4,6 +4,7 @@ import {env} from '../config';
 import {redis} from '../db';
 import {logger} from '../lib/logger';
 
+import {readEvents} from './indexer.service';
 import {provider} from './provider';
 
 export const TIP_JAR_ABI = [
@@ -37,55 +38,60 @@ export interface ITipFeed {
   deployed: boolean;
 }
 
+export interface ILeaderboardEntry {
+  rank: number;
+  address: string;
+  totalWei: string;
+  totalEth: string;
+  tips: number;
+  lastMessage: string;
+}
+
 interface ITipJar {
   owner(): Promise<string>;
   totalTips(): Promise<bigint>;
   tipCount(): Promise<bigint>;
-  filters: {Tipped: () => unknown};
-  queryFilter(filter: unknown, from: number, to: number | string): Promise<ITippedLog[]>;
-}
-
-interface ITippedLog {
-  args: {from: string; amount: bigint; message: string; timestamp: bigint};
-  transactionHash: string;
-  blockNumber: number;
 }
 
 const contract = new Contract(env.web3.tipJar, TIP_JAR_ABI, provider) as unknown as ITipJar;
 
 const CACHE_KEY = `tips:${env.web3.chainId}:${env.web3.tipJar.toLowerCase()}`;
-const CACHE_TTL_SEC = 120;
+const CACHE_TTL_SEC = 30;
 const FEED_SIZE = 20;
 
 /**
- * Reads the feed straight from the contract's event log.
+ * Tips come out of the local index, not out of an RPC call.
  *
- * This is the payoff for routing tips through a contract rather than sending ETH
- * wallet-to-wallet: the history is a `queryFilter` away. No block-explorer API
- * key, no third-party indexer, nothing to go down but the RPC node itself.
+ * A public node will not serve historical logs — it caps `eth_getLogs` at a few
+ * dozen blocks and wants money for anything older. The indexer follows the head
+ * in windows it *is* allowed to read and keeps the history here, so the feed
+ * costs a SELECT and works no matter how far back the first tip was.
  */
+const allTips = async (): Promise<ITip[]> => {
+  const events = await readEvents(env.web3.tipJar, 'Tipped');
+
+  return events.map(({args, txHash, blockNumber}) => {
+    const amount = args.amount ?? '0';
+
+    return {
+      from: getAddress(args.from ?? '0x0000000000000000000000000000000000000000'),
+      amount,
+      amountEth: formatEther(amount),
+      message: args.message ?? '',
+      timestamp: Number(args.timestamp ?? 0),
+      txHash,
+      blockNumber,
+    };
+  });
+};
+
 const readFeed = async (): Promise<ITipFeed> => {
-  const [owner, totalTips, tipCount, head] = await Promise.all([
+  const [owner, totalTips, tipCount, tips] = await Promise.all([
     contract.owner(),
     contract.totalTips(),
     contract.tipCount(),
-    provider.getBlockNumber(),
+    allTips(),
   ]);
-
-  const logs = await contract.queryFilter(contract.filters.Tipped(), env.web3.fromBlock, head);
-
-  const tips = logs
-    .slice(-FEED_SIZE)
-    .reverse()
-    .map((log) => ({
-      from: getAddress(log.args.from),
-      amount: log.args.amount.toString(),
-      amountEth: formatEther(log.args.amount),
-      message: log.args.message,
-      timestamp: Number(log.args.timestamp),
-      txHash: log.transactionHash,
-      blockNumber: log.blockNumber,
-    }));
 
   return {
     contract: env.web3.tipJar,
@@ -94,7 +100,7 @@ const readFeed = async (): Promise<ITipFeed> => {
     totalTips: totalTips.toString(),
     totalTipsEth: formatEther(totalTips),
     tipCount: Number(tipCount),
-    tips,
+    tips: tips.slice(-FEED_SIZE).reverse(),
     deployed: true,
   };
 };
@@ -110,12 +116,6 @@ const emptyFeed = (): ITipFeed => ({
   deployed: false,
 });
 
-/**
- * The feed is cached because a log query is the single most expensive thing this
- * API asks of an RPC node, and the page it feeds re-renders constantly. A stale
- * tip list for two minutes costs nobody anything; a rate-limited RPC node costs
- * everybody the whole feature.
- */
 export const getTipFeed = async ({refresh = false} = {}): Promise<ITipFeed> => {
   if (!refresh) {
     const cached = await redis.get(CACHE_KEY);
@@ -141,11 +141,45 @@ export const getTipFeed = async ({refresh = false} = {}): Promise<ITipFeed> => {
   return feed;
 };
 
-/** Called by the indexer worker after a tip lands, so the next reader sees it. */
 export const refreshTipFeed = async (): Promise<ITipFeed> => {
   const feed = await getTipFeed({refresh: true});
 
   logger.debug({tips: feed.tipCount}, 'tip feed refreshed');
 
   return feed;
+};
+
+/**
+ * The leaderboard is folded out of the same events the feed reads — no extra
+ * storage, and anyone can recompute it from the chain and arrive at the same
+ * answer. That verifiability is the whole argument for routing tips through a
+ * contract instead of sending ETH wallet-to-wallet.
+ */
+export const getLeaderboard = async (limit = 10): Promise<ILeaderboardEntry[]> => {
+  const tips = await allTips();
+
+  const totals = new Map<string, {wei: bigint; tips: number; lastMessage: string}>();
+
+  for (const tip of tips) {
+    const key = tip.from.toLowerCase();
+    const current = totals.get(key) ?? {wei: 0n, tips: 0, lastMessage: ''};
+
+    totals.set(key, {
+      wei: current.wei + BigInt(tip.amount),
+      tips: current.tips + 1,
+      lastMessage: tip.message || current.lastMessage,
+    });
+  }
+
+  return [...totals.entries()]
+    .sort(([, a], [, b]) => (b.wei > a.wei ? 1 : b.wei < a.wei ? -1 : 0))
+    .slice(0, limit)
+    .map(([address, entry], index) => ({
+      rank: index + 1,
+      address: getAddress(address),
+      totalWei: entry.wei.toString(),
+      totalEth: formatEther(entry.wei),
+      tips: entry.tips,
+      lastMessage: entry.lastMessage,
+    }));
 };
