@@ -85,7 +85,52 @@
       "raised": "{{amount}} ETH from {{count}} tips",
       "recent": "Recent tips",
       "empty": "No tips yet. Be the first.",
-      "signInFirst": "Sign in and connect a wallet to send a tip."
+      "signInFirst": "Sign in and connect a wallet to send a tip.",
+      "leaderboard": "Top supporters",
+      "leaderboardEmpty": "No supporters yet — the first name on the board could be yours.",
+      "you": "(you)",
+      "tipsCount": "{{count}} tip",
+      "tipsCount_other": "{{count}} tips"
+    },
+    "landing": {
+      "badge": "Live on {{chain}}",
+      "title": "Your wallet, your art, your name on the board.",
+      "subtitle": "A full-stack Ethereum app: sign in, claim a generative NFT whose artwork lives inside the contract, and tip on chain. Everything below is read straight from Sepolia — no wallet needed to look.",
+      "getStarted": "Create an account",
+      "openDashboard": "Open dashboard",
+      "support": "Tip the project",
+      "stats": {
+        "minted": "Passes minted",
+        "holders": "Holders",
+        "raised": "Tips raised",
+        "tips": "Tips sent"
+      },
+      "showcase": "Freshly minted",
+      "showcaseHint": "Every image is generated inside the contract from the minter’s address. No IPFS, no server — the chain holds the art itself.",
+      "showcaseEmpty": "Nobody has claimed a pass yet. Be the first.",
+      "how": "How it is built",
+      "contracts": "Contracts",
+      "features": {
+        "art": {
+          "title": "Art that cannot rot",
+          "body": "tokenURI returns a data: URI built in Solidity — a symmetric identicon derived from keccak256 of your address. Nothing to pin, nothing to host, nothing to lose."
+        },
+        "siwe": {
+          "title": "Sign-In with Ethereum",
+          "body": "Linking a wallet is proved with EIP-4361: a single-use nonce, signed and burnt. A captured signature is worthless the second time it is used."
+        },
+        "tx": {
+          "title": "Transactions as a state machine",
+          "body": "Gas is estimated before the wallet ever opens, so you can still walk away. Then signing, broadcast with the hash, and confirmation — each stage visible."
+        },
+        "indexer": {
+          "title": "Its own chain indexer",
+          "body": "Public RPC nodes refuse historical logs. A BullMQ worker follows the head in windows they do allow and keeps the history in Postgres, so the feeds cost a SELECT."
+        }
+      }
+    },
+    "nav": {
+      "dashboard": "Dashboard"
     }
   },
   "DE": {
@@ -174,7 +219,52 @@
       "raised": "{{amount}} ETH aus {{count}} Trinkgeldern",
       "recent": "Letzte Trinkgelder",
       "empty": "Noch keine Trinkgelder. Sei die/der Erste.",
-      "signInFirst": "Melde dich an und verbinde eine Wallet, um Trinkgeld zu senden."
+      "signInFirst": "Melde dich an und verbinde eine Wallet, um Trinkgeld zu senden.",
+      "leaderboard": "Top-Unterstützer",
+      "leaderboardEmpty": "Noch keine Unterstützer — der erste Name könnte deiner sein.",
+      "you": "(du)",
+      "tipsCount": "{{count}} Trinkgeld",
+      "tipsCount_other": "{{count}} Trinkgelder"
+    },
+    "landing": {
+      "badge": "Live auf {{chain}}",
+      "title": "Deine Wallet, deine Kunst, dein Name auf der Liste.",
+      "subtitle": "Eine Full-Stack-Ethereum-App: anmelden, ein generatives NFT holen, dessen Grafik im Contract lebt, und on-chain Trinkgeld geben. Alles unten wird direkt aus Sepolia gelesen — zum Anschauen braucht es keine Wallet.",
+      "getStarted": "Konto erstellen",
+      "openDashboard": "Zum Dashboard",
+      "support": "Projekt unterstützen",
+      "stats": {
+        "minted": "Geprägte Pässe",
+        "holders": "Besitzer",
+        "raised": "Gesammelt",
+        "tips": "Trinkgelder"
+      },
+      "showcase": "Frisch geprägt",
+      "showcaseHint": "Jedes Bild entsteht im Contract aus der Adresse des Prägers. Kein IPFS, kein Server — die Chain trägt die Kunst selbst.",
+      "showcaseEmpty": "Noch niemand hat einen Pass geholt. Sei die/der Erste.",
+      "how": "Wie es gebaut ist",
+      "contracts": "Contracts",
+      "features": {
+        "art": {
+          "title": "Kunst, die nicht verrottet",
+          "body": "tokenURI liefert eine data:-URI, in Solidity gebaut — ein symmetrisches Identicon aus keccak256 deiner Adresse. Nichts zu pinnen, nichts zu hosten, nichts zu verlieren."
+        },
+        "siwe": {
+          "title": "Sign-In with Ethereum",
+          "body": "Das Verknüpfen wird per EIP-4361 bewiesen: eine einmalige Nonce, signiert und verbrannt. Eine abgefangene Signatur ist beim zweiten Mal wertlos."
+        },
+        "tx": {
+          "title": "Transaktion als Zustandsmaschine",
+          "body": "Das Gas wird geschätzt, bevor die Wallet aufgeht — du kannst noch abbrechen. Dann signieren, senden mit Hash, bestätigen. Jede Stufe sichtbar."
+        },
+        "indexer": {
+          "title": "Eigener Chain-Indexer",
+          "body": "Öffentliche RPC-Knoten verweigern historische Logs. Ein BullMQ-Worker folgt dem Head in erlaubten Fenstern und hält die Historie in Postgres."
+        }
+      }
+    },
+    "nav": {
+      "dashboard": "Dashboard"
     }
   },
   "CN": {
@@ -263,7 +353,52 @@
       "raised": "共 {{amount}} ETH，来自 {{count}} 次打赏",
       "recent": "最近的打赏",
       "empty": "还没有打赏，来做第一个吧。",
-      "signInFirst": "请先登录并连接钱包，然后再打赏。"
+      "signInFirst": "请先登录并连接钱包，然后再打赏。",
+      "leaderboard": "打赏榜",
+      "leaderboardEmpty": "还没有支持者——榜首可以是你。",
+      "you": "（你）",
+      "tipsCount": "{{count}} 次打赏",
+      "tipsCount_other": "{{count}} 次打赏"
+    },
+    "landing": {
+      "badge": "已上线 {{chain}}",
+      "title": "你的钱包，你的作品，你的名字上榜。",
+      "subtitle": "一个全栈以太坊应用：登录、领取图案存在合约里的生成式 NFT、链上打赏。下面的数据全部直接读自 Sepolia——不连钱包也能看。",
+      "getStarted": "创建账户",
+      "openDashboard": "打开面板",
+      "support": "支持这个项目",
+      "stats": {
+        "minted": "已铸造",
+        "holders": "持有人",
+        "raised": "已筹集",
+        "tips": "打赏次数"
+      },
+      "showcase": "最新铸造",
+      "showcaseHint": "每张图都由合约根据铸造者地址生成。不用 IPFS，不用服务器——链本身就承载着这幅画。",
+      "showcaseEmpty": "还没有人领取通行证，来做第一个吧。",
+      "how": "它是如何构建的",
+      "contracts": "合约",
+      "features": {
+        "art": {
+          "title": "不会失效的作品",
+          "body": "tokenURI 返回在 Solidity 中构建的 data: URI——由你地址的 keccak256 生成的对称 identicon。无需固定、无需托管、不会丢失。"
+        },
+        "siwe": {
+          "title": "以太坊登录（SIWE）",
+          "body": "绑定钱包通过 EIP-4361 证明：一次性 nonce，签名后即销毁。被截获的签名，第二次使用时毫无价值。"
+        },
+        "tx": {
+          "title": "把交易当作状态机",
+          "body": "在钱包弹出之前就估算 Gas，你仍可以选择放弃。随后是签名、广播（附带哈希）、确认——每一步都看得见。"
+        },
+        "indexer": {
+          "title": "自建链上索引器",
+          "body": "公共 RPC 拒绝提供历史日志。BullMQ 工作进程按允许的窗口跟随链头，把历史存进 Postgres，于是查询只是一条 SELECT。"
+        }
+      }
+    },
+    "nav": {
+      "dashboard": "面板"
     }
   },
   "UA": {
@@ -352,7 +487,52 @@
       "raised": "{{amount}} ETH від {{count}} донатів",
       "recent": "Останні донати",
       "empty": "Донатів ще немає. Будьте першим.",
-      "signInFirst": "Увійдіть і підключіть гаманець, щоб надіслати донат."
+      "signInFirst": "Увійдіть і підключіть гаманець, щоб надіслати донат.",
+      "leaderboard": "Топ прихильників",
+      "leaderboardEmpty": "Прихильників ще немає — першим у рейтингу можете стати ви.",
+      "you": "(ви)",
+      "tipsCount": "{{count}} донат",
+      "tipsCount_other": "{{count}} донатів"
+    },
+    "landing": {
+      "badge": "Працює в {{chain}}",
+      "title": "Ваш гаманець, ваше мистецтво, ваше імʼя в рейтингу.",
+      "subtitle": "Повноцінний Ethereum-застосунок: увійдіть, отримайте генеративний NFT, чиє зображення живе всередині контракту, і надішліть донат у мережі. Усе нижче читається просто з Sepolia — щоб подивитись, гаманець не потрібен.",
+      "getStarted": "Створити акаунт",
+      "openDashboard": "Відкрити панель",
+      "support": "Підтримати проєкт",
+      "stats": {
+        "minted": "Викарбувано",
+        "holders": "Власників",
+        "raised": "Зібрано",
+        "tips": "Донатів"
+      },
+      "showcase": "Щойно викарбувані",
+      "showcaseHint": "Кожне зображення генерується всередині контракту з адреси власника. Без IPFS і без сервера — мережа тримає саме мистецтво.",
+      "showcaseEmpty": "Ще ніхто не отримав пас. Будьте першим.",
+      "how": "Як це побудовано",
+      "contracts": "Контракти",
+      "features": {
+        "art": {
+          "title": "Мистецтво, яке не зникне",
+          "body": "tokenURI повертає data: URI, зібраний у Solidity — симетричний identicon із keccak256 вашої адреси. Нічого не треба пінити чи хостити."
+        },
+        "siwe": {
+          "title": "Sign-In with Ethereum",
+          "body": "Привʼязку доводить EIP-4361: одноразовий nonce, підписаний і спалений. Перехоплений підпис вдруге нічого не вартий."
+        },
+        "tx": {
+          "title": "Транзакція як автомат станів",
+          "body": "Газ оцінюється ще до відкриття гаманця — можна передумати. Далі підпис, надсилання з хешем, підтвердження. Кожен крок видно."
+        },
+        "indexer": {
+          "title": "Власний індексер мережі",
+          "body": "Публічні RPC не віддають історичні логи. BullMQ-воркер іде за головою ланцюга дозволеними вікнами й тримає історію в Postgres."
+        }
+      }
+    },
+    "nav": {
+      "dashboard": "Панель"
     }
   }
 }

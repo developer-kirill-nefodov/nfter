@@ -1,11 +1,13 @@
 import {Queue, Worker} from 'bullmq';
 
 import {logger} from '../lib/logger';
+import {syncChainEvents} from '../web3/indexer.service';
+import {getPublicStats} from '../web3/stats.service';
 import {refreshTipFeed} from '../web3/tip.service';
 
 import {queueConnection} from './email.queue';
 
-const QUEUE_NAME = 'tip-indexer';
+const QUEUE_NAME = 'chain-indexer';
 
 export const tipIndexerQueue = new Queue(QUEUE_NAME, {
   connection: queueConnection,
@@ -26,7 +28,12 @@ export const tipIndexerQueue = new Queue(QUEUE_NAME, {
 export const tipIndexerWorker = new Worker(
   QUEUE_NAME,
   async () => {
+    // Pull whatever is new on chain into the local index, then rebuild the two
+    // caches that read from it. Order matters: refreshing first would just cache
+    // the old answer again.
+    await syncChainEvents();
     await refreshTipFeed();
+    await getPublicStats({refresh: true});
   },
   {connection: queueConnection, concurrency: 1},
 );
@@ -40,9 +47,9 @@ tipIndexerWorker.on('failed', (_job, err) => {
 export const startTipIndexer = async (): Promise<void> => {
   await tipIndexerQueue.upsertJobScheduler(
     'refresh-tip-feed',
-    {every: 60_000},
+    {every: 30_000},
     {name: 'refresh-tip-feed'},
   );
 
-  logger.info('tip indexer scheduled every 60s');
+  logger.info('chain indexer scheduled every 30s');
 };
