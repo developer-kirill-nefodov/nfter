@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import Button from '../../components/Button';
 import ConnectButton from '../../components/Wallet/ConnectButton';
+import Leaderboard from '../../components/Tip/Leaderboard';
 import TipFeed from '../../components/Tip/TipFeed';
 import {fetchTipsRequest, sendTipRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
@@ -122,6 +123,13 @@ const TipPage = () => {
           )}
         </Stack>
       </Card>
+
+      <Stack $gap="16px">
+        <Title as="h2">{t('tip.leaderboard')}</Title>
+        <Stack $gap="8px">
+          <Leaderboard />
+        </Stack>
+      </Stack>
 
       <Stack $gap="16px">
         <Title as="h2">{t('tip.recent')}</Title>

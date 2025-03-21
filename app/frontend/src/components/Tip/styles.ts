@@ -35,3 +35,14 @@ export const EmptyFeed = styled.div`
   border: 1px dashed ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
 `;
+
+export const Medal = styled.span`
+  font-size: ${({theme}) => theme.fontSizes.lg};
+  min-width: 2rem;
+`;
+
+/** The signed-in user's own row, so they can find themselves at a glance. */
+export const You = styled(Entry)`
+  border-color: ${({theme}) => theme.colors.primary};
+  background: ${({theme}) => theme.colors.surfaceRaised};
+`;
