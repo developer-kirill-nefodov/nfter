@@ -9,6 +9,7 @@ import RequireRole, {type IRouteAccess} from './RequireRole';
 
 // Route-level code splitting: a visitor on the login screen never downloads the
 // gallery, and the gallery chunk is where ethers lives.
+const LandingPage = lazy(() => import('../screens/Landing'));
 const HomePage = lazy(() => import('../screens/Home'));
 const TipPage = lazy(() => import('../screens/Tip'));
 const LoginPage = lazy(() => import('../screens/Auth/Login'));
@@ -25,7 +26,15 @@ interface IAppRoute {
 }
 
 export const appRoutes: IAppRoute[] = [
-  {path: NavigateUrls.home, element: <HomePage />, access: 'public'},
+  // "/" is the landing page: readable by anyone, no wallet and no account. The
+  // dashboard lives behind it, where a session actually means something.
+  {path: NavigateUrls.home, element: <LandingPage />, access: 'public'},
+  {
+    path: NavigateUrls.dashboard,
+    element: <HomePage />,
+    access: 'authenticated',
+    redirect: NavigateUrls.auth.login,
+  },
   {path: NavigateUrls.tip, element: <TipPage />, access: 'public'},
   {
     path: NavigateUrls.auth.login,

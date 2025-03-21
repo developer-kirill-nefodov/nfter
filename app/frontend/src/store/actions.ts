@@ -32,3 +32,7 @@ export const checkClaimRequest = createAction<string>('tx/checkClaim');
 /** Tip the jar: amount in wei, plus an optional note stored in the event log. */
 export const sendTipRequest = createAction<{amountWei: string; message: string}>('tx/sendTip');
 export const fetchTipsRequest = createAction<{refresh?: boolean} | undefined>('tip/fetch');
+
+/** Public numbers and recent mints for the landing page — no wallet needed. */
+export const fetchStatsRequest = createAction('stats/fetch');
+export const fetchLeaderboardRequest = createAction('stats/leaderboard');
