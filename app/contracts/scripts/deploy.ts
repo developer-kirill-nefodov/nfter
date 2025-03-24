@@ -36,12 +36,19 @@ async function main() {
   const jar = await (await ethers.getContractFactory('TipJar')).deploy(tipJarOwner);
   await jar.waitForDeployment();
 
+  const artifacts = await (
+    await ethers.getContractFactory('EthersWeb3Artifacts')
+  ).deploy(tipJarOwner);
+  await artifacts.waitForDeployment();
+
   const passAddress = await pass.getAddress();
   const jarAddress = await jar.getAddress();
+  const artifactsAddress = await artifacts.getAddress();
   const block = (await pass.deploymentTransaction()?.wait())?.blockNumber ?? 0;
 
   console.log(`EthersWeb3Pass: ${passAddress}`);
   console.log(`TipJar:         ${jarAddress}  (owner ${tipJarOwner})`);
+  console.log(`Artifacts:      ${artifactsAddress}  (owner ${tipJarOwner})`);
   console.log(`deployed at block ${block}\n`);
 
   const deployment = {
@@ -50,6 +57,7 @@ async function main() {
     block,
     pass: passAddress,
     tipJar: jarAddress,
+    artifacts: artifactsAddress,
     tipJarOwner,
   };
 
@@ -58,10 +66,12 @@ async function main() {
   console.log('Put these in app/backend/.env:');
   console.log(`  NFT_CONTRACT_ADDRESS=${passAddress}`);
   console.log(`  TIP_JAR_ADDRESS=${jarAddress}`);
+  console.log(`  ARTIFACTS_ADDRESS=${artifactsAddress}`);
   console.log(`  CONTRACTS_FROM_BLOCK=${block}`);
   console.log('\nand in app/frontend/.env:');
   console.log(`  VITE_NFT_CONTRACT_ADDRESS=${passAddress}`);
   console.log(`  VITE_TIP_JAR_ADDRESS=${jarAddress}`);
+  console.log(`  VITE_ARTIFACTS_ADDRESS=${artifactsAddress}`);
 }
 
 main().catch((error) => {
