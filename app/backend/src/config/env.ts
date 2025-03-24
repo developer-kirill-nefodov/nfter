@@ -26,6 +26,7 @@ const schema = Joi.object({
   CHAIN_ID: Joi.number().required(),
   NFT_CONTRACT_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   TIP_JAR_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
+  ARTIFACTS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   // The block the contracts were deployed in. Public RPC nodes cap how far back
   // a log query may reach, so the tip indexer starts here rather than at genesis.
   CONTRACTS_FROM_BLOCK: Joi.number().min(0).default(0),
@@ -60,6 +61,7 @@ interface IRawEnv {
   CHAIN_ID: number;
   NFT_CONTRACT_ADDRESS: string;
   TIP_JAR_ADDRESS: string;
+  ARTIFACTS_ADDRESS: string;
   CONTRACTS_FROM_BLOCK: number;
   IPFS_GATEWAY: string;
   SMTP_HOST: string;
@@ -122,6 +124,7 @@ export const env = {
     chainId: config.CHAIN_ID,
     nftContract: config.NFT_CONTRACT_ADDRESS,
     tipJar: config.TIP_JAR_ADDRESS,
+    artifacts: config.ARTIFACTS_ADDRESS,
     fromBlock: config.CONTRACTS_FROM_BLOCK,
     ipfsGateway: config.IPFS_GATEWAY,
   },

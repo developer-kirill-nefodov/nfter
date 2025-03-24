@@ -46,7 +46,11 @@ interface IErc721 {
   supportsInterface(interfaceId: string): Promise<boolean>;
 }
 
-const contract = new Contract(env.web3.nftContract, ERC721_ABI, provider) as unknown as IErc721;
+const contractAt = (address: string) =>
+  new Contract(address, ERC721_ABI, provider) as unknown as IErc721;
+
+/** The two collections this app knows about: the pass, and the paid artifacts. */
+export const COLLECTIONS = [env.web3.nftContract, env.web3.artifacts];
 
 const METADATA_FETCH_TIMEOUT_MS = 5_000;
 
@@ -122,7 +126,7 @@ const fetchMetadata = async (tokenId: string, tokenUri: string): Promise<INft> =
 /** ERC-165 id of the ERC721Enumerable extension. */
 const ERC721_ENUMERABLE_INTERFACE = '0x780e9d63';
 
-let enumerable: Promise<boolean> | null = null;
+const enumerable = new Map<string, Promise<boolean>>();
 
 /**
  * Walking a wallet's tokens needs tokenOfOwnerByIndex, which is an optional
@@ -130,31 +134,30 @@ let enumerable: Promise<boolean> | null = null;
  * nothing — into a sentence they can act on. The answer is a property of the
  * contract, so it is asked once per process, not once per request.
  */
-const assertEnumerable = async (): Promise<void> => {
-  enumerable ??= contract
-    .supportsInterface(ERC721_ENUMERABLE_INTERFACE)
-    .catch(() => false)
-    .then((supported) => {
-      if (!supported) {
-        logger.error(
-          {contract: env.web3.nftContract},
-          'configured contract does not implement ERC721Enumerable',
-        );
-      }
+const assertEnumerable = async (address: string): Promise<void> => {
+  if (!enumerable.has(address)) {
+    enumerable.set(
+      address,
+      contractAt(address)
+        .supportsInterface(ERC721_ENUMERABLE_INTERFACE)
+        .catch(() => false),
+    );
+  }
 
-      return supported;
-    });
+  if (!(await enumerable.get(address))) {
+    logger.error({contract: address}, 'contract does not implement ERC721Enumerable');
 
-  if (!(await enumerable)) {
     throw AppError.badRequest(
-      'The configured collection does not implement ERC721Enumerable, ' +
+      'That collection does not implement ERC721Enumerable, ' +
         'so its tokens cannot be listed by owner.',
     );
   }
 };
 
-const readCollection = async (owner: string): Promise<INftCollection> => {
-  await assertEnumerable();
+const readCollection = async (address: string, owner: string): Promise<INftCollection> => {
+  await assertEnumerable(address);
+
+  const contract = contractAt(address);
 
   const [name, symbol, rawBalance] = await Promise.all([
     contract.name(),
@@ -178,7 +181,7 @@ const readCollection = async (owner: string): Promise<INftCollection> => {
   );
 
   return {
-    contract: env.web3.nftContract,
+    contract: address,
     chainId: env.web3.chainId,
     name,
     symbol,
@@ -193,25 +196,27 @@ const readCollection = async (owner: string): Promise<INftCollection> => {
  * user needs right after minting.
  */
 export const getNftsByOwner = async (
-  address: string,
+  wallet: string,
   {refresh = false}: {refresh?: boolean} = {},
-): Promise<INftCollection> => {
-  const owner = getAddress(address);
-  const cacheKey = `nft:${env.web3.chainId}:${env.web3.nftContract}:${owner.toLowerCase()}`;
+): Promise<INftCollection[]> => {
+  const owner = getAddress(wallet);
+  const cacheKey = `nft:${env.web3.chainId}:${owner.toLowerCase()}`;
 
   if (!refresh) {
     const cached = await redis.get(cacheKey);
 
     if (cached) {
-      return JSON.parse(cached) as INftCollection;
+      return JSON.parse(cached) as INftCollection[];
     }
   }
 
-  const collection = await readCollection(owner);
+  const collections = await Promise.all(
+    COLLECTIONS.map((address) => readCollection(address, owner)),
+  );
 
-  await redis.setEx(cacheKey, LIFETIME_NFT_CACHE_SEC, JSON.stringify(collection));
+  await redis.setEx(cacheKey, LIFETIME_NFT_CACHE_SEC, JSON.stringify(collections));
 
-  return collection;
+  return collections;
 };
 
 export const getBalance = async (address: string): Promise<string> => {

@@ -69,7 +69,8 @@
         "signing": "Waiting for your wallet",
         "pending": "Broadcast — waiting for the chain",
         "confirmed": "Confirmed on chain"
-      }
+      },
+      "minting": "Minting your artifact"
     },
     "tip": {
       "nav": "Tip",
@@ -131,6 +132,23 @@
     },
     "nav": {
       "dashboard": "Dashboard"
+    },
+    "collect": {
+      "nav": "Collect",
+      "title": "Artifacts",
+      "subtitle": "Buy as many as you like. You choose the tier and pay for it — no lottery, no loot box. The artwork is generated in the contract, and the supply cap is enforced there too.",
+      "tiers": {
+        "common": "Common",
+        "rare": "Rare",
+        "epic": "Epic",
+        "legendary": "Legendary"
+      },
+      "remaining": "{{left}} of {{cap}} left",
+      "soldOut": "Sold out",
+      "buy": "Buy {{tier}} — {{price}} ETH",
+      "hint": "A higher tier draws more rings, more colour, and Legendary ones spin.",
+      "connectFirst": "Connect a wallet to buy an artifact.",
+      "signInFirst": "Sign in and connect a wallet to buy an artifact."
     }
   },
   "DE": {
@@ -203,7 +221,8 @@
         "signing": "Warte auf deine Wallet",
         "pending": "Gesendet — warte auf die Chain",
         "confirmed": "Auf der Chain bestätigt"
-      }
+      },
+      "minting": "Artefakt wird geprägt"
     },
     "tip": {
       "nav": "Trinkgeld",
@@ -265,6 +284,23 @@
     },
     "nav": {
       "dashboard": "Dashboard"
+    },
+    "collect": {
+      "nav": "Sammeln",
+      "title": "Artefakte",
+      "subtitle": "Kauf so viele du willst. Du wählst die Stufe und bezahlst sie — keine Lotterie, keine Lootbox. Die Grafik entsteht im Contract, und das Limit gilt dort ebenfalls.",
+      "tiers": {
+        "common": "Gewöhnlich",
+        "rare": "Selten",
+        "epic": "Episch",
+        "legendary": "Legendär"
+      },
+      "remaining": "Noch {{left}} von {{cap}}",
+      "soldOut": "Ausverkauft",
+      "buy": "{{tier}} kaufen — {{price}} ETH",
+      "hint": "Höhere Stufen zeichnen mehr Ringe und mehr Farbe — legendäre drehen sich.",
+      "connectFirst": "Verbinde eine Wallet, um ein Artefakt zu kaufen.",
+      "signInFirst": "Melde dich an und verbinde eine Wallet, um zu kaufen."
     }
   },
   "CN": {
@@ -337,7 +373,8 @@
         "signing": "等待你的钱包确认",
         "pending": "已广播——等待链上确认",
         "confirmed": "已在链上确认"
-      }
+      },
+      "minting": "正在铸造神器"
     },
     "tip": {
       "nav": "打赏",
@@ -399,6 +436,23 @@
     },
     "nav": {
       "dashboard": "面板"
+    },
+    "collect": {
+      "nav": "收藏",
+      "title": "神器",
+      "subtitle": "想买多少都行。等级由你选择并支付——不是抽奖，也不是盲盒。图案在合约中生成，发行上限也由合约强制执行。",
+      "tiers": {
+        "common": "普通",
+        "rare": "稀有",
+        "epic": "史诗",
+        "legendary": "传说"
+      },
+      "remaining": "剩余 {{left}} / {{cap}}",
+      "soldOut": "已售罄",
+      "buy": "购买{{tier}} — {{price}} ETH",
+      "hint": "等级越高，环越多、色彩越丰富——传说级还会旋转。",
+      "connectFirst": "请先连接钱包再购买。",
+      "signInFirst": "请先登录并连接钱包再购买。"
     }
   },
   "UA": {
@@ -471,7 +525,8 @@
         "signing": "Чекаємо на ваш гаманець",
         "pending": "Надіслано — чекаємо на мережу",
         "confirmed": "Підтверджено в мережі"
-      }
+      },
+      "minting": "Карбуємо ваш артефакт"
     },
     "tip": {
       "nav": "Донат",
@@ -533,6 +588,23 @@
     },
     "nav": {
       "dashboard": "Панель"
+    },
+    "collect": {
+      "nav": "Колекція",
+      "title": "Артефакти",
+      "subtitle": "Купуйте скільки завгодно. Рівень ви обираєте самі й платите за нього — жодної лотереї. Зображення генерується в контракті, і ліміт випуску теж діє там.",
+      "tiers": {
+        "common": "Звичайний",
+        "rare": "Рідкісний",
+        "epic": "Епічний",
+        "legendary": "Легендарний"
+      },
+      "remaining": "Залишилось {{left}} з {{cap}}",
+      "soldOut": "Розпродано",
+      "buy": "Купити {{tier}} — {{price}} ETH",
+      "hint": "Вищий рівень малює більше кілець і кольору — легендарні ще й обертаються.",
+      "connectFirst": "Підключіть гаманець, щоб купити артефакт.",
+      "signInFirst": "Увійдіть і підключіть гаманець, щоб купити."
     }
   }
 }

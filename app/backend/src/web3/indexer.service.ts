@@ -27,9 +27,14 @@ interface ISource {
   events: string[];
 }
 
+const ARTIFACT_EVENTS_ABI = [
+  'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
+];
+
 const SOURCES: ISource[] = [
   {address: env.web3.nftContract, abi: PASS_EVENTS_ABI, events: ['Claimed']},
   {address: env.web3.tipJar, abi: TIP_JAR_ABI, events: ['Tipped']},
+  {address: env.web3.artifacts, abi: ARTIFACT_EVENTS_ABI, events: ['Minted']},
 ];
 
 const serialiseArgs = (log: Log, contract: Contract): Record<string, string> | null => {

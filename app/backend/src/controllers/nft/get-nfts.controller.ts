@@ -13,10 +13,10 @@ export const getNftsController = async (req: IRequestAuth, res: Response) => {
 
   const refresh = req.query.refresh === 'true';
 
-  const [collection, balance] = await Promise.all([
+  const [collections, balance] = await Promise.all([
     getNftsByOwner(owner, {refresh}),
     getBalance(owner),
   ]);
 
-  res.status(200).json({...collection, owner, nativeBalance: balance});
+  res.status(200).json({owner, nativeBalance: balance, collections});
 };
