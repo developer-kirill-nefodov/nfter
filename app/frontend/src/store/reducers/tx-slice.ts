@@ -13,7 +13,7 @@ import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
  */
 export type ITxStage = 'idle' | 'estimating' | 'signing' | 'pending' | 'confirmed' | 'failed';
 
-export type ITxKind = 'claim' | 'tip';
+export type ITxKind = 'claim' | 'tip' | 'mint';
 
 export interface ITxState {
   kind: ITxKind | null;

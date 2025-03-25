@@ -4,17 +4,35 @@ import {errorMessage} from '../../api/client';
 import {tipApi} from '../../api/tip';
 import {toast} from '../../components/Toastify';
 import type {ITipFeed} from '../../types/tip';
-import {claimPass, explainTxError, hasClaimed, sendTip} from '../../web3/transactions';
+import {
+  claimPass,
+  explainTxError,
+  hasClaimed,
+  mintArtifact,
+  readTiers,
+  sendTip,
+  type ITierInfo,
+} from '../../web3/transactions';
+import type {ITier} from '../../web3/contracts';
 import {
   checkClaimRequest,
   claimPassRequest,
   fetchNftsRequest,
+  fetchTiersRequest,
   fetchTipsRequest,
+  mintArtifactRequest,
   sendTipRequest,
 } from '../actions';
-import {setClaimed} from '../reducers/nft-slice';
+import {setClaimed, setTiers} from '../reducers/nft-slice';
 import {setTipFeed, setTipsError, setTipsLoading} from '../reducers/tip-slice';
-import {txBroadcast, txConfirmed, txFailed, txGasEstimated, txStarted} from '../reducers/tx-slice';
+import {
+  txBroadcast,
+  txConfirmed,
+  txFailed,
+  txGasEstimated,
+  txStarted,
+  type ITxKind,
+} from '../reducers/tx-slice';
 
 /**
  * The wallet callbacks fire from inside ethers, outside the saga's own yields —
@@ -23,7 +41,7 @@ import {txBroadcast, txConfirmed, txFailed, txGasEstimated, txStarted} from '../
  * still thinking.
  */
 function* runTransaction(
-  kind: 'claim' | 'tip',
+  kind: ITxKind,
   execute: (handlers: {
     onGasEstimated: (wei: string) => void;
     onBroadcast: (hash: string) => void;
@@ -84,6 +102,27 @@ function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
   }
 }
 
+function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
+  const hash: string | null = yield call(runTransaction, 'mint', (handlers) =>
+    mintArtifact(payload, handlers),
+  );
+
+  if (hash) {
+    yield put(fetchTiersRequest());
+    yield put(fetchNftsRequest({refresh: true}));
+    toast('Your artifact is minted.', 'success');
+  }
+}
+
+function* fetchTiersSaga() {
+  try {
+    const tiers: Record<ITier, ITierInfo> = yield call(readTiers);
+    yield put(setTiers(tiers));
+  } catch {
+    // Without a wallet there is no signer to ask; the caps still show as "—".
+  }
+}
+
 function* checkClaimSaga({payload}: ReturnType<typeof checkClaimRequest>) {
   try {
     const claimed: boolean = yield call(hasClaimed, payload);
@@ -107,6 +146,8 @@ function* fetchTipsSaga({payload}: ReturnType<typeof fetchTipsRequest>) {
 
 export function* txSaga() {
   yield takeLatest(claimPassRequest.type, claimSaga);
+  yield takeLatest(mintArtifactRequest.type, mintArtifactSaga);
+  yield takeLatest(fetchTiersRequest.type, fetchTiersSaga);
   yield takeLatest(sendTipRequest.type, sendTipSaga);
   yield takeLatest(checkClaimRequest.type, checkClaimSaga);
   yield takeLatest(fetchTipsRequest.type, fetchTipsSaga);

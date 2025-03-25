@@ -32,6 +32,7 @@ const LayoutHeader = () => {
 
       <Row as="nav" $gap="12px" $wrap>
         {!isVisitor && <NavLink to={NavigateUrls.dashboard}>{t('nav.dashboard')}</NavLink>}
+        <NavLink to={NavigateUrls.collect}>{t('collect.nav')}</NavLink>
         <NavLink to={NavigateUrls.tip}>{t('tip.nav')}</NavLink>
         {loading ? (
           <Spinner />

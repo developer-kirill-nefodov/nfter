@@ -16,7 +16,7 @@ const HomePage = () => {
   const dispatch = useStoreDispatch();
 
   const user = useStoreSelector((state) => state.user.user);
-  const collection = useStoreSelector((state) => state.nft.collection);
+  const holdings = useStoreSelector((state) => state.nft.holdings);
 
   const wallet = user.walletAddress;
 
@@ -57,13 +57,17 @@ const HomePage = () => {
           <Stat>
             <StatLabel>{t('home.balance')}</StatLabel>
             <StatValue>
-              {collection ? `${formatBalance(collection.nativeBalance)} ETH` : '—'}
+              {holdings ? `${formatBalance(holdings.nativeBalance)} ETH` : '—'}
             </StatValue>
           </Stat>
 
           <Stat>
             <StatLabel>{t('home.tokens')}</StatLabel>
-            <StatValue>{collection?.balance ?? '—'}</StatValue>
+            <StatValue>
+              {holdings
+                ? holdings.collections.reduce((total, item) => total + item.balance, 0)
+                : '—'}
+            </StatValue>
           </Stat>
         </Row>
       </Card>

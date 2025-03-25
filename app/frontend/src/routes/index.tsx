@@ -12,6 +12,7 @@ import RequireRole, {type IRouteAccess} from './RequireRole';
 const LandingPage = lazy(() => import('../screens/Landing'));
 const HomePage = lazy(() => import('../screens/Home'));
 const TipPage = lazy(() => import('../screens/Tip'));
+const CollectPage = lazy(() => import('../screens/Collect'));
 const LoginPage = lazy(() => import('../screens/Auth/Login'));
 const RegisterPage = lazy(() => import('../screens/Auth/Register'));
 const ForgotPasswordPage = lazy(() => import('../screens/Auth/ForgotPassword'));
@@ -36,6 +37,7 @@ export const appRoutes: IAppRoute[] = [
     redirect: NavigateUrls.auth.login,
   },
   {path: NavigateUrls.tip, element: <TipPage />, access: 'public'},
+  {path: NavigateUrls.collect, element: <CollectPage />, access: 'public'},
   {
     path: NavigateUrls.auth.login,
     element: <LoginPage />,

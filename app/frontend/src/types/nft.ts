@@ -13,13 +13,17 @@ export interface INft {
 }
 
 export interface INftCollection {
-  owner: string;
   contract: string;
   chainId: number;
   name: string;
   symbol: string;
   balance: number;
   items: INft[];
-  /** Native ETH balance of the owner, in wei. */
+}
+
+/** Every collection this wallet holds, plus its native balance. */
+export interface IWalletHoldings {
+  owner: string;
   nativeBalance: string;
+  collections: INftCollection[];
 }

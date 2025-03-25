@@ -37,7 +37,7 @@ const TxStatus = () => {
     <Panel role="status" aria-live="polite" $tone={failed ? 'error' : done ? 'success' : 'info'}>
       <Stack $gap="12px">
         <Row $justify="space-between">
-          <strong>{t(kind === 'claim' ? 'tx.claiming' : 'tx.tipping')}</strong>
+          <strong>{t(`tx.${kind === 'claim' ? 'claiming' : kind === 'mint' ? 'minting' : 'tipping'}`)}</strong>
           {!done && !failed && <Spinner size={16} />}
         </Row>
 

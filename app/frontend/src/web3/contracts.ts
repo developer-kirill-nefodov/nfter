@@ -2,6 +2,24 @@ import type {JsonRpcSigner} from 'ethers';
 
 export const PASS_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 export const TIP_JAR_ADDRESS = import.meta.env.VITE_TIP_JAR_ADDRESS;
+export const ARTIFACTS_ADDRESS = import.meta.env.VITE_ARTIFACTS_ADDRESS;
+
+export type ITier = 0 | 1 | 2 | 3;
+
+/** Mirrors the contract: prices and caps are immutable there, so they are here. */
+export const TIERS = [
+  {id: 0 as ITier, key: 'common' as const, price: '0.001', cap: 1000},
+  {id: 1 as ITier, key: 'rare' as const, price: '0.003', cap: 250},
+  {id: 2 as ITier, key: 'epic' as const, price: '0.01', cap: 50},
+  {id: 3 as ITier, key: 'legendary' as const, price: '0.03', cap: 10},
+];
+
+export const ARTIFACTS_ABI = [
+  'function mint(uint8 tier) payable returns (uint256)',
+  'function priceOf(uint8 tier) view returns (uint256)',
+  'function remaining(uint8 tier) view returns (uint256)',
+  'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
+];
 
 /** Only the fragments this app calls. A full ABI would be dead weight in the bundle. */
 export const PASS_ABI = [
@@ -37,6 +55,12 @@ export interface ITipJarContract {
   tip: IContractMethod<[message: string, overrides: {value: bigint}], ITransactionResponse>;
 }
 
+export interface IArtifactsContract {
+  mint: IContractMethod<[tier: number, overrides: {value: bigint}], ITransactionResponse>;
+  priceOf: IContractMethod<[tier: number], bigint>;
+  remaining: IContractMethod<[tier: number], bigint>;
+}
+
 /** The slice of ethers' TransactionResponse we actually use. */
 export interface ITransactionResponse {
   hash: string;
@@ -57,6 +81,12 @@ export const getTipJar = async (signer: JsonRpcSigner): Promise<ITipJarContract>
   const {Contract} = await import('ethers');
 
   return new Contract(TIP_JAR_ADDRESS, TIP_JAR_ABI, signer) as unknown as ITipJarContract;
+};
+
+export const getArtifacts = async (signer: JsonRpcSigner): Promise<IArtifactsContract> => {
+  const {Contract} = await import('ethers');
+
+  return new Contract(ARTIFACTS_ADDRESS, ARTIFACTS_ABI, signer) as unknown as IArtifactsContract;
 };
 
 export const explorerTx = (hash: string) => `https://sepolia.etherscan.io/tx/${hash}`;

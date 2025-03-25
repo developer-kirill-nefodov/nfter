@@ -1,6 +1,13 @@
 import type {JsonRpcSigner} from 'ethers';
 
-import {getPass, getTipJar, type ITransactionResponse} from './contracts';
+import {
+  getArtifacts,
+  getPass,
+  getTipJar,
+  TIERS,
+  type ITier,
+  type ITransactionResponse,
+} from './contracts';
 import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
 
 /**
@@ -28,6 +35,14 @@ export const explainTxError = (error: unknown): string => {
   }
 
   const text = `${shortMessage ?? ''} ${message ?? ''}`;
+
+  if (/SoldOut/i.test(text)) {
+    return 'That tier is sold out — the cap is enforced by the contract.';
+  }
+
+  if (/WrongPrice/i.test(text)) {
+    return 'The price changed under you. Reload and try again.';
+  }
 
   if (/AlreadyClaimed/i.test(text)) {
     return 'This wallet has already claimed its pass — one per wallet, forever.';
@@ -120,6 +135,38 @@ export const sendTip = async (
     handlers,
     await gasPriceOf(signer),
   );
+};
+
+export const mintArtifact = async (tier: ITier, handlers: ITxHandlers): Promise<string> => {
+  const signer = await currentSigner();
+  const artifacts = await getArtifacts(signer);
+
+  // The price is read from the contract, never from the UI: a stale constant in
+  // the bundle would send the wrong value and revert.
+  const price = await artifacts.priceOf(tier);
+
+  return send(
+    () => artifacts.mint.estimateGas(tier, {value: price}),
+    () => artifacts.mint(tier, {value: price}),
+    handlers,
+    await gasPriceOf(signer),
+  );
+};
+
+export interface ITierInfo {
+  remaining: number;
+}
+
+/** How many of each tier are left — straight from the chain, not from a banner. */
+export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
+  const signer = await currentSigner();
+  const artifacts = await getArtifacts(signer);
+
+  const entries = await Promise.all(
+    TIERS.map(async (tier) => [tier.id, {remaining: Number(await artifacts.remaining(tier.id))}]),
+  );
+
+  return Object.fromEntries(entries) as Record<ITier, ITierInfo>;
 };
 
 export const hasClaimed = async (wallet: string): Promise<boolean> => {

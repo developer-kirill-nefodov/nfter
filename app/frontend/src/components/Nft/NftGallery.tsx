@@ -3,18 +3,19 @@ import {useTranslation} from 'react-i18next';
 import NoNftIcon from '../../assets/svg/no-nft.svg';
 import {fetchNftsRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
-import {Row, Stack, Subtitle} from '../../styles';
+import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
 import Spinner from '../Spinner';
 
 import NftCard from './NftCard';
 import {EmptyState, Grid} from './styles';
 
+/** One section per collection: the pass you are given, the artifacts you buy. */
 const NftGallery = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
 
-  const {collection, loading, error} = useStoreSelector((state) => state.nft);
+  const {holdings, loading, error} = useStoreSelector((state) => state.nft);
 
   if (loading) {
     return (
@@ -35,7 +36,9 @@ const NftGallery = () => {
     );
   }
 
-  if (!collection || collection.items.length === 0) {
+  const owned = holdings?.collections.filter((collection) => collection.items.length > 0) ?? [];
+
+  if (owned.length === 0) {
     return (
       <EmptyState>
         <img src={NoNftIcon} alt="" />
@@ -45,21 +48,29 @@ const NftGallery = () => {
   }
 
   return (
-    <Stack $gap="24px">
-      <Row $justify="space-between" $wrap>
-        <Subtitle>
-          {t('nft.owned', {count: collection.balance, symbol: collection.symbol})}
-        </Subtitle>
+    <Stack $gap="32px">
+      <Row $justify="flex-end">
         <Button variant="ghost" onClick={() => dispatch(fetchNftsRequest({refresh: true}))}>
           {t('nft.refresh')}
         </Button>
       </Row>
 
-      <Grid>
-        {collection.items.map((nft) => (
-          <NftCard key={nft.tokenId} nft={nft} />
-        ))}
-      </Grid>
+      {owned.map((collection) => (
+        <Stack key={collection.contract} $gap="16px">
+          <Row $justify="space-between" $wrap>
+            <Title as="h3">{collection.name}</Title>
+            <Subtitle>
+              {t('nft.owned', {count: collection.balance, symbol: collection.symbol})}
+            </Subtitle>
+          </Row>
+
+          <Grid>
+            {collection.items.map((nft) => (
+              <NftCard key={`${collection.contract}-${nft.tokenId}`} nft={nft} />
+            ))}
+          </Grid>
+        </Stack>
+      ))}
     </Stack>
   );
 };

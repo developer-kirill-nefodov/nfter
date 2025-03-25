@@ -1,9 +1,9 @@
 import {api} from './client';
-import type {INftCollection} from '../types/nft';
+import type {IWalletHoldings} from '../types/nft';
 
 export const nftApi = {
-  myCollection: async (refresh = false): Promise<INftCollection> => {
-    const {data} = await api.get<INftCollection>('/nft/my-collection', {
+  myCollection: async (refresh = false): Promise<IWalletHoldings> => {
+    const {data} = await api.get<IWalletHoldings>('/nft/my-collection', {
       params: refresh ? {refresh: 'true'} : undefined,
     });
 
