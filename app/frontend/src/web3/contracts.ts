@@ -61,10 +61,22 @@ export interface IArtifactsContract {
   remaining: IContractMethod<[tier: number], bigint>;
 }
 
+export interface ITxLog {
+  topics: readonly string[];
+  data: string;
+  address: string;
+}
+
+export interface ITxReceipt {
+  status: number | null;
+  blockNumber: number;
+  logs: readonly ITxLog[];
+}
+
 /** The slice of ethers' TransactionResponse we actually use. */
 export interface ITransactionResponse {
   hash: string;
-  wait(confirmations?: number): Promise<{status: number | null; blockNumber: number} | null>;
+  wait(confirmations?: number): Promise<ITxReceipt | null>;
 }
 
 /**
@@ -89,6 +101,31 @@ export const getArtifacts = async (signer: JsonRpcSigner): Promise<IArtifactsCon
   return new Contract(ARTIFACTS_ADDRESS, ARTIFACTS_ABI, signer) as unknown as IArtifactsContract;
 };
 
+/** Reads one token's metadata straight off the chain, decoding the data: URI. */
+export const readToken = async (
+  signer: JsonRpcSigner,
+  contract: string,
+  tokenId: string,
+): Promise<{tokenId: string; tokenUri: string; name: string; description: string; image: string; attributes: {trait_type: string; value: string | number}[]}> => {
+  const {Contract} = await import('ethers');
+
+  const erc721 = new Contract(contract, ['function tokenURI(uint256) view returns (string)'], signer);
+  const tokenUri = (await erc721.tokenURI!(tokenId)) as string;
+
+  const payload = tokenUri.slice(tokenUri.indexOf(',') + 1);
+  const json = JSON.parse(atob(payload)) as {
+    name: string;
+    description: string;
+    image: string;
+    attributes: {trait_type: string; value: string | number}[];
+  };
+
+  return {tokenId, tokenUri, ...json};
+};
+
 export const explorerTx = (hash: string) => `https://sepolia.etherscan.io/tx/${hash}`;
 export const explorerAddress = (address: string) =>
   `https://sepolia.etherscan.io/address/${address}`;
+
+export const explorerToken = (contract: string, tokenId: string) =>
+  `https://sepolia.etherscan.io/nft/${contract}/${tokenId}`;

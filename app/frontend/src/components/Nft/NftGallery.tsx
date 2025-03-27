@@ -1,4 +1,6 @@
+import {useState} from 'react';
 import {useTranslation} from 'react-i18next';
+import {Link} from 'react-router-dom';
 
 import NoNftIcon from '../../assets/svg/no-nft.svg';
 import {fetchNftsRequest} from '../../store/actions';
@@ -7,7 +9,11 @@ import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
 import Spinner from '../Spinner';
 
+import {NavigateUrls} from '../../utils/navigate-urls';
+import type {INft} from '../../types/nft';
+
 import NftCard from './NftCard';
+import NftModal from './NftModal';
 import {EmptyState, Grid} from './styles';
 
 /** One section per collection: the pass you are given, the artifacts you buy. */
@@ -16,6 +22,7 @@ const NftGallery = () => {
   const dispatch = useStoreDispatch();
 
   const {holdings, loading, error} = useStoreSelector((state) => state.nft);
+  const [open, setOpen] = useState<{nft: INft; contract: string} | null>(null);
 
   if (loading) {
     return (
@@ -43,6 +50,9 @@ const NftGallery = () => {
       <EmptyState>
         <img src={NoNftIcon} alt="" />
         <Subtitle>{t('nft.empty')}</Subtitle>
+        <Link to={NavigateUrls.collect}>
+          <Button>{t('nft.goCollect')}</Button>
+        </Link>
       </EmptyState>
     );
   }
@@ -66,11 +76,21 @@ const NftGallery = () => {
 
           <Grid>
             {collection.items.map((nft) => (
-              <NftCard key={`${collection.contract}-${nft.tokenId}`} nft={nft} />
+              <NftCard
+                key={`${collection.contract}-${nft.tokenId}`}
+                nft={nft}
+                onOpen={() => setOpen({nft, contract: collection.contract})}
+              />
             ))}
           </Grid>
         </Stack>
       ))}
+
+      <NftModal
+        nft={open?.nft ?? null}
+        contract={open?.contract ?? ''}
+        onClose={() => setOpen(null)}
+      />
     </Stack>
   );
 };
