@@ -1,6 +1,6 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 
-import type {IWalletHoldings} from '../../types/nft';
+import type {INft, IWalletHoldings} from '../../types/nft';
 import type {ITier} from '../../web3/contracts';
 import type {ITierInfo} from '../../web3/transactions';
 
@@ -12,6 +12,8 @@ export interface INftState {
   claimed: boolean | null;
   /** How many of each artifact tier are left. */
   tiers: Record<ITier, ITierInfo> | null;
+  /** The token just minted, shown to the buyer the moment it confirms. */
+  reveal: {token: INft; contract: string; txHash: string} | null;
 }
 
 const initialState: INftState = {
@@ -20,6 +22,7 @@ const initialState: INftState = {
   error: null,
   claimed: null,
   tiers: null,
+  reveal: null,
 };
 
 export const nftSlice = createSlice({
@@ -45,11 +48,28 @@ export const nftSlice = createSlice({
     setTiers: (state, {payload}: PayloadAction<Record<ITier, ITierInfo>>) => {
       state.tiers = payload;
     },
+    setReveal: (
+      state,
+      {payload}: PayloadAction<{token: INft; contract: string; txHash: string}>,
+    ) => {
+      state.reveal = payload;
+    },
+    clearReveal: (state) => {
+      state.reveal = null;
+    },
     clearNfts: () => initialState,
   },
 });
 
-export const {setNftLoading, setNftCollection, setNftError, setClaimed, setTiers, clearNfts} =
-  nftSlice.actions;
+export const {
+  setNftLoading,
+  setNftCollection,
+  setNftError,
+  setClaimed,
+  setTiers,
+  setReveal,
+  clearReveal,
+  clearNfts,
+} = nftSlice.actions;
 
 export default nftSlice.reducer;

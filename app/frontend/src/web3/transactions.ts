@@ -1,12 +1,16 @@
 import type {JsonRpcSigner} from 'ethers';
 
 import {
+  ARTIFACTS_ADDRESS,
+  PASS_ADDRESS,
   getArtifacts,
   getPass,
   getTipJar,
+  readToken,
   TIERS,
   type ITier,
   type ITransactionResponse,
+  type ITxReceipt,
 } from './contracts';
 import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
 
@@ -85,7 +89,7 @@ const send = async (
   execute: () => Promise<ITransactionResponse>,
   {onGasEstimated, onBroadcast}: ITxHandlers,
   gasPrice: bigint,
-): Promise<string> => {
+): Promise<{hash: string; receipt: ITxReceipt}> => {
   const gas = await estimate();
 
   onGasEstimated((gas * gasPrice).toString());
@@ -100,7 +104,59 @@ const send = async (
     throw new Error('The transaction was mined but reverted.');
   }
 
-  return tx.hash;
+  return {hash: tx.hash, receipt};
+};
+
+/**
+ * Pulls the new token id out of the receipt.
+ *
+ * Not out of the gallery: that is cached server-side and, at the moment the mint
+ * confirms, does not know the token exists yet. The receipt is the only place the
+ * answer is already true.
+ */
+const mintedTokenId = async (receipt: ITxReceipt, contract: string): Promise<string | null> => {
+  const {Interface} = await import('ethers');
+
+  const iface = new Interface([
+    'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
+    'event Claimed(address indexed minter, uint256 indexed tokenId, uint256 seed)',
+  ]);
+
+  for (const log of receipt.logs) {
+    if (log.address.toLowerCase() !== contract.toLowerCase()) {
+      continue;
+    }
+
+    const parsed = iface.parseLog({topics: [...log.topics], data: log.data});
+
+    if (parsed) {
+      return String(parsed.args.tokenId);
+    }
+  }
+
+  return null;
+};
+
+export interface IMintResult {
+  hash: string;
+  contract: string;
+  token: Awaited<ReturnType<typeof readToken>> | null;
+}
+
+const revealMinted = async (
+  hash: string,
+  receipt: ITxReceipt,
+  contract: string,
+): Promise<IMintResult> => {
+  const tokenId = await mintedTokenId(receipt, contract);
+
+  if (!tokenId) {
+    return {hash, contract, token: null};
+  }
+
+  const signer = await currentSigner();
+
+  return {hash, contract, token: await readToken(signer, contract, tokenId)};
 };
 
 const gasPriceOf = async (signer: JsonRpcSigner): Promise<bigint> => {
@@ -109,16 +165,18 @@ const gasPriceOf = async (signer: JsonRpcSigner): Promise<bigint> => {
   return fees.maxFeePerGas ?? fees.gasPrice ?? 0n;
 };
 
-export const claimPass = async (handlers: ITxHandlers): Promise<string> => {
+export const claimPass = async (handlers: ITxHandlers): Promise<IMintResult> => {
   const signer = await currentSigner();
   const pass = await getPass(signer);
 
-  return send(
+  const {hash, receipt} = await send(
     () => pass.claim.estimateGas(),
     () => pass.claim(),
     handlers,
     await gasPriceOf(signer),
   );
+
+  return revealMinted(hash, receipt, PASS_ADDRESS);
 };
 
 export const sendTip = async (
@@ -129,15 +187,20 @@ export const sendTip = async (
   const signer = await currentSigner();
   const jar = await getTipJar(signer);
 
-  return send(
+  const {hash} = await send(
     () => jar.tip.estimateGas(message, {value: amountWei}),
     () => jar.tip(message, {value: amountWei}),
     handlers,
     await gasPriceOf(signer),
   );
+
+  return hash;
 };
 
-export const mintArtifact = async (tier: ITier, handlers: ITxHandlers): Promise<string> => {
+export const mintArtifact = async (
+  tier: ITier,
+  handlers: ITxHandlers,
+): Promise<IMintResult> => {
   const signer = await currentSigner();
   const artifacts = await getArtifacts(signer);
 
@@ -145,12 +208,14 @@ export const mintArtifact = async (tier: ITier, handlers: ITxHandlers): Promise<
   // the bundle would send the wrong value and revert.
   const price = await artifacts.priceOf(tier);
 
-  return send(
+  const {hash, receipt} = await send(
     () => artifacts.mint.estimateGas(tier, {value: price}),
     () => artifacts.mint(tier, {value: price}),
     handlers,
     await gasPriceOf(signer),
   );
+
+  return revealMinted(hash, receipt, ARTIFACTS_ADDRESS);
 };
 
 export interface ITierInfo {
@@ -167,6 +232,14 @@ export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
   );
 
   return Object.fromEntries(entries) as Record<ITier, ITierInfo>;
+};
+
+/** The wallet's ETH balance, in wei — shown in the header and after every tx. */
+export const readBalance = async (address: string): Promise<string> => {
+  const signer = await currentSigner();
+  const balance = await signer.provider.getBalance(address);
+
+  return balance.toString();
 };
 
 export const hasClaimed = async (wallet: string): Promise<boolean> => {

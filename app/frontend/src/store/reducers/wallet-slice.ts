@@ -7,6 +7,8 @@ export interface IWalletState {
   chainId: number | null;
   status: IWalletStatus;
   error: string | null;
+  /** ETH balance in wei, or null until the chain has been asked. */
+  balance: string | null;
 }
 
 const initialState: IWalletState = {
@@ -14,6 +16,7 @@ const initialState: IWalletState = {
   chainId: null,
   status: 'disconnected',
   error: null,
+  balance: null,
 };
 
 export const walletSlice = createSlice({
@@ -38,6 +41,9 @@ export const walletSlice = createSlice({
     setChainId: (state, {payload}: PayloadAction<number>) => {
       state.chainId = payload;
     },
+    setBalance: (state, {payload}: PayloadAction<string>) => {
+      state.balance = payload;
+    },
     setWalletError: (state, {payload}: PayloadAction<string>) => {
       state.status = 'disconnected';
       state.error = payload;
@@ -46,7 +52,13 @@ export const walletSlice = createSlice({
   },
 });
 
-export const {setWalletStatus, setWallet, setChainId, setWalletError, disconnectWallet} =
-  walletSlice.actions;
+export const {
+  setWalletStatus,
+  setWallet,
+  setChainId,
+  setBalance,
+  setWalletError,
+  disconnectWallet,
+} = walletSlice.actions;
 
 export default walletSlice.reducer;

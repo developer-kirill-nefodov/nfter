@@ -1,4 +1,6 @@
-import {call, put, takeLatest} from 'redux-saga/effects';
+import {call, put, select, takeLatest} from 'redux-saga/effects';
+
+import type {RootState} from '../';
 
 import {errorMessage} from '../../api/client';
 import {tipApi} from '../../api/tip';
@@ -9,8 +11,10 @@ import {
   explainTxError,
   hasClaimed,
   mintArtifact,
+  readBalance,
   readTiers,
   sendTip,
+  type IMintResult,
   type ITierInfo,
 } from '../../web3/transactions';
 import type {ITier} from '../../web3/contracts';
@@ -21,9 +25,11 @@ import {
   fetchTiersRequest,
   fetchTipsRequest,
   mintArtifactRequest,
+  refreshBalanceRequest,
   sendTipRequest,
 } from '../actions';
-import {setClaimed, setTiers} from '../reducers/nft-slice';
+import {setClaimed, setReveal, setTiers} from '../reducers/nft-slice';
+import {setBalance} from '../reducers/wallet-slice';
 import {setTipFeed, setTipsError, setTipsLoading} from '../reducers/tip-slice';
 import {
   txBroadcast,
@@ -40,22 +46,22 @@ import {
  * That is what lets the UI show "pending, here is your hash" while the chain is
  * still thinking.
  */
-function* runTransaction(
+function* runTransaction<TResult>(
   kind: ITxKind,
   execute: (handlers: {
     onGasEstimated: (wei: string) => void;
     onBroadcast: (hash: string) => void;
-  }) => Promise<string>,
-) {
+  }) => Promise<TResult>,
+): Generator<unknown, TResult | null, never> {
   const dispatched: {type: string; payload?: string}[] = [];
 
   yield put(txStarted(kind));
 
   try {
-    const hash: string = yield call(execute, {
+    const result = (yield call(execute, {
       onGasEstimated: (wei) => dispatched.push(txGasEstimated(wei)),
       onBroadcast: (value) => dispatched.push(txBroadcast(value)),
-    });
+    })) as TResult;
 
     // Replay whatever ethers reported while we were awaiting it.
     for (const action of dispatched) {
@@ -64,7 +70,7 @@ function* runTransaction(
 
     yield put(txConfirmed());
 
-    return hash;
+    return result;
   } catch (error) {
     for (const action of dispatched) {
       yield put(action);
@@ -80,38 +86,56 @@ function* runTransaction(
 }
 
 function* claimSaga() {
-  const hash: string | null = yield call(runTransaction, 'claim', claimPass);
+  const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'claim', claimPass);
 
-  if (hash) {
-    yield put(setClaimed(true));
-    // The gallery is cached server-side; ask for a fresh read now that the pass
-    // actually exists on chain.
-    yield put(fetchNftsRequest({refresh: true}));
-    toast('Your pass is minted.', 'success');
+  if (!result) {
+    return;
   }
+
+  yield put(setClaimed(true));
+  // The gallery is cached server-side; ask for a fresh read now that the pass
+  // actually exists on chain.
+  yield put(fetchNftsRequest({refresh: true}));
+  yield put(refreshBalanceRequest());
+
+  if (result.token) {
+    // Show the thing they just got. A toast saying "minted" is not a reward.
+    yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
+  }
+
+  toast('Your pass is minted.', 'success');
 }
 
 function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
-  const hash: string | null = yield call(runTransaction, 'tip', (handlers) =>
+  const hash: string | null = yield call(runTransaction<string>, 'tip', (handlers) =>
     sendTip(BigInt(payload.amountWei), payload.message, handlers),
   );
 
   if (hash) {
     yield put(fetchTipsRequest({refresh: true}));
+    yield put(refreshBalanceRequest());
     toast('Thank you — your tip is on chain.', 'success');
   }
 }
 
 function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
-  const hash: string | null = yield call(runTransaction, 'mint', (handlers) =>
+  const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'mint', (handlers) =>
     mintArtifact(payload, handlers),
   );
 
-  if (hash) {
-    yield put(fetchTiersRequest());
-    yield put(fetchNftsRequest({refresh: true}));
-    toast('Your artifact is minted.', 'success');
+  if (!result) {
+    return;
   }
+
+  yield put(fetchTiersRequest());
+  yield put(fetchNftsRequest({refresh: true}));
+  yield put(refreshBalanceRequest());
+
+  if (result.token) {
+    yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
+  }
+
+  toast('Your artifact is minted.', 'success');
 }
 
 function* fetchTiersSaga() {
@@ -144,7 +168,23 @@ function* fetchTipsSaga({payload}: ReturnType<typeof fetchTipsRequest>) {
   }
 }
 
+function* refreshBalanceSaga() {
+  try {
+    const wallet: string | null = yield select(
+      (state: RootState) => state.user.user.walletAddress,
+    );
+
+    if (wallet) {
+      const balance: string = yield call(readBalance, wallet);
+      yield put(setBalance(balance));
+    }
+  } catch {
+    // A balance we cannot read is shown as "—", which is honest enough.
+  }
+}
+
 export function* txSaga() {
+  yield takeLatest(refreshBalanceRequest.type, refreshBalanceSaga);
   yield takeLatest(claimPassRequest.type, claimSaga);
   yield takeLatest(mintArtifactRequest.type, mintArtifactSaga);
   yield takeLatest(fetchTiersRequest.type, fetchTiersSaga);

@@ -29,6 +29,8 @@ export const fetchNftsRequest = createAction<{refresh?: boolean} | undefined>('n
 export const mintArtifactRequest = createAction<0 | 1 | 2 | 3>('tx/mintArtifact');
 /** How many of each tier are left, read from the contract. */
 export const fetchTiersRequest = createAction('tx/fetchTiers');
+/** Re-read the wallet's ETH balance — after every confirmed transaction. */
+export const refreshBalanceRequest = createAction('wallet/refreshBalance');
 
 /** Mint the one-per-wallet generative pass. */
 export const claimPassRequest = createAction('tx/claimPass');
