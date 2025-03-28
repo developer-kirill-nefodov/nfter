@@ -31,7 +31,13 @@ describe('wallet slice', () => {
   it('starts disconnected', () => {
     const state = walletReducer(undefined, {type: 'init'});
 
-    expect(state).toEqual({address: null, chainId: null, status: 'disconnected', error: null});
+    expect(state).toEqual({
+      address: null,
+      chainId: null,
+      status: 'disconnected',
+      error: null,
+      balance: null,
+    });
   });
 
   it('clears a stale error as soon as a new attempt starts', () => {
