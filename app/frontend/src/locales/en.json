@@ -25,7 +25,11 @@
     "recheck": "Check again",
     "notDetected": "Still no wallet detected. Reload the page after installing MetaMask.",
     "disconnect": "Disconnect",
-    "signInFirst": "Sign in to connect a wallet"
+    "signInFirst": "Sign in to connect a wallet",
+    "copy": "Copy",
+    "copied": "Address copied",
+    "viewOnExplorer": "View on Etherscan ↗",
+    "wrongNetwork": "Wrong network"
   },
   "home": {
     "title": "Your Ethereum wallet, in one place",
@@ -43,7 +47,8 @@
     "empty": "No tokens from this collection in your wallet yet.",
     "loading": "Loading your collection",
     "refresh": "Refresh",
-    "retry": "Try again"
+    "retry": "Try again",
+    "goCollect": "Browse artifacts"
   },
   "notFound": {
     "message": "That page does not exist.",
@@ -148,5 +153,13 @@
     "hint": "A higher tier draws more rings, more colour, and Legendary ones spin.",
     "connectFirst": "Connect a wallet to buy an artifact.",
     "signInFirst": "Sign in and connect a wallet to buy an artifact."
+  },
+  "nftModal": {
+    "revealTitle": "It’s yours",
+    "etherscan": "View on Etherscan ↗",
+    "transaction": "View transaction ↗",
+    "copyUri": "Copy tokenURI",
+    "copied": "Copied",
+    "copyFailed": "Could not copy"
   }
 }

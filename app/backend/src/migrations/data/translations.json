@@ -26,7 +26,11 @@
       "recheck": "Check again",
       "notDetected": "Still no wallet detected. Reload the page after installing MetaMask.",
       "disconnect": "Disconnect",
-      "signInFirst": "Sign in to connect a wallet"
+      "signInFirst": "Sign in to connect a wallet",
+      "copy": "Copy",
+      "copied": "Address copied",
+      "viewOnExplorer": "View on Etherscan ↗",
+      "wrongNetwork": "Wrong network"
     },
     "home": {
       "title": "Your Ethereum wallet, in one place",
@@ -44,7 +48,8 @@
       "empty": "No tokens from this collection in your wallet yet.",
       "loading": "Loading your collection",
       "refresh": "Refresh",
-      "retry": "Try again"
+      "retry": "Try again",
+      "goCollect": "Browse artifacts"
     },
     "notFound": {
       "message": "That page does not exist.",
@@ -149,6 +154,14 @@
       "hint": "A higher tier draws more rings, more colour, and Legendary ones spin.",
       "connectFirst": "Connect a wallet to buy an artifact.",
       "signInFirst": "Sign in and connect a wallet to buy an artifact."
+    },
+    "nftModal": {
+      "revealTitle": "It’s yours",
+      "etherscan": "View on Etherscan ↗",
+      "transaction": "View transaction ↗",
+      "copyUri": "Copy tokenURI",
+      "copied": "Copied",
+      "copyFailed": "Could not copy"
     }
   },
   "DE": {
@@ -178,7 +191,11 @@
       "recheck": "Erneut prüfen",
       "notDetected": "Weiterhin keine Wallet gefunden. Lade die Seite nach der Installation neu.",
       "disconnect": "Trennen",
-      "signInFirst": "Anmelden, um eine Wallet zu verbinden"
+      "signInFirst": "Anmelden, um eine Wallet zu verbinden",
+      "copy": "Kopieren",
+      "copied": "Adresse kopiert",
+      "viewOnExplorer": "Auf Etherscan ansehen ↗",
+      "wrongNetwork": "Falsches Netzwerk"
     },
     "home": {
       "title": "Deine Ethereum-Wallet an einem Ort",
@@ -196,7 +213,8 @@
       "empty": "Noch keine Token aus dieser Sammlung in deiner Wallet.",
       "loading": "Sammlung wird geladen",
       "refresh": "Aktualisieren",
-      "retry": "Erneut versuchen"
+      "retry": "Erneut versuchen",
+      "goCollect": "Artefakte ansehen"
     },
     "notFound": {
       "message": "Diese Seite existiert nicht.",
@@ -301,6 +319,14 @@
       "hint": "Höhere Stufen zeichnen mehr Ringe und mehr Farbe — legendäre drehen sich.",
       "connectFirst": "Verbinde eine Wallet, um ein Artefakt zu kaufen.",
       "signInFirst": "Melde dich an und verbinde eine Wallet, um zu kaufen."
+    },
+    "nftModal": {
+      "revealTitle": "Gehört dir",
+      "etherscan": "Auf Etherscan ansehen ↗",
+      "transaction": "Transaktion ansehen ↗",
+      "copyUri": "tokenURI kopieren",
+      "copied": "Kopiert",
+      "copyFailed": "Kopieren fehlgeschlagen"
     }
   },
   "CN": {
@@ -330,7 +356,11 @@
       "recheck": "重新检测",
       "notDetected": "仍未检测到钱包。安装 MetaMask 后请刷新页面。",
       "disconnect": "断开连接",
-      "signInFirst": "登录后才能连接钱包"
+      "signInFirst": "登录后才能连接钱包",
+      "copy": "复制",
+      "copied": "地址已复制",
+      "viewOnExplorer": "在 Etherscan 查看 ↗",
+      "wrongNetwork": "网络不对"
     },
     "home": {
       "title": "你的以太坊钱包，一站式管理",
@@ -348,7 +378,8 @@
       "empty": "你的钱包中还没有该系列的代币。",
       "loading": "正在加载你的收藏",
       "refresh": "刷新",
-      "retry": "重试"
+      "retry": "重试",
+      "goCollect": "去看神器"
     },
     "notFound": {
       "message": "该页面不存在。",
@@ -453,6 +484,14 @@
       "hint": "等级越高，环越多、色彩越丰富——传说级还会旋转。",
       "connectFirst": "请先连接钱包再购买。",
       "signInFirst": "请先登录并连接钱包再购买。"
+    },
+    "nftModal": {
+      "revealTitle": "它属于你了",
+      "etherscan": "在 Etherscan 查看 ↗",
+      "transaction": "查看交易 ↗",
+      "copyUri": "复制 tokenURI",
+      "copied": "已复制",
+      "copyFailed": "复制失败"
     }
   },
   "UA": {
@@ -482,7 +521,11 @@
       "recheck": "Перевірити ще раз",
       "notDetected": "Гаманець досі не знайдено. Перезавантажте сторінку після встановлення MetaMask.",
       "disconnect": "Відʼєднати",
-      "signInFirst": "Увійдіть, щоб підключити гаманець"
+      "signInFirst": "Увійдіть, щоб підключити гаманець",
+      "copy": "Копіювати",
+      "copied": "Адресу скопійовано",
+      "viewOnExplorer": "Переглянути на Etherscan ↗",
+      "wrongNetwork": "Не та мережа"
     },
     "home": {
       "title": "Ваш Ethereum-гаманець в одному місці",
@@ -500,7 +543,8 @@
       "empty": "У вашому гаманці ще немає токенів цієї колекції.",
       "loading": "Завантажуємо вашу колекцію",
       "refresh": "Оновити",
-      "retry": "Спробувати ще раз"
+      "retry": "Спробувати ще раз",
+      "goCollect": "Переглянути артефакти"
     },
     "notFound": {
       "message": "Такої сторінки не існує.",
@@ -605,6 +649,14 @@
       "hint": "Вищий рівень малює більше кілець і кольору — легендарні ще й обертаються.",
       "connectFirst": "Підключіть гаманець, щоб купити артефакт.",
       "signInFirst": "Увійдіть і підключіть гаманець, щоб купити."
+    },
+    "nftModal": {
+      "revealTitle": "Він ваш",
+      "etherscan": "Переглянути на Etherscan ↗",
+      "transaction": "Переглянути транзакцію ↗",
+      "copyUri": "Скопіювати tokenURI",
+      "copied": "Скопійовано",
+      "copyFailed": "Не вдалося скопіювати"
     }
   }
 }
