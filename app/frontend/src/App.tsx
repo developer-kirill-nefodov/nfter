@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 
 import Layout from './components/Layout';
+import RevealModal from './components/Nft/RevealModal';
 import TxStatus from './components/Tx/TxStatus';
 import {useWalletEvents} from './hooks/useWalletEvents';
 import AppRoutes from './routes';
@@ -22,6 +23,7 @@ const App = () => {
     <Layout>
       <AppRoutes />
       <TxStatus />
+      <RevealModal />
     </Layout>
   );
 };
