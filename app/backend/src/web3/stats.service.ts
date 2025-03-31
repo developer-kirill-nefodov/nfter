@@ -160,3 +160,76 @@ export const getPublicStats = async ({refresh = false} = {}): Promise<IPublicSta
 };
 
 export const formatEth = formatEther;
+
+export interface ICollectorEntry {
+  rank: number;
+  address: string;
+  /** Passes are one per wallet; artifacts are not. Both count as "collected". */
+  tokens: number;
+  passes: number;
+  artifacts: number;
+  spentWei: string;
+  spentEth: string;
+  bestTier: string;
+}
+
+const TIER_NAMES = ['Common', 'Rare', 'Epic', 'Legendary'];
+
+/**
+ * Who has collected what, folded out of the indexed mint events.
+ *
+ * Two leaderboards, one source: the donations board sums money sent to the jar,
+ * this one sums what people minted. Both are recomputable by anyone from the
+ * chain — which is the whole reason the events exist.
+ */
+export const getCollectors = async (limit = 10): Promise<ICollectorEntry[]> => {
+  const [claims, mints] = await Promise.all([
+    readEvents(env.web3.nftContract, 'Claimed'),
+    readEvents(env.web3.artifacts, 'Minted'),
+  ]);
+
+  const totals = new Map<
+    string,
+    {passes: number; artifacts: number; spent: bigint; bestTier: number}
+  >();
+
+  const entry = (address: string) =>
+    totals.get(address) ?? {passes: 0, artifacts: 0, spent: 0n, bestTier: -1};
+
+  for (const {args} of claims) {
+    const key = (args.minter ?? '').toLowerCase();
+    const current = entry(key);
+
+    totals.set(key, {...current, passes: current.passes + 1});
+  }
+
+  for (const {args} of mints) {
+    const key = (args.minter ?? '').toLowerCase();
+    const current = entry(key);
+    const tier = Number(args.tier ?? 0);
+
+    totals.set(key, {
+      ...current,
+      artifacts: current.artifacts + 1,
+      spent: current.spent + BigInt(args.price ?? '0'),
+      bestTier: Math.max(current.bestTier, tier),
+    });
+  }
+
+  return [...totals.entries()]
+    .map(([address, value]) => ({address, ...value, tokens: value.passes + value.artifacts}))
+    // Ranked by what they spent, then by how many they hold: a Legendary buyer
+    // outranks someone who minted ten Commons, which is what the prices mean.
+    .sort((a, b) => (b.spent === a.spent ? b.tokens - a.tokens : b.spent > a.spent ? 1 : -1))
+    .slice(0, limit)
+    .map((value, index) => ({
+      rank: index + 1,
+      address: getAddress(value.address),
+      tokens: value.tokens,
+      passes: value.passes,
+      artifacts: value.artifacts,
+      spentWei: value.spent.toString(),
+      spentEth: formatEther(value.spent),
+      bestTier: TIER_NAMES[value.bestTier] ?? '',
+    }));
+};

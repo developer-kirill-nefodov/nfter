@@ -1,4 +1,4 @@
-import {getStatsController} from '../../controllers/stats';
+import {getCollectorsController, getStatsController} from '../../controllers/stats';
 import {apiLimiter} from '../../middlewares/rate-limit';
 import type {IAnyRouter} from '../index';
 
@@ -10,6 +10,12 @@ const StatsRouter: IAnyRouter = {
       path: 'public',
       middleware: [apiLimiter],
       handler: getStatsController,
+    },
+    {
+      method: 'get',
+      path: 'collectors',
+      middleware: [apiLimiter],
+      handler: getCollectorsController,
     },
   ],
 };

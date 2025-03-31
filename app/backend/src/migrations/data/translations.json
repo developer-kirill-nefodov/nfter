@@ -162,6 +162,19 @@
       "copyUri": "Copy tokenURI",
       "copied": "Copied",
       "copyFailed": "Could not copy"
+    },
+    "rating": {
+      "nav": "Rating",
+      "title": "Rating",
+      "subtitle": "Two boards, both folded out of the chain’s own event log — so anyone can recompute either one and get the same numbers.",
+      "tabs": {
+        "donors": "Donations",
+        "collectors": "Collectors"
+      },
+      "emptyDonors": "No donations yet — the first name on the board could be yours.",
+      "emptyCollectors": "Nobody has minted anything yet. Be the first.",
+      "bestTier": "Best: {{tier}}",
+      "spent": "{{amount}} Ξ spent"
     }
   },
   "DE": {
@@ -327,6 +340,19 @@
       "copyUri": "tokenURI kopieren",
       "copied": "Kopiert",
       "copyFailed": "Kopieren fehlgeschlagen"
+    },
+    "rating": {
+      "nav": "Rangliste",
+      "title": "Rangliste",
+      "subtitle": "Zwei Ranglisten, beide aus dem Event-Log der Chain berechnet — jede lässt sich unabhängig nachrechnen.",
+      "tabs": {
+        "donors": "Spenden",
+        "collectors": "Sammler"
+      },
+      "emptyDonors": "Noch keine Spenden — der erste Name könnte deiner sein.",
+      "emptyCollectors": "Noch hat niemand etwas geprägt. Sei die/der Erste.",
+      "bestTier": "Beste: {{tier}}",
+      "spent": "{{amount}} Ξ ausgegeben"
     }
   },
   "CN": {
@@ -492,6 +518,19 @@
       "copyUri": "复制 tokenURI",
       "copied": "已复制",
       "copyFailed": "复制失败"
+    },
+    "rating": {
+      "nav": "排行榜",
+      "title": "排行榜",
+      "subtitle": "两个榜单，都由链上事件日志推导得出——任何人都能自行重算，结果一致。",
+      "tabs": {
+        "donors": "打赏",
+        "collectors": "收藏家"
+      },
+      "emptyDonors": "还没有打赏——榜首可以是你。",
+      "emptyCollectors": "还没有人铸造过，来做第一个吧。",
+      "bestTier": "最高：{{tier}}",
+      "spent": "已花费 {{amount}} Ξ"
     }
   },
   "UA": {
@@ -657,6 +696,19 @@
       "copyUri": "Скопіювати tokenURI",
       "copied": "Скопійовано",
       "copyFailed": "Не вдалося скопіювати"
+    },
+    "rating": {
+      "nav": "Рейтинг",
+      "title": "Рейтинг",
+      "subtitle": "Дві таблиці, обидві згорнуті з лога подій мережі — кожен може перерахувати їх сам і отримати ті самі числа.",
+      "tabs": {
+        "donors": "Донати",
+        "collectors": "Колекціонери"
+      },
+      "emptyDonors": "Донатів ще немає — першим у рейтингу можете стати ви.",
+      "emptyCollectors": "Ще ніхто нічого не викарбував. Будьте першим.",
+      "bestTier": "Найкращий: {{tier}}",
+      "spent": "Витрачено {{amount}} Ξ"
     }
   }
 }
