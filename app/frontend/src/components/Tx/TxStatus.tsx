@@ -1,3 +1,4 @@
+import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
@@ -24,6 +25,20 @@ const TxStatus = () => {
   const dispatch = useStoreDispatch();
 
   const {kind, stage, hash, error, gasEstimate} = useStoreSelector((state) => state.tx);
+
+  // A confirmed transaction has nothing left to say, and the reveal dialog is
+  // already showing what it produced. Leaving the panel pinned to the corner
+  // just makes the user tidy up after us. A failure stays until dismissed —
+  // that one they have to read.
+  useEffect(() => {
+    if (stage !== 'confirmed') {
+      return;
+    }
+
+    const timer = setTimeout(() => dispatch(txReset()), 5000);
+
+    return () => clearTimeout(timer);
+  }, [dispatch, stage]);
 
   if (stage === 'idle' || !kind) {
     return null;
