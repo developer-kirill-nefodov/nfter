@@ -26,3 +26,14 @@ export interface ILeaderboardEntry {
   tips: number;
   lastMessage: string;
 }
+
+export interface ICollectorEntry {
+  rank: number;
+  address: string;
+  tokens: number;
+  passes: number;
+  artifacts: number;
+  spentWei: string;
+  spentEth: string;
+  bestTier: string;
+}

@@ -161,5 +161,18 @@
     "copyUri": "Copy tokenURI",
     "copied": "Copied",
     "copyFailed": "Could not copy"
+  },
+  "rating": {
+    "nav": "Rating",
+    "title": "Rating",
+    "subtitle": "Two boards, both folded out of the chain’s own event log — so anyone can recompute either one and get the same numbers.",
+    "tabs": {
+      "donors": "Donations",
+      "collectors": "Collectors"
+    },
+    "emptyDonors": "No donations yet — the first name on the board could be yours.",
+    "emptyCollectors": "Nobody has minted anything yet. Be the first.",
+    "bestTier": "Best: {{tier}}",
+    "spent": "{{amount}} Ξ spent"
   }
 }

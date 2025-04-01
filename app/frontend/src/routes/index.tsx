@@ -11,7 +11,7 @@ import RequireRole, {type IRouteAccess} from './RequireRole';
 // gallery, and the gallery chunk is where ethers lives.
 const LandingPage = lazy(() => import('../screens/Landing'));
 const HomePage = lazy(() => import('../screens/Home'));
-const TipPage = lazy(() => import('../screens/Tip'));
+const RatingPage = lazy(() => import('../screens/Rating'));
 const CollectPage = lazy(() => import('../screens/Collect'));
 const LoginPage = lazy(() => import('../screens/Auth/Login'));
 const RegisterPage = lazy(() => import('../screens/Auth/Register'));
@@ -36,7 +36,7 @@ export const appRoutes: IAppRoute[] = [
     access: 'authenticated',
     redirect: NavigateUrls.auth.login,
   },
-  {path: NavigateUrls.tip, element: <TipPage />, access: 'public'},
+  {path: NavigateUrls.rating, element: <RatingPage />, access: 'public'},
   {path: NavigateUrls.collect, element: <CollectPage />, access: 'public'},
   {
     path: NavigateUrls.auth.login,

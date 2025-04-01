@@ -1,5 +1,5 @@
 import {api} from './client';
-import type {ILeaderboardEntry, IPublicStats} from '../types/stats';
+import type {ICollectorEntry, ILeaderboardEntry, IPublicStats} from '../types/stats';
 
 export const statsApi = {
   /** Public: the landing page must explain itself before anyone connects. */
@@ -10,6 +10,11 @@ export const statsApi = {
 
   leaderboard: async (): Promise<ILeaderboardEntry[]> => {
     const {data} = await api.get<{entries: ILeaderboardEntry[]}>('/tips/leaderboard');
+    return data.entries;
+  },
+
+  collectors: async (): Promise<ICollectorEntry[]> => {
+    const {data} = await api.get<{entries: ICollectorEntry[]}>('/stats/collectors');
     return data.entries;
   },
 };

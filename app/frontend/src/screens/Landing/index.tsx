@@ -61,7 +61,7 @@ const LandingPage = () => {
             <Link to={isVisitor ? NavigateUrls.auth.register : NavigateUrls.dashboard}>
               <Button>{t(isVisitor ? 'landing.getStarted' : 'landing.openDashboard')}</Button>
             </Link>
-            <Link to={NavigateUrls.tip}>
+            <Link to={NavigateUrls.rating}>
               <Button variant="ghost">{t('landing.support')}</Button>
             </Link>
           </Row>

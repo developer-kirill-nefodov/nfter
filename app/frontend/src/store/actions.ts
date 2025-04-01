@@ -43,3 +43,5 @@ export const fetchTipsRequest = createAction<{refresh?: boolean} | undefined>('t
 /** Public numbers and recent mints for the landing page — no wallet needed. */
 export const fetchStatsRequest = createAction('stats/fetch');
 export const fetchLeaderboardRequest = createAction('stats/leaderboard');
+/** Who has collected the most — the second board on the rating page. */
+export const fetchCollectorsRequest = createAction('stats/collectors');

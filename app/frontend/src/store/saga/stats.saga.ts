@@ -1,9 +1,9 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {statsApi} from '../../api/stats';
-import type {ILeaderboardEntry, IPublicStats} from '../../types/stats';
-import {fetchLeaderboardRequest, fetchStatsRequest} from '../actions';
-import {setLeaderboard, setStats, setStatsLoaded} from '../reducers/stats-slice';
+import type {ICollectorEntry, ILeaderboardEntry, IPublicStats} from '../../types/stats';
+import {fetchCollectorsRequest, fetchLeaderboardRequest, fetchStatsRequest} from '../actions';
+import {setCollectors, setLeaderboard, setStats, setStatsLoaded} from '../reducers/stats-slice';
 
 function* fetchStatsSaga() {
   try {
@@ -24,7 +24,17 @@ function* fetchLeaderboardSaga() {
   }
 }
 
+function* fetchCollectorsSaga() {
+  try {
+    const entries: ICollectorEntry[] = yield call(statsApi.collectors);
+    yield put(setCollectors(entries));
+  } catch {
+    yield put(setCollectors([]));
+  }
+}
+
 export function* statsSaga() {
+  yield takeLatest(fetchCollectorsRequest.type, fetchCollectorsSaga);
   yield takeLatest(fetchStatsRequest.type, fetchStatsSaga);
   yield takeLatest(fetchLeaderboardRequest.type, fetchLeaderboardSaga);
 }

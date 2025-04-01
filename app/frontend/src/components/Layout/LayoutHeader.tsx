@@ -36,7 +36,7 @@ const LayoutHeader = () => {
   const links = [
     ...(isVisitor ? [] : [{to: NavigateUrls.dashboard, label: t('nav.dashboard')}]),
     {to: NavigateUrls.collect, label: t('collect.nav')},
-    {to: NavigateUrls.tip, label: t('tip.nav')},
+    {to: NavigateUrls.rating, label: t('rating.nav')},
   ];
 
   const nav = links.map(({to, label}) => (
