@@ -49,8 +49,11 @@ interface IErc721 {
 const contractAt = (address: string) =>
   new Contract(address, ERC721_ABI, provider) as unknown as IErc721;
 
-/** The two collections this app knows about: the pass, and the paid artifacts. */
-export const COLLECTIONS = [env.web3.nftContract, env.web3.artifacts];
+/**
+ * Artifacts first: they are what people buy, collect and come back for. The pass
+ * is a membership card — it belongs under the collection, not above it.
+ */
+export const COLLECTIONS = [env.web3.artifacts, env.web3.nftContract];
 
 const METADATA_FETCH_TIMEOUT_MS = 5_000;
 
