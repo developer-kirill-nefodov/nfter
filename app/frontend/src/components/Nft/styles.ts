@@ -2,18 +2,39 @@ import styled, {css, keyframes} from 'styled-components';
 
 import {focusRing} from '../../styles';
 
+const RARITY_COLOURS: Record<string, string> = {
+  common: '#9aa4b8',
+  rare: '#38bdf8',
+  epic: '#c084fc',
+  legendary: '#fbbf24',
+};
+
 export const Grid = styled.div`
   display: grid;
   gap: ${({theme}) => theme.space.lg};
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 `;
 
-export const NftArticle = styled.article`
+export const NftArticle = styled.article<{$rarity?: string}>`
   overflow: hidden;
   background: ${({theme}) => theme.colors.surface};
-  border: 1px solid ${({theme}) => theme.colors.border};
+  border: 1px solid
+    ${({theme, $rarity}) =>
+      ($rarity && RARITY_COLOURS[$rarity]) || theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
-  transition: transform ${({theme}) => theme.transitions.base};
+  transition:
+    transform ${({theme}) => theme.transitions.base},
+    box-shadow ${({theme}) => theme.transitions.base};
+
+  /* The tier is the thing people paid for — it should be visible from across the
+     room, not hidden in a caption. */
+  ${({$rarity}) =>
+    $rarity &&
+    RARITY_COLOURS[$rarity] &&
+    css`
+      box-shadow: 0 0 0 1px ${RARITY_COLOURS[$rarity]}22,
+        0 0 24px -14px ${RARITY_COLOURS[$rarity]};
+    `};
 
   &:hover {
     transform: translateY(-4px);
@@ -64,7 +85,8 @@ export const Attributes = styled.dl`
 export const Attribute = styled.div`
   display: flex;
   gap: ${({theme}) => theme.space.xs};
-  padding: ${({theme}) => `2px ${theme.space.sm}`};
+  padding: ${({theme}) => `3px ${theme.space.sm}`};
+  border: 1px solid ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.pill};
   background: ${({theme}) => theme.colors.surfaceRaised};
   font-size: ${({theme}) => theme.fontSizes.xs};
@@ -75,6 +97,7 @@ export const Attribute = styled.div`
 
   dd {
     margin: 0;
+    color: ${({theme}) => theme.colors.text};
     font-weight: 700;
   }
 `;
@@ -107,12 +130,6 @@ export const ClaimCard = styled.section`
 
 // ------------------------------------------------------------------ NFT dialog
 
-const RARITY_COLOURS: Record<string, string> = {
-  common: '#8b93a7',
-  rare: '#22d3ee',
-  epic: '#a78bfa',
-  legendary: '#fbbf24',
-};
 
 export const ModalHeader = styled.div`
   display: flex;

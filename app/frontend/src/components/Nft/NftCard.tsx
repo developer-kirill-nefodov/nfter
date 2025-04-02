@@ -34,7 +34,7 @@ const NftCard = ({nft, onOpen}: INftCard) => {
     // The whole card is the button: the art is what this project is about, and a
     // gallery you cannot open is a dead end.
     <CardTrigger type="button" onClick={() => onOpen(nft)} aria-label={`Open ${nft.name}`}>
-      <NftArticle>
+      <NftArticle $rarity={rarity.toLowerCase()}>
         {nft.image && !broken ? (
           <CardImage
             src={nft.image}

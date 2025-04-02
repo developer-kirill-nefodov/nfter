@@ -17,7 +17,7 @@ export const theme = {
     surfaceRaised: '#20242f',
     border: '#2b3040',
     text: '#e8eaf0',
-    textMuted: '#8b93a7',
+    textMuted: '#a7b0c4',
     primary: '#6366f1',
     primaryHover: '#818cf8',
     accent: '#22d3ee',
@@ -25,6 +25,14 @@ export const theme = {
     warning: '#fbbf24',
     error: '#f87171',
     onPrimary: '#ffffff',
+
+    /** One place for the rarity palette — cards, badges and borders all read it. */
+    rarity: {
+      common: '#9aa4b8',
+      rare: '#38bdf8',
+      epic: '#c084fc',
+      legendary: '#fbbf24',
+    },
   },
   space: {
     xs: '4px',
