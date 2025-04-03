@@ -37,3 +37,17 @@ export interface ICollectorEntry {
   spentEth: string;
   bestTier: string;
 }
+
+export type IActivityKind = 'artifact' | 'pass' | 'tip';
+
+export interface IActivityItem {
+  kind: IActivityKind;
+  actor: string;
+  tokenId?: string;
+  tier?: string;
+  priceEth?: string;
+  amountEth?: string;
+  message?: string;
+  txHash: string;
+  blockNumber: number;
+}

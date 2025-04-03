@@ -5,7 +5,10 @@ import {formatAddress} from '../../web3/wallet';
 import Spinner from '../Spinner';
 
 import Podium, {type IPodiumEntry} from './Podium';
-import {Avatar, Empty, Rank, RowItem, RowMain, RowValue, Table} from './styles';
+import {Avatar, Empty, EmptyRow, Rank, RowItem, RowMain, RowValue, Table} from './styles';
+
+/** How many places the board shows, filled or not. */
+const PLACES = 20;
 
 export interface IBoardRow extends IPodiumEntry {
   rank: number;
@@ -39,12 +42,17 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
   }
 
   const rest = rows.slice(3);
+  // The empty places are shown on purpose: a board with three names and nothing
+  // under them reads as broken. Twenty slots read as a board waiting to be filled.
+  const vacant = Array.from({length: Math.max(0, PLACES - rows.length)}, (_, index) => ({
+    rank: rows.length + index + 1,
+  }));
 
   return (
     <>
       <Podium entries={rows.slice(0, 3)} you={you} />
 
-      {rest.length > 0 && (
+      {(rest.length > 0 || vacant.length > 0) && (
         <Table>
           {rest.map((row) => {
             const isYou = you?.toLowerCase() === row.address.toLowerCase();
@@ -70,6 +78,13 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
               </RowItem>
             );
           })}
+
+          {vacant.map((slot) => (
+            <EmptyRow key={`vacant-${slot.rank}`} aria-hidden="true">
+              <Rank>#{slot.rank}</Rank>
+              <span>{t('rating.vacant')}</span>
+            </EmptyRow>
+          ))}
         </Table>
       )}
     </>

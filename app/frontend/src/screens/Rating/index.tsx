@@ -3,6 +3,8 @@ import {useTranslation} from 'react-i18next';
 
 import Board, {type IBoardRow} from '../../components/Rating/Board';
 import {Tab, Tabs} from '../../components/Rating/styles';
+import Button from '../../components/Button';
+import Modal from '../../components/Modal';
 import TipForm from '../../components/Tip/TipForm';
 import {fetchCollectorsRequest, fetchLeaderboardRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
@@ -23,6 +25,7 @@ const RatingPage = () => {
   const dispatch = useStoreDispatch();
 
   const [board, setBoard] = useState<IBoardKey>('donors');
+  const [donating, setDonating] = useState(false);
 
   const {leaderboard, collectors, loading} = useStoreSelector((state) => state.stats);
   const wallet = useStoreSelector((state) => state.user.user.walletAddress);
@@ -60,7 +63,7 @@ const RatingPage = () => {
         <Subtitle>{t('rating.subtitle')}</Subtitle>
       </Stack>
 
-      <Row $justify="center">
+      <Row $justify="space-between" $wrap $gap="16px">
         <Tabs role="tablist">
           {(['donors', 'collectors'] as const).map((key) => (
             <Tab
@@ -75,6 +78,10 @@ const RatingPage = () => {
             </Tab>
           ))}
         </Tabs>
+
+        {/* The form used to sit on the page, taking a screenful whether or not
+            anyone wanted it. It is one click away instead. */}
+        <Button onClick={() => setDonating(true)}>{t('tip.open')}</Button>
       </Row>
 
       <Stack $gap="24px">
@@ -86,9 +93,11 @@ const RatingPage = () => {
         />
       </Stack>
 
-      {/* The way onto the board — right below it, where someone who has just seen
-          the ranking might actually want it. */}
-      <TipForm />
+      {donating && (
+        <Modal open onClose={() => setDonating(false)} label={t('tip.title')}>
+          <TipForm />
+        </Modal>
+      )}
     </Stack>
   );
 };

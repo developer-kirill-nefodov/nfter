@@ -45,3 +45,5 @@ export const fetchStatsRequest = createAction('stats/fetch');
 export const fetchLeaderboardRequest = createAction('stats/leaderboard');
 /** Who has collected the most — the second board on the rating page. */
 export const fetchCollectorsRequest = createAction('stats/collectors');
+/** The scrolling feed of mints and tips. */
+export const fetchActivityRequest = createAction('stats/activity');

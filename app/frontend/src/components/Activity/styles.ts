@@ -1,0 +1,122 @@
+import styled, {keyframes} from 'styled-components';
+
+const ROW = 56;
+const VISIBLE = 5;
+
+const scroll = keyframes`
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+`;
+
+export const Viewport = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({theme}) => theme.space.sm};
+`;
+
+/**
+ * A window onto the feed. The track inside is twice as tall as the list and
+ * scrolls exactly half its height, so the loop is seamless: the copy arrives
+ * where the original left.
+ */
+export const Track = styled.div<{$count: number}>`
+  position: relative;
+  height: ${VISIBLE * ROW}px;
+  overflow: hidden;
+  border: 1px solid ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.lg};
+  background: ${({theme}) => theme.colors.surface};
+
+  /* Faded top and bottom, so rows arrive and leave instead of being chopped. */
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    #000 12%,
+    #000 88%,
+    transparent
+  );
+`;
+
+export const Marquee = styled.div`
+  display: flex;
+  flex-direction: column;
+  animation: 28s linear infinite ${scroll};
+
+  /* Read it, don't chase it. */
+  ${Track}:hover & {
+    animation-play-state: paused;
+  }
+
+  /* A page that moves on its own is a page some people cannot use. */
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`;
+
+export const Item = styled.a`
+  display: grid;
+  align-items: center;
+  gap: ${({theme}) => theme.space.md};
+  grid-template-columns: 2rem 1fr auto;
+  height: ${ROW}px;
+  padding: 0 ${({theme}) => theme.space.lg};
+  text-decoration: none;
+  border-bottom: 1px solid ${({theme}) => theme.colors.border};
+  transition: background ${({theme}) => theme.transitions.fast};
+
+  &:hover {
+    background: ${({theme}) => theme.colors.surfaceRaised};
+  }
+`;
+
+export const Dot = styled.span<{$kind: string}>`
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: ${({theme}) => theme.colors.surfaceRaised};
+  border: 1px solid
+    ${({theme, $kind}) =>
+      $kind === 'tip'
+        ? theme.colors.warning
+        : $kind === 'pass'
+          ? theme.colors.border
+          : theme.colors.primary};
+  font-size: 14px;
+`;
+
+export const Line = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: ${({theme}) => theme.space.sm};
+  min-width: 0;
+
+  strong {
+    color: ${({theme}) => theme.colors.text};
+    font-size: ${({theme}) => theme.fontSizes.sm};
+  }
+
+  span {
+    color: ${({theme}) => theme.colors.textMuted};
+    font-size: ${({theme}) => theme.fontSizes.sm};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`;
+
+export const Value = styled.strong<{$kind: string}>`
+  color: ${({theme, $kind}) => ($kind === 'tip' ? theme.colors.warning : theme.colors.success)};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+  font-variant-numeric: tabular-nums;
+`;
+
+export const Empty = styled.div`
+  padding: ${({theme}) => theme.space.xl};
+  text-align: center;
+  color: ${({theme}) => theme.colors.textMuted};
+  background: ${({theme}) => theme.colors.surface};
+  border: 1px dashed ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.lg};
+`;

@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {sendTipRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
-import {Card, Row, Stack, Subtitle, Title} from '../../styles';
+import {Row, Stack, Subtitle, Title} from '../../styles';
 import {explorerAddress} from '../../web3/contracts';
 import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
 import Button from '../Button';
@@ -38,8 +38,7 @@ const TipForm = () => {
   const valid = parsed > 0n && message.length <= MAX_MESSAGE;
 
   return (
-    <Card>
-      <Stack $gap="24px">
+    <Stack $gap="24px">
         <Stack $gap="4px">
           <Title as="h2">{t('tip.title')}</Title>
           <Subtitle>{t('tip.subtitle', {chain: CHAIN_NAME})}</Subtitle>
@@ -112,8 +111,7 @@ const TipForm = () => {
             · {t('tip.raised', {amount: feed.totalTipsEth, count: feed.tipCount})}
           </Subtitle>
         )}
-      </Stack>
-    </Card>
+    </Stack>
   );
 };
 

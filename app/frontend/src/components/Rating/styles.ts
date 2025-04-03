@@ -184,3 +184,24 @@ export const Empty = styled.div`
   border: 1px dashed ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
 `;
+
+/** A place nobody has taken yet — shown, not hidden. */
+export const EmptyRow = styled.div`
+  display: grid;
+  align-items: center;
+  gap: ${({theme}) => theme.space.md};
+  grid-template-columns: 2.5rem 1fr;
+  padding: ${({theme}) => `${theme.space.md} ${theme.space.lg}`};
+  background: ${({theme}) => theme.colors.surface};
+  border-bottom: 1px dashed ${({theme}) => theme.colors.border};
+  opacity: 0.45;
+
+  &:last-child {
+    border-bottom: 0;
+  }
+
+  span {
+    color: ${({theme}) => theme.colors.textMuted};
+    font-size: ${({theme}) => theme.fontSizes.sm};
+  }
+`;
