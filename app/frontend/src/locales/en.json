@@ -95,7 +95,8 @@
     "leaderboardEmpty": "No supporters yet — the first name on the board could be yours.",
     "you": "(you)",
     "tipsCount": "{{count}} tip",
-    "tipsCount_other": "{{count}} tips"
+    "tipsCount_other": "{{count}} tips",
+    "open": "Donate"
   },
   "landing": {
     "badge": "Live on {{chain}}",
@@ -173,6 +174,16 @@
     "emptyDonors": "No donations yet — the first name on the board could be yours.",
     "emptyCollectors": "Nobody has minted anything yet. Be the first.",
     "bestTier": "Best: {{tier}}",
-    "spent": "{{amount}} Ξ spent"
+    "spent": "{{amount}} Ξ spent",
+    "vacant": "Waiting for someone"
+  },
+  "activity": {
+    "title": "Activity",
+    "empty": "Nothing has happened on chain yet.",
+    "hint": "Live from the contracts. Hover to pause; click a row to open the transaction.",
+    "minted": "minted a {{tier}} artifact",
+    "claimed": "claimed a pass",
+    "tipped": "donated {{amount}} Ξ",
+    "free": "free"
   }
 }
