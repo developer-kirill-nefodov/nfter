@@ -96,7 +96,8 @@
       "leaderboardEmpty": "No supporters yet — the first name on the board could be yours.",
       "you": "(you)",
       "tipsCount": "{{count}} tip",
-      "tipsCount_other": "{{count}} tips"
+      "tipsCount_other": "{{count}} tips",
+      "open": "Donate"
     },
     "landing": {
       "badge": "Live on {{chain}}",
@@ -174,7 +175,17 @@
       "emptyDonors": "No donations yet — the first name on the board could be yours.",
       "emptyCollectors": "Nobody has minted anything yet. Be the first.",
       "bestTier": "Best: {{tier}}",
-      "spent": "{{amount}} Ξ spent"
+      "spent": "{{amount}} Ξ spent",
+      "vacant": "Waiting for someone"
+    },
+    "activity": {
+      "title": "Activity",
+      "empty": "Nothing has happened on chain yet.",
+      "hint": "Live from the contracts. Hover to pause; click a row to open the transaction.",
+      "minted": "minted a {{tier}} artifact",
+      "claimed": "claimed a pass",
+      "tipped": "donated {{amount}} Ξ",
+      "free": "free"
     }
   },
   "DE": {
@@ -274,7 +285,8 @@
       "leaderboardEmpty": "Noch keine Unterstützer — der erste Name könnte deiner sein.",
       "you": "(du)",
       "tipsCount": "{{count}} Trinkgeld",
-      "tipsCount_other": "{{count}} Trinkgelder"
+      "tipsCount_other": "{{count}} Trinkgelder",
+      "open": "Spenden"
     },
     "landing": {
       "badge": "Live auf {{chain}}",
@@ -352,7 +364,17 @@
       "emptyDonors": "Noch keine Spenden — der erste Name könnte deiner sein.",
       "emptyCollectors": "Noch hat niemand etwas geprägt. Sei die/der Erste.",
       "bestTier": "Beste: {{tier}}",
-      "spent": "{{amount}} Ξ ausgegeben"
+      "spent": "{{amount}} Ξ ausgegeben",
+      "vacant": "Wartet auf jemanden"
+    },
+    "activity": {
+      "title": "Aktivität",
+      "empty": "Auf der Chain ist noch nichts passiert.",
+      "hint": "Live aus den Contracts. Zum Pausieren darüberfahren, für die Transaktion klicken.",
+      "minted": "prägte ein {{tier}}-Artefakt",
+      "claimed": "holte einen Pass",
+      "tipped": "spendete {{amount}} Ξ",
+      "free": "gratis"
     }
   },
   "CN": {
@@ -452,7 +474,8 @@
       "leaderboardEmpty": "还没有支持者——榜首可以是你。",
       "you": "（你）",
       "tipsCount": "{{count}} 次打赏",
-      "tipsCount_other": "{{count}} 次打赏"
+      "tipsCount_other": "{{count}} 次打赏",
+      "open": "打赏"
     },
     "landing": {
       "badge": "已上线 {{chain}}",
@@ -530,7 +553,17 @@
       "emptyDonors": "还没有打赏——榜首可以是你。",
       "emptyCollectors": "还没有人铸造过，来做第一个吧。",
       "bestTier": "最高：{{tier}}",
-      "spent": "已花费 {{amount}} Ξ"
+      "spent": "已花费 {{amount}} Ξ",
+      "vacant": "虚位以待"
+    },
+    "activity": {
+      "title": "动态",
+      "empty": "链上还没有任何记录。",
+      "hint": "实时来自合约。悬停暂停，点击查看交易。",
+      "minted": "铸造了一个{{tier}}神器",
+      "claimed": "领取了通行证",
+      "tipped": "打赏了 {{amount}} Ξ",
+      "free": "免费"
     }
   },
   "UA": {
@@ -630,7 +663,8 @@
       "leaderboardEmpty": "Прихильників ще немає — першим у рейтингу можете стати ви.",
       "you": "(ви)",
       "tipsCount": "{{count}} донат",
-      "tipsCount_other": "{{count}} донатів"
+      "tipsCount_other": "{{count}} донатів",
+      "open": "Задонатити"
     },
     "landing": {
       "badge": "Працює в {{chain}}",
@@ -708,7 +742,17 @@
       "emptyDonors": "Донатів ще немає — першим у рейтингу можете стати ви.",
       "emptyCollectors": "Ще ніхто нічого не викарбував. Будьте першим.",
       "bestTier": "Найкращий: {{tier}}",
-      "spent": "Витрачено {{amount}} Ξ"
+      "spent": "Витрачено {{amount}} Ξ",
+      "vacant": "Чекає на когось"
+    },
+    "activity": {
+      "title": "Активність",
+      "empty": "У мережі ще нічого не сталося.",
+      "hint": "Наживо з контрактів. Наведіть, щоб зупинити; клацніть, щоб відкрити транзакцію.",
+      "minted": "викарбував артефакт {{tier}}",
+      "claimed": "отримав пас",
+      "tipped": "задонатив {{amount}} Ξ",
+      "free": "безкоштовно"
     }
   }
 }

@@ -175,6 +175,8 @@ export interface ICollectorEntry {
 
 const TIER_NAMES = ['Common', 'Rare', 'Epic', 'Legendary'];
 
+const ZERO = '0x0000000000000000000000000000000000000000';
+
 /**
  * Who has collected what, folded out of the indexed mint events.
  *
@@ -182,7 +184,7 @@ const TIER_NAMES = ['Common', 'Rare', 'Epic', 'Legendary'];
  * this one sums what people minted. Both are recomputable by anyone from the
  * chain — which is the whole reason the events exist.
  */
-export const getCollectors = async (limit = 10): Promise<ICollectorEntry[]> => {
+export const getCollectors = async (limit = 20): Promise<ICollectorEntry[]> => {
   const [claims, mints] = await Promise.all([
     readEvents(env.web3.nftContract, 'Claimed'),
     readEvents(env.web3.artifacts, 'Minted'),
@@ -232,4 +234,63 @@ export const getCollectors = async (limit = 10): Promise<ICollectorEntry[]> => {
       spentEth: formatEther(value.spent),
       bestTier: TIER_NAMES[value.bestTier] ?? '',
     }));
+};
+
+export type IActivityKind = 'artifact' | 'pass' | 'tip';
+
+export interface IActivityItem {
+  kind: IActivityKind;
+  actor: string;
+  /** Token id for a mint, wei amount for a tip. */
+  tokenId?: string;
+  tier?: string;
+  priceEth?: string;
+  amountEth?: string;
+  message?: string;
+  txHash: string;
+  blockNumber: number;
+}
+
+/**
+ * Everything that has happened on these contracts, newest first.
+ *
+ * The collection page was a wall of your own tokens and nothing else — no sign
+ * that anyone else exists. This is the pulse: who minted what, who tipped, and
+ * for how much. It comes out of the index, so showing it costs a SELECT.
+ */
+export const getActivity = async (limit = 30): Promise<IActivityItem[]> => {
+  const [claims, mints, tips] = await Promise.all([
+    readEvents(env.web3.nftContract, 'Claimed'),
+    readEvents(env.web3.artifacts, 'Minted'),
+    readEvents(env.web3.tipJar, 'Tipped'),
+  ]);
+
+  const items: IActivityItem[] = [
+    ...mints.map(({args, txHash, blockNumber}) => ({
+      kind: 'artifact' as const,
+      actor: getAddress(args.minter ?? ZERO),
+      tokenId: args.tokenId,
+      tier: TIER_NAMES[Number(args.tier ?? 0)],
+      priceEth: formatEther(args.price ?? '0'),
+      txHash,
+      blockNumber,
+    })),
+    ...claims.map(({args, txHash, blockNumber}) => ({
+      kind: 'pass' as const,
+      actor: getAddress(args.minter ?? ZERO),
+      tokenId: args.tokenId,
+      txHash,
+      blockNumber,
+    })),
+    ...tips.map(({args, txHash, blockNumber}) => ({
+      kind: 'tip' as const,
+      actor: getAddress(args.from ?? ZERO),
+      amountEth: formatEther(args.amount ?? '0'),
+      message: args.message,
+      txHash,
+      blockNumber,
+    })),
+  ];
+
+  return items.sort((a, b) => b.blockNumber - a.blockNumber).slice(0, limit);
 };

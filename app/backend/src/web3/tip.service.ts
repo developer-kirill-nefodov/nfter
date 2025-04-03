@@ -155,7 +155,7 @@ export const refreshTipFeed = async (): Promise<ITipFeed> => {
  * answer. That verifiability is the whole argument for routing tips through a
  * contract instead of sending ETH wallet-to-wallet.
  */
-export const getLeaderboard = async (limit = 10): Promise<ILeaderboardEntry[]> => {
+export const getLeaderboard = async (limit = 20): Promise<ILeaderboardEntry[]> => {
   const tips = await allTips();
 
   const totals = new Map<string, {wei: bigint; tips: number; lastMessage: string}>();
