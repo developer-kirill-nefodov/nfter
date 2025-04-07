@@ -1,11 +1,12 @@
 import {lazy, Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
 
-import Spinner from '../components/Spinner';
-import {Row} from '../styles';
+import {Skeleton, SkeletonCard, SkeletonGrid} from '../components/Skeleton';
 import {NavigateUrls} from '../utils/navigate-urls';
 
+import PageTransition from './PageTransition';
 import RequireRole, {type IRouteAccess} from './RequireRole';
+import {PageSkeleton} from './styles';
 
 // Route-level code splitting: a visitor on the login screen never downloads the
 // gallery, and the gallery chunk is where ethers lives.
@@ -64,10 +65,24 @@ export const appRoutes: IAppRoute[] = [
   },
 ];
 
+/**
+ * The shape of a page, before the page exists.
+ *
+ * A centred spinner collapses the layout to nothing and then throws the real
+ * content in — which is exactly the jump you see when flipping between routes.
+ * Holding the space costs one component and removes the jump entirely.
+ */
 const Fallback = () => (
-  <Row $justify="center" style={{padding: '80px 0'}}>
-    <Spinner size={32} />
-  </Row>
+  <PageSkeleton>
+    <Skeleton $height="36px" $width="220px" />
+    <Skeleton $height="18px" $width="60%" />
+
+    <SkeletonGrid>
+      {Array.from({length: 4}, (_, index) => (
+        <SkeletonCard key={index} />
+      ))}
+    </SkeletonGrid>
+  </PageSkeleton>
 );
 
 const AppRoutes = () => (
@@ -79,14 +94,21 @@ const AppRoutes = () => (
           path={path}
           element={
             <RequireRole access={access} redirect={redirect}>
-              {element}
+              <PageTransition>{element}</PageTransition>
             </RequireRole>
           }
         />
       ))}
 
       {/* The catch-all the app never had: an unknown URL used to render nothing. */}
-      <Route path="*" element={<NotFoundPage />} />
+      <Route
+        path="*"
+        element={
+          <PageTransition>
+            <NotFoundPage />
+          </PageTransition>
+        }
+      />
     </Routes>
   </Suspense>
 );

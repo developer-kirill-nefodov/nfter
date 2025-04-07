@@ -43,10 +43,12 @@ const renderGate = (
 };
 
 describe('RequireRole', () => {
-  it('shows a spinner while the session is still being resolved', () => {
+  it('holds the page layout while the session is still being resolved', () => {
     renderGate('authenticated', 'VISITOR', true);
 
-    expect(screen.getByRole('status')).toBeInTheDocument();
+    // A skeleton, not a spinner: a spinner collapses the layout to nothing and
+    // then throws the real content in, which is the jump users complain about.
+    expect(screen.getByRole('status')).toHaveAttribute('aria-busy', 'true');
   });
 
   it('sends a visitor away from an authenticated route', () => {

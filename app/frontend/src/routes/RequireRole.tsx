@@ -1,10 +1,11 @@
 import type {ReactElement} from 'react';
 import {Navigate} from 'react-router-dom';
 
-import Spinner from '../components/Spinner';
+import {Skeleton, SkeletonCard, SkeletonGrid} from '../components/Skeleton';
 import {useStoreSelector} from '../store/hooks';
-import {Row} from '../styles';
 import type {IRoleName} from '../types/user';
+
+import {PageSkeleton} from './styles';
 
 export type IRouteAccess = 'public' | 'visitor' | 'authenticated';
 
@@ -25,9 +26,15 @@ const RequireRole = ({access, redirect, children}: IRequireRole) => {
 
   if (loading) {
     return (
-      <Row $justify="center" style={{padding: '80px 0'}}>
-        <Spinner size={32} />
-      </Row>
+      <PageSkeleton role="status" aria-busy="true" aria-label="Loading">
+        <Skeleton $height="36px" $width="220px" />
+        <Skeleton $height="18px" $width="55%" />
+        <SkeletonGrid>
+          {Array.from({length: 4}, (_, index) => (
+            <SkeletonCard key={index} />
+          ))}
+        </SkeletonGrid>
+      </PageSkeleton>
     );
   }
 
