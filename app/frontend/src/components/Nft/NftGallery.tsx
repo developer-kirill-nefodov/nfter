@@ -7,7 +7,8 @@ import {fetchNftsRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
-import Spinner from '../Spinner';
+import Refresh from '../Refresh';
+import {SkeletonCard, SkeletonGrid} from '../Skeleton';
 
 import {NavigateUrls} from '../../utils/navigate-urls';
 import type {INft} from '../../types/nft';
@@ -24,11 +25,15 @@ const NftGallery = () => {
   const {holdings, loading, error} = useStoreSelector((state) => state.nft);
   const [open, setOpen] = useState<{nft: INft; contract: string} | null>(null);
 
-  if (loading) {
+  // The grid keeps its shape while the chain answers, so nothing jumps into
+  // place when it does.
+  if (loading && !holdings) {
     return (
-      <Row $justify="center" style={{padding: '64px 0'}}>
-        <Spinner size={32} label={t('nft.loading')} />
-      </Row>
+      <SkeletonGrid aria-label={t('nft.loading')} aria-busy="true">
+        {Array.from({length: 4}, (_, index) => (
+          <SkeletonCard key={index} />
+        ))}
+      </SkeletonGrid>
     );
   }
 
@@ -60,9 +65,10 @@ const NftGallery = () => {
   return (
     <Stack $gap="32px">
       <Row $justify="flex-end">
-        <Button variant="ghost" onClick={() => dispatch(fetchNftsRequest({refresh: true}))}>
-          {t('nft.refresh')}
-        </Button>
+        <Refresh
+          spinning={loading}
+          onClick={() => dispatch(fetchNftsRequest({refresh: true}))}
+        />
       </Row>
 
       {owned.map((collection) => (
@@ -75,10 +81,11 @@ const NftGallery = () => {
           </Row>
 
           <Grid>
-            {collection.items.map((nft) => (
+            {collection.items.map((nft, index) => (
               <NftCard
                 key={`${collection.contract}-${nft.tokenId}`}
                 nft={nft}
+                index={index}
                 onOpen={() => setOpen({nft, contract: collection.contract})}
               />
             ))}

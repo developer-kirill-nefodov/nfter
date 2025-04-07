@@ -17,12 +17,14 @@ import {
 interface INftCard {
   nft: INft;
   onOpen: (nft: INft) => void;
+  /** Position in the grid — cards arrive one after another, not all at once. */
+  index?: number;
 }
 
 const rarityOf = (nft: INft) =>
   nft.attributes.find(({trait_type}) => trait_type === 'Tier' || trait_type === 'Rarity')?.value;
 
-const NftCard = ({nft, onOpen}: INftCard) => {
+const NftCard = ({nft, onOpen, index = 0}: INftCard) => {
   const [broken, setBroken] = useState(false);
 
   const rarity = String(rarityOf(nft) ?? '');
@@ -33,7 +35,12 @@ const NftCard = ({nft, onOpen}: INftCard) => {
   return (
     // The whole card is the button: the art is what this project is about, and a
     // gallery you cannot open is a dead end.
-    <CardTrigger type="button" onClick={() => onOpen(nft)} aria-label={`Open ${nft.name}`}>
+    <CardTrigger
+      type="button"
+      onClick={() => onOpen(nft)}
+      aria-label={`Open ${nft.name}`}
+      $delay={Math.min(index, 8) * 45}
+    >
       <NftArticle $rarity={rarity.toLowerCase()}>
         {nft.image && !broken ? (
           <CardImage

@@ -194,8 +194,20 @@ export const ModalLinks = styled.div`
   }
 `;
 
+const enter = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+`;
+
 /** The card is a button now: the art is the point, so it has to be openable. */
-export const CardTrigger = styled.button`
+export const CardTrigger = styled.button<{$delay?: number}>`
+  animation: 320ms ease both ${enter};
+  animation-delay: ${({$delay}) => $delay ?? 0}ms;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
   display: block;
   width: 100%;
   padding: 0;
