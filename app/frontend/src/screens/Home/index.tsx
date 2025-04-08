@@ -1,7 +1,6 @@
 import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
-import Activity from '../../components/Activity';
 import ClaimPass from '../../components/Nft/ClaimPass';
 import NftGallery from '../../components/Nft/NftGallery';
 import ConnectButton from '../../components/Wallet/ConnectButton';
@@ -78,11 +77,6 @@ const HomePage = () => {
       <Stack $gap="16px">
         <Title as="h2">{t('nft.title')}</Title>
         <NftGallery />
-      </Stack>
-
-      <Stack $gap="16px">
-        <Title as="h2">{t('activity.title')}</Title>
-        <Activity />
       </Stack>
     </Stack>
   );

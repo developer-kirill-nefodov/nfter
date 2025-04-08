@@ -10,11 +10,15 @@ export interface IPublicStats {
   chainId: number;
   passContract: string;
   tipJarContract: string;
+  artifactsContract: string;
   passesMinted: number;
+  artifactsMinted: number;
   holders: number;
   tipsTotalEth: string;
   tipCount: number;
   showcase: IShowcaseItem[];
+  /** The artifacts other people have actually bought — the shop window. */
+  artifactShowcase: IShowcaseItem[];
   deployed: boolean;
 }
 

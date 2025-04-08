@@ -153,7 +153,10 @@
     "buy": "Buy {{tier}} — {{price}} ETH",
     "hint": "A higher tier draws more rings, more colour, and Legendary ones spin.",
     "connectFirst": "Connect a wallet to buy an artifact.",
-    "signInFirst": "Sign in and connect a wallet to buy an artifact."
+    "signInFirst": "Sign in and connect a wallet to buy an artifact.",
+    "recent": "Recently bought",
+    "mintedSoFar": "{{count}} artifacts minted so far",
+    "noneYet": "Nobody has bought an artifact yet. The first one is yours to take."
   },
   "nftModal": {
     "revealTitle": "It’s yours",

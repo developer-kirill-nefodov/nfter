@@ -1,22 +1,39 @@
 import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import Activity from '../../components/Activity';
 import Button from '../../components/Button';
+import Modal from '../../components/Modal';
+import NftModal from '../../components/Nft/NftModal';
+import {SkeletonCard, SkeletonGrid} from '../../components/Skeleton';
+import TipForm from '../../components/Tip/TipForm';
 import ConnectButton from '../../components/Wallet/ConnectButton';
-import {fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
+import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
-import {TIERS, type ITier} from '../../web3/contracts';
+import type {INft} from '../../types/nft';
+import {ARTIFACTS_ADDRESS, TIERS, type ITier} from '../../web3/contracts';
+import {formatAddress} from '../../web3/wallet';
 
-import {Price, Remaining, TierCard, TierGrid, TierName, Sold} from './styles';
+import {
+  MintBar,
+  Minted,
+  Price,
+  Remaining,
+  Showcase,
+  ShowcaseCard,
+  Sold,
+  TierCard,
+  TierGrid,
+  TierName,
+} from './styles';
 
 /**
- * The tier is chosen and paid for, not rolled.
+ * The shop, and the room it stands in.
  *
- * A random tier would make this a slot machine — you would send ETH not knowing
- * what comes back. Here the price buys exactly what it says, and the scarcity is
- * a hard cap in the contract rather than a marketing line: the number left is
- * read from the chain, not from a banner.
+ * The page used to be four price cards and a lot of nothing. What was missing is
+ * everything that makes a shop feel alive: what other people have bought, what
+ * is happening right now, and somewhere to go once you have bought yours.
  */
 const CollectPage = () => {
   const {t} = useTranslation();
@@ -24,27 +41,33 @@ const CollectPage = () => {
 
   const user = useStoreSelector((state) => state.user.user);
   const {tiers} = useStoreSelector((state) => state.nft);
+  const {stats, loading} = useStoreSelector((state) => state.stats);
   const stage = useStoreSelector((state) => state.tx.stage);
 
   const [selected, setSelected] = useState<ITier>(0);
+  const [preview, setPreview] = useState<INft | null>(null);
+  const [donating, setDonating] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTiersRequest());
+    dispatch(fetchStatsRequest());
   }, [dispatch]);
 
   const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
   const remaining = tiers?.[selected]?.remaining;
   const soldOut = remaining === 0;
 
+  const showcase = stats?.artifactShowcase ?? [];
+
   return (
-    <Stack $gap="40px">
+    <Stack $gap="48px">
       <Stack $gap="8px">
         <Title>{t('collect.title')}</Title>
         <Subtitle>{t('collect.subtitle')}</Subtitle>
       </Stack>
 
       <TierGrid>
-        {TIERS.map((tier) => {
+        {TIERS.map((tier, index) => {
           const info = tiers?.[tier.id];
           const out = info?.remaining === 0;
 
@@ -54,6 +77,7 @@ const CollectPage = () => {
               type="button"
               $active={selected === tier.id}
               $tier={tier.key}
+              $delay={index * 60}
               disabled={busy}
               aria-pressed={selected === tier.id}
               onClick={() => setSelected(tier.id)}
@@ -74,10 +98,17 @@ const CollectPage = () => {
         })}
       </TierGrid>
 
-      <Card>
+      <MintBar>
+        <Stack $gap="4px">
+          <strong>{t(`collect.tiers.${TIERS[selected]!.key}`)}</strong>
+          <Subtitle>{t('collect.hint')}</Subtitle>
+        </Stack>
+
         {user.walletAddress ? (
-          <Row $justify="space-between" $wrap $gap="16px">
-            <Subtitle>{t('collect.hint')}</Subtitle>
+          <Row $gap="12px" $wrap>
+            <Button variant="ghost" onClick={() => setDonating(true)}>
+              {t('tip.open')}
+            </Button>
             <Button
               loading={busy}
               disabled={busy || soldOut}
@@ -92,14 +123,78 @@ const CollectPage = () => {
             </Button>
           </Row>
         ) : (
-          <Row $justify="space-between" $wrap $gap="16px">
+          <Row $gap="12px" $wrap>
             <Subtitle>
               {t(user.role.name === 'VISITOR' ? 'collect.signInFirst' : 'collect.connectFirst')}
             </Subtitle>
             <ConnectButton />
           </Row>
         )}
-      </Card>
+      </MintBar>
+
+      <Stack $gap="16px">
+        <Row $justify="space-between" $wrap>
+          <Title as="h2">{t('collect.recent')}</Title>
+          {stats && <Minted>{t('collect.mintedSoFar', {count: stats.artifactsMinted})}</Minted>}
+        </Row>
+
+        {/* Not a mock-up: these are the artifacts other people have actually
+            bought, drawn by the contract, clickable like any other card. */}
+        {loading && showcase.length === 0 ? (
+          <SkeletonGrid>
+            {Array.from({length: 4}, (_, index) => (
+              <SkeletonCard key={index} />
+            ))}
+          </SkeletonGrid>
+        ) : showcase.length === 0 ? (
+          <Card>
+            <Subtitle>{t('collect.noneYet')}</Subtitle>
+          </Card>
+        ) : (
+          <Showcase>
+            {showcase.map((item, index) => (
+              <ShowcaseCard
+                key={item.tokenId}
+                type="button"
+                $rarity={item.rarity.toLowerCase()}
+                $delay={index * 50}
+                onClick={() =>
+                  setPreview({
+                    tokenId: item.tokenId,
+                    tokenUri: '',
+                    name: item.name,
+                    description: '',
+                    image: item.image,
+                    attributes: [{trait_type: 'Tier', value: item.rarity}],
+                  })
+                }
+              >
+                <img src={item.image} alt={item.name} loading="lazy" />
+                <div>
+                  <strong>{item.name}</strong>
+                  <span>{item.rarity}</span>
+                  <code>{formatAddress(item.minter)}</code>
+                </div>
+              </ShowcaseCard>
+            ))}
+          </Showcase>
+        )}
+      </Stack>
+
+      <Stack $gap="16px">
+        <Title as="h2">{t('activity.title')}</Title>
+        <Activity />
+      </Stack>
+
+      {preview && (
+        <NftModal nft={preview} contract={ARTIFACTS_ADDRESS} onClose={() => setPreview(null)} />
+      )}
+
+      {donating && (
+        <Modal open onClose={() => setDonating(false)} label={t('tip.title')}>
+          <TipForm />
+        </Modal>
+      )}
     </Stack>
   );
 };
