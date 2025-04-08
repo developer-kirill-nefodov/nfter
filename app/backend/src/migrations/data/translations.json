@@ -154,7 +154,10 @@
       "buy": "Buy {{tier}} — {{price}} ETH",
       "hint": "A higher tier draws more rings, more colour, and Legendary ones spin.",
       "connectFirst": "Connect a wallet to buy an artifact.",
-      "signInFirst": "Sign in and connect a wallet to buy an artifact."
+      "signInFirst": "Sign in and connect a wallet to buy an artifact.",
+      "recent": "Recently bought",
+      "mintedSoFar": "{{count}} artifacts minted so far",
+      "noneYet": "Nobody has bought an artifact yet. The first one is yours to take."
     },
     "nftModal": {
       "revealTitle": "It’s yours",
@@ -343,7 +346,10 @@
       "buy": "{{tier}} kaufen — {{price}} ETH",
       "hint": "Höhere Stufen zeichnen mehr Ringe und mehr Farbe — legendäre drehen sich.",
       "connectFirst": "Verbinde eine Wallet, um ein Artefakt zu kaufen.",
-      "signInFirst": "Melde dich an und verbinde eine Wallet, um zu kaufen."
+      "signInFirst": "Melde dich an und verbinde eine Wallet, um zu kaufen.",
+      "recent": "Zuletzt gekauft",
+      "mintedSoFar": "Bisher {{count}} Artefakte geprägt",
+      "noneYet": "Noch hat niemand ein Artefakt gekauft. Das erste könnte deins sein."
     },
     "nftModal": {
       "revealTitle": "Gehört dir",
@@ -532,7 +538,10 @@
       "buy": "购买{{tier}} — {{price}} ETH",
       "hint": "等级越高，环越多、色彩越丰富——传说级还会旋转。",
       "connectFirst": "请先连接钱包再购买。",
-      "signInFirst": "请先登录并连接钱包再购买。"
+      "signInFirst": "请先登录并连接钱包再购买。",
+      "recent": "最近购买",
+      "mintedSoFar": "目前已铸造 {{count}} 个神器",
+      "noneYet": "还没有人买过神器。第一个可以是你的。"
     },
     "nftModal": {
       "revealTitle": "它属于你了",
@@ -721,7 +730,10 @@
       "buy": "Купити {{tier}} — {{price}} ETH",
       "hint": "Вищий рівень малює більше кілець і кольору — легендарні ще й обертаються.",
       "connectFirst": "Підключіть гаманець, щоб купити артефакт.",
-      "signInFirst": "Увійдіть і підключіть гаманець, щоб купити."
+      "signInFirst": "Увійдіть і підключіть гаманець, щоб купити.",
+      "recent": "Нещодавно куплені",
+      "mintedSoFar": "Викарбувано артефактів: {{count}}",
+      "noneYet": "Ще ніхто не купив артефакт. Перший — ваш."
     },
     "nftModal": {
       "revealTitle": "Він ваш",

@@ -21,12 +21,16 @@ export interface IPublicStats {
   chainId: number;
   passContract: string;
   tipJarContract: string;
+  artifactsContract: string;
   passesMinted: number;
+  artifactsMinted: number;
   holders: number;
   tipsTotalEth: string;
   tipCount: number;
   /** The most recently minted passes, with their art, ready to render. */
   showcase: IShowcaseItem[];
+  /** The most recently bought artifacts — the collect page's shop window. */
+  artifactShowcase: IShowcaseItem[];
   deployed: boolean;
 }
 
@@ -47,6 +51,15 @@ interface IPassStats {
 }
 
 const pass = new Contract(env.web3.nftContract, PASS_STATS_ABI, provider) as unknown as IPassStats;
+
+const artifacts = new Contract(
+  env.web3.artifacts,
+  ['function tokenURI(uint256) view returns (string)'],
+  provider,
+) as unknown as {tokenURI(tokenId: string): Promise<string>};
+
+const TIER_NAMES = ['Common', 'Rare', 'Epic', 'Legendary'];
+const ZERO = '0x0000000000000000000000000000000000000000';
 
 const CACHE_KEY = `stats:${env.web3.chainId}:${env.web3.nftContract.toLowerCase()}`;
 const CACHE_TTL_SEC = 60;
@@ -71,10 +84,11 @@ const decodeMetadata = (uri: string): {name: string; image: string} => {
  * demands a wallet before it will explain itself is a landing page nobody reads.
  */
 const readStats = async (): Promise<IPublicStats> => {
-  const [totalSupply, tips, claims] = await Promise.all([
+  const [totalSupply, tips, claims, mints] = await Promise.all([
     pass.totalSupply(),
     getTipFeed(),
     readEvents(env.web3.nftContract, 'Claimed'),
+    readEvents(env.web3.artifacts, 'Minted'),
   ]);
 
   const recent = claims.slice(-SHOWCASE_SIZE).reverse();
@@ -103,9 +117,29 @@ const readStats = async (): Promise<IPublicStats> => {
     }),
   );
 
+  const artifactShowcase = await Promise.all(
+    mints
+      .slice(-SHOWCASE_SIZE)
+      .reverse()
+      .map(async ({args}) => {
+        const tokenId = args.tokenId ?? '0';
+        const {name, image} = decodeMetadata(await artifacts.tokenURI(tokenId));
+
+        return {
+          tokenId,
+          minter: getAddress(args.minter ?? ZERO),
+          name,
+          image,
+          rarity: TIER_NAMES[Number(args.tier ?? 0)] ?? '',
+        };
+      }),
+  );
+
   // A pass can be traded after the mint, so the number of distinct *minters* is
   // the honest count of people who have taken part.
-  const holders = new Set(claims.map(({args}) => (args.minter ?? '').toLowerCase())).size;
+  const holders = new Set(
+    [...claims, ...mints].map(({args}) => (args.minter ?? '').toLowerCase()),
+  ).size;
 
   logger.debug({passes: Number(totalSupply)}, 'stats read');
 
@@ -113,11 +147,14 @@ const readStats = async (): Promise<IPublicStats> => {
     chainId: env.web3.chainId,
     passContract: env.web3.nftContract,
     tipJarContract: env.web3.tipJar,
+    artifactsContract: env.web3.artifacts,
     passesMinted: Number(totalSupply),
+    artifactsMinted: mints.length,
     holders,
     tipsTotalEth: tips.totalTipsEth,
     tipCount: tips.tipCount,
     showcase,
+    artifactShowcase,
     deployed: true,
   };
 };
@@ -126,11 +163,14 @@ const emptyStats = (): IPublicStats => ({
   chainId: env.web3.chainId,
   passContract: env.web3.nftContract,
   tipJarContract: env.web3.tipJar,
+  artifactsContract: env.web3.artifacts,
   passesMinted: 0,
+  artifactsMinted: 0,
   holders: 0,
   tipsTotalEth: '0.0',
   tipCount: 0,
   showcase: [],
+  artifactShowcase: [],
   deployed: false,
 });
 
@@ -173,9 +213,6 @@ export interface ICollectorEntry {
   bestTier: string;
 }
 
-const TIER_NAMES = ['Common', 'Rare', 'Epic', 'Legendary'];
-
-const ZERO = '0x0000000000000000000000000000000000000000';
 
 /**
  * Who has collected what, folded out of the indexed mint events.
