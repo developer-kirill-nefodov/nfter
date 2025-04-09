@@ -8,8 +8,11 @@ import type {
 
 export const statsApi = {
   /** Public: the landing page must explain itself before anyone connects. */
-  public: async (): Promise<IPublicStats> => {
-    const {data} = await api.get<IPublicStats>('/stats/public');
+  public: async (refresh = false): Promise<IPublicStats> => {
+    const {data} = await api.get<IPublicStats>('/stats/public', {
+      params: refresh ? {refresh: 'true'} : undefined,
+    });
+
     return data;
   },
 

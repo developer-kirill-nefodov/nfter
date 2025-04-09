@@ -9,6 +9,7 @@ import {SkeletonCard, SkeletonGrid} from '../../components/Skeleton';
 import TipForm from '../../components/Tip/TipForm';
 import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
+import {clearHighlight} from '../../store/reducers/stats-slice';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
 import type {INft} from '../../types/nft';
@@ -26,6 +27,7 @@ import {
   TierCard,
   TierGrid,
   TierName,
+  Yours,
 } from './styles';
 
 /**
@@ -41,7 +43,7 @@ const CollectPage = () => {
 
   const user = useStoreSelector((state) => state.user.user);
   const {tiers} = useStoreSelector((state) => state.nft);
-  const {stats, loading} = useStoreSelector((state) => state.stats);
+  const {stats, loading, highlight} = useStoreSelector((state) => state.stats);
   const stage = useStoreSelector((state) => state.tx.stage);
 
   const [selected, setSelected] = useState<ITier>(0);
@@ -52,6 +54,18 @@ const CollectPage = () => {
     dispatch(fetchTiersRequest());
     dispatch(fetchStatsRequest());
   }, [dispatch]);
+
+  // The badge is a "look here", not a permanent label — it fades out of the way
+  // once the buyer has had a moment to see it.
+  useEffect(() => {
+    if (!highlight) {
+      return;
+    }
+
+    const timer = setTimeout(() => dispatch(clearHighlight()), 12000);
+
+    return () => clearTimeout(timer);
+  }, [dispatch, highlight]);
 
   const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
   const remaining = tiers?.[selected]?.remaining;
@@ -158,6 +172,7 @@ const CollectPage = () => {
                 type="button"
                 $rarity={item.rarity.toLowerCase()}
                 $delay={index * 50}
+                $mine={item.tokenId === highlight}
                 onClick={() =>
                   setPreview({
                     tokenId: item.tokenId,
@@ -169,6 +184,7 @@ const CollectPage = () => {
                   })
                 }
               >
+                {item.tokenId === highlight && <Yours>{t('collect.yours')}</Yours>}
                 <img src={item.image} alt={item.name} loading="lazy" />
                 <div>
                   <strong>{item.name}</strong>

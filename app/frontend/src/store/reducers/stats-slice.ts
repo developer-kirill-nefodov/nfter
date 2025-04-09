@@ -13,6 +13,8 @@ export interface IStatsState {
   collectors: ICollectorEntry[];
   activity: IActivityItem[];
   loading: boolean;
+  /** The token this browser just minted — highlighted in the shop window. */
+  highlight: string | null;
 }
 
 const initialState: IStatsState = {
@@ -21,6 +23,7 @@ const initialState: IStatsState = {
   collectors: [],
   activity: [],
   loading: true,
+  highlight: null,
 };
 
 export const statsSlice = createSlice({
@@ -30,6 +33,33 @@ export const statsSlice = createSlice({
     setStats: (state, {payload}: PayloadAction<IPublicStats>) => {
       state.stats = payload;
       state.loading = false;
+    },
+
+    /**
+     * Puts the token in the window the moment it is minted, without waiting for
+     * the server's cached view to catch up. The refetch that follows will replace
+     * it with the canonical row — this is only about not making the buyer stare
+     * at a shelf that does not yet contain the thing they just bought.
+     */
+    showcaseMinted: (
+      state,
+      {payload}: PayloadAction<{tokenId: string; minter: string; name: string; image: string; rarity: string}>,
+    ) => {
+      state.highlight = payload.tokenId;
+
+      if (!state.stats) {
+        return;
+      }
+
+      state.stats.artifactsMinted += 1;
+      state.stats.artifactShowcase = [
+        payload,
+        ...state.stats.artifactShowcase.filter((item) => item.tokenId !== payload.tokenId),
+      ];
+    },
+
+    clearHighlight: (state) => {
+      state.highlight = null;
     },
     setLeaderboard: (state, {payload}: PayloadAction<ILeaderboardEntry[]>) => {
       state.leaderboard = payload;
@@ -49,7 +79,14 @@ export const statsSlice = createSlice({
   },
 });
 
-export const {setStats, setLeaderboard, setCollectors, setActivity, setStatsLoaded} =
-  statsSlice.actions;
+export const {
+  setStats,
+  setLeaderboard,
+  setCollectors,
+  setActivity,
+  setStatsLoaded,
+  showcaseMinted,
+  clearHighlight,
+} = statsSlice.actions;
 
 export default statsSlice.reducer;

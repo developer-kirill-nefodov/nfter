@@ -156,7 +156,8 @@
     "signInFirst": "Sign in and connect a wallet to buy an artifact.",
     "recent": "Recently bought",
     "mintedSoFar": "{{count}} artifacts minted so far",
-    "noneYet": "Nobody has bought an artifact yet. The first one is yours to take."
+    "noneYet": "Nobody has bought an artifact yet. The first one is yours to take.",
+    "yours": "Yours"
   },
   "nftModal": {
     "revealTitle": "It’s yours",

@@ -21,9 +21,9 @@ import {
   setStatsLoaded,
 } from '../reducers/stats-slice';
 
-function* fetchStatsSaga() {
+function* fetchStatsSaga({payload}: ReturnType<typeof fetchStatsRequest>) {
   try {
-    const stats: IPublicStats = yield call(statsApi.public);
+    const stats: IPublicStats = yield call(statsApi.public, payload?.refresh ?? false);
     yield put(setStats(stats));
   } catch {
     // The landing page renders with zeros rather than not rendering at all.

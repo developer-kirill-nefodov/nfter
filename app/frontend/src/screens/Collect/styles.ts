@@ -10,6 +10,11 @@ const enter = keyframes`
   to   { opacity: 1; transform: none; }
 `;
 
+const pulse = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  50%      { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.35); }
+`;
+
 const RARITY: Record<string, string> = {
   common: '#9aa4b8',
   rare: '#38bdf8',
@@ -118,13 +123,42 @@ export const Minted = styled.span`
   font-variant-numeric: tabular-nums;
 `;
 
+/**
+ * A shelf, not a grid.
+ *
+ * A grid of everything ever minted grows without limit and pushes the feed off
+ * the page; a rail keeps the newest at the left, where the buyer's own token
+ * lands, and lets the rest scroll away. Snap points stop it drifting between
+ * cards.
+ */
 export const Showcase = styled.div`
-  display: grid;
+  display: flex;
   gap: ${({theme}) => theme.space.md};
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  padding-bottom: ${({theme}) => theme.space.sm};
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: ${({theme}) => theme.space.xs};
+  scroll-behavior: smooth;
+
+  /* A scrollbar that is visible enough to say "this scrolls", quiet enough to
+     stay out of the way. */
+  scrollbar-width: thin;
+  scrollbar-color: ${({theme}) => `${theme.colors.border} transparent`};
+
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: ${({theme}) => theme.colors.border};
+    border-radius: ${({theme}) => theme.radii.pill};
+  }
 `;
 
-export const ShowcaseCard = styled.button<{$rarity: string; $delay: number}>`
+export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $mine?: boolean}>`
+  flex: 0 0 200px;
+  scroll-snap-align: start;
+  position: relative;
   overflow: hidden;
   cursor: pointer;
   padding: 0;
@@ -141,6 +175,15 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number}>`
   &:hover {
     transform: translateY(-4px);
   }
+
+  /* The one the buyer just paid for, marked for as long as they are looking. */
+  ${({$mine}) =>
+    $mine &&
+    css`
+      animation:
+        320ms ease both ${enter},
+        1.8s ease-in-out 3 ${pulse};
+    `};
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -175,4 +218,20 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number}>`
     color: ${({theme}) => theme.colors.textMuted};
     font-size: ${({theme}) => theme.fontSizes.xs};
   }
+`;
+
+/** "Yours" — a badge on the card the buyer just minted. */
+export const Yours = styled.span`
+  position: absolute;
+  top: ${({theme}) => theme.space.sm};
+  left: ${({theme}) => theme.space.sm};
+  z-index: 1;
+  padding: ${({theme}) => `2px ${theme.space.sm}`};
+  border-radius: ${({theme}) => theme.radii.pill};
+  background: ${({theme}) => theme.colors.primary};
+  color: ${({theme}) => theme.colors.onPrimary};
+  font-size: ${({theme}) => theme.fontSizes.xs};
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 `;

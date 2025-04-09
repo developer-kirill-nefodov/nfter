@@ -10,6 +10,7 @@ import {
   claimPass,
   explainTxError,
   hasClaimed,
+  isRejection,
   mintArtifact,
   readBalance,
   readTiers,
@@ -22,6 +23,7 @@ import {
   checkClaimRequest,
   claimPassRequest,
   fetchNftsRequest,
+  fetchStatsRequest,
   fetchTiersRequest,
   fetchTipsRequest,
   mintArtifactRequest,
@@ -29,6 +31,7 @@ import {
   sendTipRequest,
 } from '../actions';
 import {setClaimed, setReveal, setTiers} from '../reducers/nft-slice';
+import {showcaseMinted} from '../reducers/stats-slice';
 import {setBalance} from '../reducers/wallet-slice';
 import {setTipFeed, setTipsError, setTipsLoading} from '../reducers/tip-slice';
 import {
@@ -77,9 +80,10 @@ function* runTransaction<TResult>(
     }
 
     const message = explainTxError(error);
+    const rejected = isRejection(error);
 
-    yield put(txFailed(message));
-    toast(message, message.includes('rejected') ? 'info' : 'error');
+    yield put(txFailed({message, rejected}));
+    toast(message, rejected ? 'info' : 'error');
 
     return null;
   }
@@ -132,8 +136,28 @@ function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
   yield put(refreshBalanceRequest());
 
   if (result.token) {
+    const tier = result.token.attributes.find(({trait_type}) => trait_type === 'Tier');
+    const wallet: string | null = yield select(
+      (state: RootState) => state.user.user.walletAddress,
+    );
+
+    // Show it in the window straight away — the server's view is cached and does
+    // not know about this token yet.
+    yield put(
+      showcaseMinted({
+        tokenId: result.token.tokenId,
+        minter: wallet ?? '',
+        name: result.token.name,
+        image: result.token.image,
+        rarity: String(tier?.value ?? ''),
+      }),
+    );
+
     yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
   }
+
+  // …and reconcile with the chain once the indexer has caught up.
+  yield put(fetchStatsRequest({refresh: true}));
 
   toast('Your artifact is minted.', 'success');
 }
