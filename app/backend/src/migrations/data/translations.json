@@ -157,7 +157,8 @@
       "signInFirst": "Sign in and connect a wallet to buy an artifact.",
       "recent": "Recently bought",
       "mintedSoFar": "{{count}} artifacts minted so far",
-      "noneYet": "Nobody has bought an artifact yet. The first one is yours to take."
+      "noneYet": "Nobody has bought an artifact yet. The first one is yours to take.",
+      "yours": "Yours"
     },
     "nftModal": {
       "revealTitle": "It’s yours",
@@ -349,7 +350,8 @@
       "signInFirst": "Melde dich an und verbinde eine Wallet, um zu kaufen.",
       "recent": "Zuletzt gekauft",
       "mintedSoFar": "Bisher {{count}} Artefakte geprägt",
-      "noneYet": "Noch hat niemand ein Artefakt gekauft. Das erste könnte deins sein."
+      "noneYet": "Noch hat niemand ein Artefakt gekauft. Das erste könnte deins sein.",
+      "yours": "Deins"
     },
     "nftModal": {
       "revealTitle": "Gehört dir",
@@ -541,7 +543,8 @@
       "signInFirst": "请先登录并连接钱包再购买。",
       "recent": "最近购买",
       "mintedSoFar": "目前已铸造 {{count}} 个神器",
-      "noneYet": "还没有人买过神器。第一个可以是你的。"
+      "noneYet": "还没有人买过神器。第一个可以是你的。",
+      "yours": "你的"
     },
     "nftModal": {
       "revealTitle": "它属于你了",
@@ -733,7 +736,8 @@
       "signInFirst": "Увійдіть і підключіть гаманець, щоб купити.",
       "recent": "Нещодавно куплені",
       "mintedSoFar": "Викарбувано артефактів: {{count}}",
-      "noneYet": "Ще ніхто не купив артефакт. Перший — ваш."
+      "noneYet": "Ще ніхто не купив артефакт. Перший — ваш.",
+      "yours": "Ваш"
     },
     "nftModal": {
       "revealTitle": "Він ваш",
