@@ -20,6 +20,8 @@ export interface ITxState {
   stage: ITxStage;
   hash: string | null;
   error: string | null;
+  /** True when the user declined in the wallet, rather than something breaking. */
+  rejected: boolean;
   /** Estimated cost in wei, shown before the wallet is ever opened. */
   gasEstimate: string | null;
 }
@@ -29,6 +31,7 @@ const initialState: ITxState = {
   stage: 'idle',
   hash: null,
   error: null,
+  rejected: false,
   gasEstimate: null,
 };
 
@@ -41,6 +44,7 @@ export const txSlice = createSlice({
       state.stage = 'estimating';
       state.hash = null;
       state.error = null;
+      state.rejected = false;
       state.gasEstimate = null;
     },
     txGasEstimated: (state, {payload}: PayloadAction<string>) => {
@@ -54,9 +58,10 @@ export const txSlice = createSlice({
     txConfirmed: (state) => {
       state.stage = 'confirmed';
     },
-    txFailed: (state, {payload}: PayloadAction<string>) => {
+    txFailed: (state, {payload}: PayloadAction<{message: string; rejected: boolean}>) => {
       state.stage = 'failed';
-      state.error = payload;
+      state.error = payload.message;
+      state.rejected = payload.rejected;
     },
     txReset: () => initialState,
   },

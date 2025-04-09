@@ -24,21 +24,27 @@ const TxStatus = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
 
-  const {kind, stage, hash, error, gasEstimate} = useStoreSelector((state) => state.tx);
+  const {kind, stage, hash, error, rejected, gasEstimate} = useStoreSelector((state) => state.tx);
 
-  // A confirmed transaction has nothing left to say, and the reveal dialog is
-  // already showing what it produced. Leaving the panel pinned to the corner
-  // just makes the user tidy up after us. A failure stays until dismissed —
-  // that one they have to read.
+  /**
+   * The panel tidies up after itself.
+   *
+   * A confirmed transaction has nothing left to say — the reveal dialog is
+   * already showing what it produced. A rejection has even less: the user closed
+   * the wallet on purpose and does not need a receipt for that decision. Only a
+   * real failure stays, because that one has to be read.
+   */
   useEffect(() => {
-    if (stage !== 'confirmed') {
+    const linger = stage === 'confirmed' ? 5000 : rejected ? 2500 : 0;
+
+    if (!linger) {
       return;
     }
 
-    const timer = setTimeout(() => dispatch(txReset()), 5000);
+    const timer = setTimeout(() => dispatch(txReset()), linger);
 
     return () => clearTimeout(timer);
-  }, [dispatch, stage]);
+  }, [dispatch, stage, rejected]);
 
   if (stage === 'idle' || !kind) {
     return null;

@@ -15,6 +15,30 @@ import {
 import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
 
 /**
+ * Did the user simply say no?
+ *
+ * That is a decision, not a failure, and the two deserve different treatment:
+ * a rejection can disappear on its own, a real error has to be read.
+ */
+export const isRejection = (error: unknown): boolean => {
+  if (error instanceof WalletError) {
+    return /reject/i.test(error.message);
+  }
+
+  const {code, message, shortMessage} = (error ?? {}) as {
+    code?: string | number;
+    message?: string;
+    shortMessage?: string;
+  };
+
+  return (
+    code === 'ACTION_REJECTED' ||
+    code === 4001 ||
+    /user rejected|rejected the request/i.test(`${shortMessage ?? ''} ${message ?? ''}`)
+  );
+};
+
+/**
  * Turns whatever the wallet or the node threw into a sentence a person can act
  * on. Raw provider errors are the single worst part of using a dapp: nobody
  * should be shown "execution reverted (unknown custom error)".
