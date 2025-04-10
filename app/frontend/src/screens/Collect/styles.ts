@@ -136,9 +136,9 @@ export const Showcase = styled.div`
   gap: ${({theme}) => theme.space.md};
   padding-bottom: ${({theme}) => theme.space.sm};
   overflow-x: auto;
-  scroll-snap-type: x mandatory;
+  /* Mandatory snapping would fight the auto-scroll, yanking it back each frame. */
+  scroll-snap-type: x proximity;
   scroll-padding-left: ${({theme}) => theme.space.xs};
-  scroll-behavior: smooth;
 
   /* A scrollbar that is visible enough to say "this scrolls", quiet enough to
      stay out of the way. */

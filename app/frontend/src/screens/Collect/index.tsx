@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Activity from '../../components/Activity';
@@ -10,6 +10,7 @@ import TipForm from '../../components/Tip/TipForm';
 import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
 import {clearHighlight} from '../../store/reducers/stats-slice';
+import {useAutoScroll} from '../../hooks/useAutoScroll';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
 import type {INft} from '../../types/nft';
@@ -46,6 +47,7 @@ const CollectPage = () => {
   const {stats, loading, highlight} = useStoreSelector((state) => state.stats);
   const stage = useStoreSelector((state) => state.tx.stage);
 
+  const railRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<ITier>(0);
   const [preview, setPreview] = useState<INft | null>(null);
   const [donating, setDonating] = useState(false);
@@ -72,6 +74,10 @@ const CollectPage = () => {
   const soldOut = remaining === 0;
 
   const showcase = stats?.artifactShowcase ?? [];
+
+  // The rail drifts on its own — but only once there is more on it than fits,
+  // and it stops the instant anyone points at it.
+  useAutoScroll(railRef, {enabled: showcase.length > 2});
 
   return (
     <Stack $gap="48px">
@@ -165,7 +171,7 @@ const CollectPage = () => {
             <Subtitle>{t('collect.noneYet')}</Subtitle>
           </Card>
         ) : (
-          <Showcase>
+          <Showcase ref={railRef}>
             {showcase.map((item, index) => (
               <ShowcaseCard
                 key={item.tokenId}
