@@ -75,9 +75,16 @@ const CollectPage = () => {
 
   const showcase = stats?.artifactShowcase ?? [];
 
-  // The rail drifts on its own — but only once there is more on it than fits,
-  // and it stops the instant anyone points at it.
-  useAutoScroll(railRef, {enabled: showcase.length > 2});
+  /**
+   * Doubled, so the rail always has somewhere to scroll to.
+   *
+   * Five cards fit on a wide screen with room to spare — there was nothing to
+   * scroll, which is why the drift was invisible. The copy guarantees overflow
+   * and, wrapped at the halfway point, makes the loop seamless.
+   */
+  const rail = showcase.length > 0 ? [...showcase, ...showcase] : [];
+
+  useAutoScroll(railRef, {enabled: showcase.length > 1, seamless: true});
 
   return (
     <Stack $gap="48px">
@@ -172,13 +179,14 @@ const CollectPage = () => {
           </Card>
         ) : (
           <Showcase ref={railRef}>
-            {showcase.map((item, index) => (
+            {rail.map((item, index) => (
               <ShowcaseCard
-                key={item.tokenId}
+                key={`${item.tokenId}-${index}`}
+                aria-hidden={index >= showcase.length}
                 type="button"
                 $rarity={item.rarity.toLowerCase()}
                 $delay={index * 50}
-                $mine={item.tokenId === highlight}
+                $mine={item.tokenId === highlight && index < showcase.length}
                 onClick={() =>
                   setPreview({
                     tokenId: item.tokenId,

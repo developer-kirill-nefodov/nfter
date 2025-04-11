@@ -4,10 +4,10 @@ import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 
 import {useAutoScroll} from '../hooks/useAutoScroll';
 
-const Rail = ({enabled = true}: {enabled?: boolean}) => {
+const Rail = ({enabled = true, seamless = false}: {enabled?: boolean; seamless?: boolean}) => {
   const ref = useRef<HTMLDivElement>(null);
 
-  useAutoScroll(ref, {speed: 100, enabled});
+  useAutoScroll(ref, {speed: 100, enabled, seamless});
 
   return <div ref={ref} data-testid="rail" />;
 };
@@ -98,6 +98,21 @@ describe('useAutoScroll', () => {
 
     // It wrapped and carried on from the start, rather than parking at 600.
     expect(rail.scrollLeft).toBeLessThan(50);
+  });
+
+  it('wraps at the halfway mark when the rail is a doubled list', () => {
+    const {getByTestId} = render(<Rail seamless />);
+    const rail = getByTestId('rail');
+
+    // 1000px of content = the real list twice over.
+    makeScrollable(rail);
+    rail.scrollLeft = 495;
+
+    frames(100);
+
+    // Half a rail back lands on the identical card, so the seam is invisible —
+    // and the rail can scroll forever without ever running out.
+    expect(rail.scrollLeft).toBeLessThan(20);
   });
 
   it('stays still when there is nothing to scroll', () => {

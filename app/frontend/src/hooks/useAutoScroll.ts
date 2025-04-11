@@ -4,6 +4,13 @@ interface IAutoScroll {
   /** Pixels per second. Slow enough to read, fast enough to notice. */
   speed?: number;
   enabled?: boolean;
+  /**
+   * The rail renders its items twice, so half of it is a copy. Wrapping at the
+   * halfway mark lands on the identical card and the loop is invisible — and,
+   * more importantly, the rail always overflows, so it can scroll at all even
+   * when the real list is short enough to fit on screen.
+   */
+  seamless?: boolean;
 }
 
 /**
@@ -17,7 +24,7 @@ interface IAutoScroll {
  */
 export const useAutoScroll = (
   ref: RefObject<HTMLElement | null>,
-  {speed = 24, enabled = true}: IAutoScroll = {},
+  {speed = 24, enabled = true, seamless = false}: IAutoScroll = {},
 ) => {
   useEffect(() => {
     const node = ref.current;
@@ -60,10 +67,18 @@ export const useAutoScroll = (
         if (whole > 0) {
           carry -= whole;
 
-          // Wrap round rather than stopping at the end: the rail is a loop, and
-          // stopping dead at the last card looks like a bug.
-          node.scrollLeft =
-            node.scrollLeft >= scrollable - 1 ? 0 : Math.min(node.scrollLeft + whole, scrollable);
+          const next = node.scrollLeft + whole;
+          const half = node.scrollWidth / 2;
+
+          if (seamless && next >= half) {
+            // The second half is a copy of the first, so stepping back by half a
+            // rail lands on the same card. Nobody sees the seam.
+            node.scrollLeft = next - half;
+          } else if (!seamless && next >= scrollable - 1) {
+            node.scrollLeft = 0;
+          } else {
+            node.scrollLeft = Math.min(next, scrollable);
+          }
         }
       }
 
@@ -89,5 +104,5 @@ export const useAutoScroll = (
       node.removeEventListener('focusout', resume);
       node.removeEventListener('wheel', pause);
     };
-  }, [ref, speed, enabled]);
+  }, [ref, speed, enabled, seamless]);
 };
