@@ -7,8 +7,15 @@ import Spinner from '../Spinner';
 import Podium, {type IPodiumEntry} from './Podium';
 import {Avatar, Empty, EmptyRow, Rank, RowItem, RowMain, RowValue, Table} from './styles';
 
-/** How many places the board shows, filled or not. */
-const PLACES = 20;
+/**
+ * Ten places to start with, twenty at most.
+ *
+ * Twenty empty rows under two names is not a leaderboard, it is a wall of dashes
+ * — the board should look like something people could fill, not like something
+ * that has been abandoned. It grows as they arrive.
+ */
+const MIN_PLACES = 10;
+const MAX_PLACES = 20;
 
 export interface IBoardRow extends IPodiumEntry {
   rank: number;
@@ -42,9 +49,9 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
   }
 
   const rest = rows.slice(3);
-  // The empty places are shown on purpose: a board with three names and nothing
-  // under them reads as broken. Twenty slots read as a board waiting to be filled.
-  const vacant = Array.from({length: Math.max(0, PLACES - rows.length)}, (_, index) => ({
+
+  const places = Math.min(MAX_PLACES, Math.max(MIN_PLACES, rows.length));
+  const vacant = Array.from({length: Math.max(0, places - rows.length)}, (_, index) => ({
     rank: rows.length + index + 1,
   }));
 
