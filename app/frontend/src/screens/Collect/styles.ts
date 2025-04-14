@@ -124,40 +124,50 @@ export const Minted = styled.span`
 `;
 
 /**
- * A shelf, not a grid.
+ * A slider, not a scroll container.
  *
- * A grid of everything ever minted grows without limit and pushes the feed off
- * the page; a rail keeps the newest at the left, where the buyer's own token
- * lands, and lets the rest scroll away. Snap points stop it drifting between
- * cards.
+ * The previous version nudged `scrollLeft` frame by frame, which scroll-snap
+ * quietly undid: the browser re-snapped to the nearest card on every programmatic
+ * step, so the rail sat exactly still while the code believed it was moving. And
+ * a scrollbar under a shop window is furniture nobody asked for.
+ *
+ * So the track slides instead. The list is rendered twice and the animation
+ * travels exactly half its width — landing on the identical card, which is what
+ * makes the loop seamless — and the window simply clips what hangs out.
  */
 export const Showcase = styled.div`
+  position: relative;
+  overflow: hidden;
+
+  /* The cards emerge and dissolve rather than being sliced off at the edges. */
+  mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+`;
+
+const slide = keyframes`
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+`;
+
+export const ShowcaseTrack = styled.div<{$duration: number}>`
   display: flex;
   gap: ${({theme}) => theme.space.md};
-  padding-bottom: ${({theme}) => theme.space.sm};
-  overflow-x: auto;
-  /* Mandatory snapping would fight the auto-scroll, yanking it back each frame. */
-  scroll-snap-type: x proximity;
-  scroll-padding-left: ${({theme}) => theme.space.xs};
+  width: max-content;
+  animation: ${({$duration}) => $duration}s linear infinite ${slide};
 
-  /* A scrollbar that is visible enough to say "this scrolls", quiet enough to
-     stay out of the way. */
-  scrollbar-width: thin;
-  scrollbar-color: ${({theme}) => `${theme.colors.border} transparent`};
-
-  &::-webkit-scrollbar {
-    height: 8px;
+  /* Read it, do not chase it. */
+  ${Showcase}:hover &,
+  ${Showcase}:focus-within & {
+    animation-play-state: paused;
   }
 
-  &::-webkit-scrollbar-thumb {
-    background: ${({theme}) => theme.colors.border};
-    border-radius: ${({theme}) => theme.radii.pill};
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    flex-wrap: wrap;
   }
 `;
 
 export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $mine?: boolean}>`
   flex: 0 0 200px;
-  scroll-snap-align: start;
   position: relative;
   overflow: hidden;
   cursor: pointer;

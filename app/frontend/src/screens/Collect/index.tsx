@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Activity from '../../components/Activity';
@@ -10,7 +10,6 @@ import TipForm from '../../components/Tip/TipForm';
 import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
 import {clearHighlight} from '../../store/reducers/stats-slice';
-import {useAutoScroll} from '../../hooks/useAutoScroll';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
 import type {INft} from '../../types/nft';
@@ -24,6 +23,7 @@ import {
   Remaining,
   Showcase,
   ShowcaseCard,
+  ShowcaseTrack,
   Sold,
   TierCard,
   TierGrid,
@@ -47,7 +47,6 @@ const CollectPage = () => {
   const {stats, loading, highlight} = useStoreSelector((state) => state.stats);
   const stage = useStoreSelector((state) => state.tx.stage);
 
-  const railRef = useRef<HTMLDivElement>(null);
   const [selected, setSelected] = useState<ITier>(0);
   const [preview, setPreview] = useState<INft | null>(null);
   const [donating, setDonating] = useState(false);
@@ -75,16 +74,10 @@ const CollectPage = () => {
 
   const showcase = stats?.artifactShowcase ?? [];
 
-  /**
-   * Doubled, so the rail always has somewhere to scroll to.
-   *
-   * Five cards fit on a wide screen with room to spare — there was nothing to
-   * scroll, which is why the drift was invisible. The copy guarantees overflow
-   * and, wrapped at the halfway point, makes the loop seamless.
-   */
+  // Rendered twice: the animation travels half the track and lands on the same
+  // card, so the loop has no seam. Six seconds per card keeps it readable.
   const rail = showcase.length > 0 ? [...showcase, ...showcase] : [];
-
-  useAutoScroll(railRef, {enabled: showcase.length > 1, seamless: true});
+  const duration = Math.max(18, showcase.length * 6);
 
   return (
     <Stack $gap="48px">
@@ -178,35 +171,37 @@ const CollectPage = () => {
             <Subtitle>{t('collect.noneYet')}</Subtitle>
           </Card>
         ) : (
-          <Showcase ref={railRef}>
-            {rail.map((item, index) => (
-              <ShowcaseCard
-                key={`${item.tokenId}-${index}`}
-                aria-hidden={index >= showcase.length}
-                type="button"
-                $rarity={item.rarity.toLowerCase()}
-                $delay={index * 50}
-                $mine={item.tokenId === highlight && index < showcase.length}
-                onClick={() =>
-                  setPreview({
-                    tokenId: item.tokenId,
-                    tokenUri: '',
-                    name: item.name,
-                    description: '',
-                    image: item.image,
-                    attributes: [{trait_type: 'Tier', value: item.rarity}],
-                  })
-                }
-              >
-                {item.tokenId === highlight && <Yours>{t('collect.yours')}</Yours>}
-                <img src={item.image} alt={item.name} loading="lazy" />
-                <div>
-                  <strong>{item.name}</strong>
-                  <span>{item.rarity}</span>
-                  <code>{formatAddress(item.minter)}</code>
-                </div>
-              </ShowcaseCard>
-            ))}
+          <Showcase>
+            <ShowcaseTrack $duration={duration}>
+              {rail.map((item, index) => (
+                <ShowcaseCard
+                  key={`${item.tokenId}-${index}`}
+                  aria-hidden={index >= showcase.length}
+                  type="button"
+                  $rarity={item.rarity.toLowerCase()}
+                  $delay={index * 50}
+                  $mine={item.tokenId === highlight && index < showcase.length}
+                  onClick={() =>
+                    setPreview({
+                      tokenId: item.tokenId,
+                      tokenUri: '',
+                      name: item.name,
+                      description: '',
+                      image: item.image,
+                      attributes: [{trait_type: 'Tier', value: item.rarity}],
+                    })
+                  }
+                >
+                  {item.tokenId === highlight && <Yours>{t('collect.yours')}</Yours>}
+                  <img src={item.image} alt={item.name} loading="lazy" />
+                  <div>
+                    <strong>{item.name}</strong>
+                    <span>{item.rarity}</span>
+                    <code>{formatAddress(item.minter)}</code>
+                  </div>
+                </ShowcaseCard>
+              ))}
+            </ShowcaseTrack>
           </Showcase>
         )}
       </Stack>
