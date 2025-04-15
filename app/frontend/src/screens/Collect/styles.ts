@@ -11,8 +11,8 @@ const enter = keyframes`
 `;
 
 const pulse = keyframes`
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-  50%      { box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.35); }
+  0%, 100% { box-shadow: 0 0 0 2px #6366f1, 0 0 18px -2px rgba(99, 102, 241, 0.35); }
+  50%      { box-shadow: 0 0 0 4px #818cf8, 0 0 34px 2px rgba(99, 102, 241, 0.65); }
 `;
 
 const RARITY: Record<string, string> = {
@@ -117,12 +117,6 @@ export const MintBar = styled.div`
   }
 `;
 
-export const Minted = styled.span`
-  color: ${({theme}) => theme.colors.textMuted};
-  font-size: ${({theme}) => theme.fontSizes.sm};
-  font-variant-numeric: tabular-nums;
-`;
-
 /**
  * A slider, not a scroll container.
  *
@@ -186,13 +180,19 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $min
     transform: translateY(-4px);
   }
 
-  /* The one the buyer just paid for, marked for as long as they are looking. */
-  ${({$mine}) =>
+  /* The one the buyer just paid for. It keeps the ring for as long as it is
+     marked — a glow that fades after three blinks is a glow they will miss while
+     the reveal dialog is still open in front of it. */
+  ${({$mine, theme}) =>
     $mine &&
     css`
-      animation:
-        320ms ease both ${enter},
-        1.8s ease-in-out 3 ${pulse};
+      border-color: ${theme.colors.primaryHover};
+      transform: scale(1.03);
+      animation: 2.4s ease-in-out infinite ${pulse};
+
+      &:hover {
+        transform: scale(1.03) translateY(-4px);
+      }
     `};
 
   @media (prefers-reduced-motion: reduce) {
@@ -236,7 +236,11 @@ export const Yours = styled.span`
   top: ${({theme}) => theme.space.sm};
   left: ${({theme}) => theme.space.sm};
   z-index: 1;
-  padding: ${({theme}) => `2px ${theme.space.sm}`};
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: ${({theme}) => theme.shadows.md};
+  padding: ${({theme}) => `3px ${theme.space.sm}`};
   border-radius: ${({theme}) => theme.radii.pill};
   background: ${({theme}) => theme.colors.primary};
   color: ${({theme}) => theme.colors.onPrimary};

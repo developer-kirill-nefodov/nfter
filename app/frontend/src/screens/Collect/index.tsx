@@ -18,7 +18,6 @@ import {formatAddress} from '../../web3/wallet';
 
 import {
   MintBar,
-  Minted,
   Price,
   Remaining,
   Showcase,
@@ -63,7 +62,9 @@ const CollectPage = () => {
       return;
     }
 
-    const timer = setTimeout(() => dispatch(clearHighlight()), 12000);
+    // The reveal dialog covers the page right after a mint, so a marker that
+    // expires in a few seconds is one the buyer never sees. It waits them out.
+    const timer = setTimeout(() => dispatch(clearHighlight()), 60000);
 
     return () => clearTimeout(timer);
   }, [dispatch, highlight]);
@@ -153,10 +154,7 @@ const CollectPage = () => {
       </MintBar>
 
       <Stack $gap="16px">
-        <Row $justify="space-between" $wrap>
-          <Title as="h2">{t('collect.recent')}</Title>
-          {stats && <Minted>{t('collect.mintedSoFar', {count: stats.artifactsMinted})}</Minted>}
-        </Row>
+        <Title as="h2">{t('collect.recent')}</Title>
 
         {/* Not a mock-up: these are the artifacts other people have actually
             bought, drawn by the contract, clickable like any other card. */}
@@ -192,7 +190,9 @@ const CollectPage = () => {
                     })
                   }
                 >
-                  {item.tokenId === highlight && <Yours>{t('collect.yours')}</Yours>}
+                  {item.tokenId === highlight && index < showcase.length && (
+                    <Yours>★ {t('collect.yours')}</Yours>
+                  )}
                   <img src={item.image} alt={item.name} loading="lazy" />
                   <div>
                     <strong>{item.name}</strong>
