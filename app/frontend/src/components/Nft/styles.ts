@@ -69,6 +69,7 @@ export const CardBody = styled.div`
 
 export const CardName = styled.h3`
   margin: 0;
+  color: ${({theme}) => theme.colors.text};
   font-size: ${({theme}) => theme.fontSizes.md};
   white-space: nowrap;
   overflow: hidden;

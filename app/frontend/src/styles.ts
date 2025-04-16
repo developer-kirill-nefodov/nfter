@@ -19,6 +19,20 @@ export const AppGlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
 
+  /*
+   * A button does not inherit colour: the user agent forces its own buttontext,
+   * which on a dark surface is near-black. Every card that became a button — the
+   * gallery, the shop window — quietly took its title back to black with it. This
+   * is the fix for the whole class of that bug, not just the two places it showed.
+   */
+  button,
+  input,
+  select,
+  textarea {
+    color: inherit;
+    font-family: inherit;
+  }
+
   /* One visible focus ring for everything, so keyboard users are never lost. */
   :focus-visible {
     outline: 2px solid ${({theme}) => theme.colors.accent};

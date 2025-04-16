@@ -213,6 +213,7 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $min
   }
 
   strong {
+    color: ${({theme}) => theme.colors.text};
     font-size: ${({theme}) => theme.fontSizes.sm};
   }
 
