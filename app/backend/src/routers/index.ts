@@ -2,6 +2,7 @@ import {Router, type RequestHandler} from 'express';
 
 import AuthRouters from './auth.router';
 import CountryRouter from './country.router';
+import MarketRouter from './market.router';
 import NftRouter from './nft.router';
 import StatsRouter from './stats.router';
 import TipRouter from './tip.router';
@@ -32,6 +33,7 @@ export const routers = (): Router => {
     NftRouter,
     TipRouter,
     StatsRouter,
+    MarketRouter,
   ]) {
     for (const {method, path, middleware = [], handler} of routeData) {
       router[method](`/${prefix}/${path}`, ...middleware, handler);

@@ -4,17 +4,9 @@ import {env} from '../config';
 import {redis} from '../db';
 import {logger} from '../lib/logger';
 
+import {TIP_JAR_ABI} from './abis';
 import {readEvents} from './indexer.service';
 import {provider} from './provider';
-
-export const TIP_JAR_ABI = [
-  'function tip(string message) payable',
-  'function owner() view returns (address)',
-  'function balance() view returns (uint256)',
-  'function totalTips() view returns (uint256)',
-  'function tipCount() view returns (uint256)',
-  'event Tipped(address indexed from, uint256 amount, string message, uint256 timestamp)',
-];
 
 export interface ITip {
   from: string;

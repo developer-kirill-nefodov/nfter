@@ -75,7 +75,11 @@
         "pending": "Broadcast — waiting for the chain",
         "confirmed": "Confirmed on chain"
       },
-      "minting": "Minting your artifact"
+      "minting": "Minting your artifact",
+      "listing": "Listing your token",
+      "buying": "Buying",
+      "cancelling": "Taking the listing down",
+      "withdrawing": "Withdrawing"
     },
     "tip": {
       "nav": "Tip",
@@ -190,6 +194,31 @@
       "claimed": "claimed a pass",
       "tipped": "donated {{amount}} Ξ",
       "free": "free"
+    },
+    "market": {
+      "nav": "Market",
+      "title": "Market",
+      "subtitle": "Buy and sell on chain. The market never holds your token — only permission to move it — and takes {{fee}}% of a sale.",
+      "sell": "Sell a token",
+      "refresh": "Refresh the book",
+      "empty": "Nothing is for sale yet. List the first one.",
+      "price": "price",
+      "buy": "Buy for {{price}} Ξ",
+      "cancel": "Take down",
+      "yourListing": "Your listing",
+      "history": "Recent sales",
+      "noSales": "No sales yet.",
+      "soldLine": "{{buyer}} bought #{{tokenId}} from {{seller}}",
+      "earned": "Earned from sales, waiting for you",
+      "withdraw": "Withdraw",
+      "contract": "Marketplace:",
+      "pickToken": "Which token?",
+      "priceLabel": "Price (ETH)",
+      "fee": "Market fee (2.5%)",
+      "youGet": "You receive",
+      "listIt": "List it",
+      "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
+      "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
     }
   },
   "DE": {
@@ -268,7 +297,11 @@
         "pending": "Gesendet — warte auf die Chain",
         "confirmed": "Auf der Chain bestätigt"
       },
-      "minting": "Artefakt wird geprägt"
+      "minting": "Artefakt wird geprägt",
+      "listing": "Token wird angeboten",
+      "buying": "Kauf läuft",
+      "cancelling": "Angebot wird zurückgezogen",
+      "withdrawing": "Auszahlung läuft"
     },
     "tip": {
       "nav": "Trinkgeld",
@@ -383,6 +416,31 @@
       "claimed": "holte einen Pass",
       "tipped": "spendete {{amount}} Ξ",
       "free": "gratis"
+    },
+    "market": {
+      "nav": "Markt",
+      "title": "Markt",
+      "subtitle": "On-chain kaufen und verkaufen. Der Markt verwahrt dein Token nie — nur die Erlaubnis, es zu bewegen — und nimmt {{fee}}% vom Verkauf.",
+      "sell": "Token verkaufen",
+      "refresh": "Buch aktualisieren",
+      "empty": "Noch steht nichts zum Verkauf. Sei die/der Erste.",
+      "price": "Preis",
+      "buy": "Für {{price}} Ξ kaufen",
+      "cancel": "Zurückziehen",
+      "yourListing": "Dein Angebot",
+      "history": "Letzte Verkäufe",
+      "noSales": "Noch keine Verkäufe.",
+      "soldLine": "{{buyer}} kaufte #{{tokenId}} von {{seller}}",
+      "earned": "Aus Verkäufen verdient",
+      "withdraw": "Auszahlen",
+      "contract": "Marktplatz:",
+      "pickToken": "Welches Token?",
+      "priceLabel": "Preis (ETH)",
+      "fee": "Marktgebühr (2,5%)",
+      "youGet": "Du erhältst",
+      "listIt": "Anbieten",
+      "approvalHint": "Beim ersten Angebot fragt deine Wallet nach der Erlaubnis für diese Sammlung. Dein Token bleibt bei dir, bis es verkauft ist.",
+      "nothingToSell": "Du hast noch nichts zu verkaufen. Präge zuerst ein Artefakt."
     }
   },
   "CN": {
@@ -461,7 +519,11 @@
         "pending": "已广播——等待链上确认",
         "confirmed": "已在链上确认"
       },
-      "minting": "正在铸造神器"
+      "minting": "正在铸造神器",
+      "listing": "正在挂单",
+      "buying": "正在购买",
+      "cancelling": "正在撤单",
+      "withdrawing": "正在提现"
     },
     "tip": {
       "nav": "打赏",
@@ -576,6 +638,31 @@
       "claimed": "领取了通行证",
       "tipped": "打赏了 {{amount}} Ξ",
       "free": "免费"
+    },
+    "market": {
+      "nav": "市场",
+      "title": "市场",
+      "subtitle": "链上买卖。市场从不托管你的代币——只获得转移它的授权——并收取成交额的 {{fee}}%。",
+      "sell": "出售代币",
+      "refresh": "刷新挂单",
+      "empty": "还没有人挂单，来做第一个。",
+      "price": "价格",
+      "buy": "以 {{price}} Ξ 购买",
+      "cancel": "撤单",
+      "yourListing": "你的挂单",
+      "history": "最近成交",
+      "noSales": "还没有成交。",
+      "soldLine": "{{buyer}} 从 {{seller}} 处买下 #{{tokenId}}",
+      "earned": "待领取的销售收入",
+      "withdraw": "提现",
+      "contract": "市场合约：",
+      "pickToken": "选择代币",
+      "priceLabel": "价格（ETH）",
+      "fee": "市场手续费（2.5%）",
+      "youGet": "你将获得",
+      "listIt": "挂单",
+      "approvalHint": "首次挂单时，钱包会请求授权市场转移该系列。在售出之前，代币始终属于你。",
+      "nothingToSell": "你还没有可出售的东西，先铸造一个神器吧。"
     }
   },
   "UA": {
@@ -654,7 +741,11 @@
         "pending": "Надіслано — чекаємо на мережу",
         "confirmed": "Підтверджено в мережі"
       },
-      "minting": "Карбуємо ваш артефакт"
+      "minting": "Карбуємо ваш артефакт",
+      "listing": "Виставляємо токен",
+      "buying": "Купуємо",
+      "cancelling": "Знімаємо лот",
+      "withdrawing": "Виводимо кошти"
     },
     "tip": {
       "nav": "Донат",
@@ -769,6 +860,31 @@
       "claimed": "отримав пас",
       "tipped": "задонатив {{amount}} Ξ",
       "free": "безкоштовно"
+    },
+    "market": {
+      "nav": "Ринок",
+      "title": "Ринок",
+      "subtitle": "Купівля і продаж у мережі. Ринок ніколи не тримає ваш токен — лише дозвіл його перемістити — і бере {{fee}}% з продажу.",
+      "sell": "Продати токен",
+      "refresh": "Оновити книгу",
+      "empty": "Ще нічого не виставлено. Будьте першим.",
+      "price": "ціна",
+      "buy": "Купити за {{price}} Ξ",
+      "cancel": "Зняти",
+      "yourListing": "Ваш лот",
+      "history": "Останні продажі",
+      "noSales": "Продажів ще немає.",
+      "soldLine": "{{buyer}} купив #{{tokenId}} у {{seller}}",
+      "earned": "Зароблено з продажів",
+      "withdraw": "Вивести",
+      "contract": "Маркетплейс:",
+      "pickToken": "Який токен?",
+      "priceLabel": "Ціна (ETH)",
+      "fee": "Комісія ринку (2,5%)",
+      "youGet": "Ви отримаєте",
+      "listIt": "Виставити",
+      "approvalHint": "Перше виставлення також попросить гаманець дозволити ринку переміщати цю колекцію. Токен лишається у вас до продажу.",
+      "nothingToSell": "Вам поки нічого продавати. Спершу викарбуйте артефакт."
     }
   }
 }

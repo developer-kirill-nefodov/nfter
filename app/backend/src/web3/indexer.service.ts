@@ -5,11 +5,7 @@ import {logger} from '../lib/logger';
 import {ChainEventModel, IndexerStateModel} from '../models/chain-event.model';
 
 import {provider} from './provider';
-import {TIP_JAR_ABI} from './tip.service';
-
-const PASS_EVENTS_ABI = [
-  'event Claimed(address indexed minter, uint256 indexed tokenId, uint256 seed)',
-];
+import {ARTIFACT_EVENTS_ABI, MARKETPLACE_ABI, PASS_EVENTS_ABI, TIP_JAR_ABI} from './abis';
 
 /**
  * Public RPC nodes cap `eth_getLogs` at a few dozen blocks — publicnode answers
@@ -27,14 +23,15 @@ interface ISource {
   events: string[];
 }
 
-const ARTIFACT_EVENTS_ABI = [
-  'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
-];
-
 const SOURCES: ISource[] = [
   {address: env.web3.nftContract, abi: PASS_EVENTS_ABI, events: ['Claimed']},
   {address: env.web3.tipJar, abi: TIP_JAR_ABI, events: ['Tipped']},
   {address: env.web3.artifacts, abi: ARTIFACT_EVENTS_ABI, events: ['Minted']},
+  {
+    address: env.web3.marketplace,
+    abi: MARKETPLACE_ABI,
+    events: ['Listed', 'Sold', 'Cancelled'],
+  },
 ];
 
 const serialiseArgs = (log: Log, contract: Contract): Record<string, string> | null => {
