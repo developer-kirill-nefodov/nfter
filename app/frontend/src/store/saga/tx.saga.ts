@@ -1,5 +1,7 @@
 import {call, put, select, takeLatest} from 'redux-saga/effects';
 
+import {runTransaction} from './run-transaction';
+
 import type {RootState} from '../';
 
 import {errorMessage} from '../../api/client';
@@ -8,9 +10,7 @@ import {toast} from '../../components/Toastify';
 import type {ITipFeed} from '../../types/tip';
 import {
   claimPass,
-  explainTxError,
   hasClaimed,
-  isRejection,
   mintArtifact,
   readBalance,
   readTiers,
@@ -34,60 +34,6 @@ import {setClaimed, setReveal, setTiers} from '../reducers/nft-slice';
 import {showcaseMinted} from '../reducers/stats-slice';
 import {setBalance} from '../reducers/wallet-slice';
 import {setTipFeed, setTipsError, setTipsLoading} from '../reducers/tip-slice';
-import {
-  txBroadcast,
-  txConfirmed,
-  txFailed,
-  txGasEstimated,
-  txStarted,
-  type ITxKind,
-} from '../reducers/tx-slice';
-
-/**
- * The wallet callbacks fire from inside ethers, outside the saga's own yields —
- * so they push their progress in through the store rather than returning it.
- * That is what lets the UI show "pending, here is your hash" while the chain is
- * still thinking.
- */
-function* runTransaction<TResult>(
-  kind: ITxKind,
-  execute: (handlers: {
-    onGasEstimated: (wei: string) => void;
-    onBroadcast: (hash: string) => void;
-  }) => Promise<TResult>,
-): Generator<unknown, TResult | null, never> {
-  const dispatched: {type: string; payload?: string}[] = [];
-
-  yield put(txStarted(kind));
-
-  try {
-    const result = (yield call(execute, {
-      onGasEstimated: (wei) => dispatched.push(txGasEstimated(wei)),
-      onBroadcast: (value) => dispatched.push(txBroadcast(value)),
-    })) as TResult;
-
-    // Replay whatever ethers reported while we were awaiting it.
-    for (const action of dispatched) {
-      yield put(action);
-    }
-
-    yield put(txConfirmed());
-
-    return result;
-  } catch (error) {
-    for (const action of dispatched) {
-      yield put(action);
-    }
-
-    const message = explainTxError(error);
-    const rejected = isRejection(error);
-
-    yield put(txFailed({message, rejected}));
-    toast(message, rejected ? 'info' : 'error');
-
-    return null;
-  }
-}
 
 function* claimSaga() {
   const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'claim', claimPass);

@@ -14,6 +14,7 @@ const LandingPage = lazy(() => import('../screens/Landing'));
 const HomePage = lazy(() => import('../screens/Home'));
 const RatingPage = lazy(() => import('../screens/Rating'));
 const CollectPage = lazy(() => import('../screens/Collect'));
+const MarketPage = lazy(() => import('../screens/Market'));
 const LoginPage = lazy(() => import('../screens/Auth/Login'));
 const RegisterPage = lazy(() => import('../screens/Auth/Register'));
 const ForgotPasswordPage = lazy(() => import('../screens/Auth/ForgotPassword'));
@@ -39,6 +40,7 @@ export const appRoutes: IAppRoute[] = [
   },
   {path: NavigateUrls.rating, element: <RatingPage />, access: 'public'},
   {path: NavigateUrls.collect, element: <CollectPage />, access: 'public'},
+  {path: NavigateUrls.market, element: <MarketPage />, access: 'public'},
   {
     path: NavigateUrls.auth.login,
     element: <LoginPage />,

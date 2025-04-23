@@ -47,3 +47,24 @@ export const fetchLeaderboardRequest = createAction('stats/leaderboard');
 export const fetchCollectorsRequest = createAction('stats/collectors');
 /** The scrolling feed of mints and tips. */
 export const fetchActivityRequest = createAction('stats/activity');
+
+// ------------------------------------------------------------------ marketplace
+
+export const fetchMarketRequest = createAction<{refresh?: boolean} | undefined>('market/fetch');
+/** What this wallet has earned from sales and not yet taken out. */
+export const fetchProceedsRequest = createAction('market/proceeds');
+
+export const listTokenRequest = createAction<{
+  collection: string;
+  tokenId: string;
+  priceWei: string;
+}>('market/list');
+export const buyListingRequest = createAction<{
+  collection: string;
+  tokenId: string;
+  priceWei: string;
+}>('market/buy');
+export const cancelListingRequest = createAction<{collection: string; tokenId: string}>(
+  'market/cancel',
+);
+export const withdrawProceedsRequest = createAction('market/withdraw');

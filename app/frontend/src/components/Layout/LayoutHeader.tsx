@@ -36,6 +36,7 @@ const LayoutHeader = () => {
   const links = [
     ...(isVisitor ? [] : [{to: NavigateUrls.dashboard, label: t('nav.dashboard')}]),
     {to: NavigateUrls.collect, label: t('collect.nav')},
+    {to: NavigateUrls.market, label: t('market.nav')},
     {to: NavigateUrls.rating, label: t('rating.nav')},
   ];
 

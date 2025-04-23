@@ -2,8 +2,11 @@ import type {JsonRpcSigner} from 'ethers';
 
 import {
   ARTIFACTS_ADDRESS,
+  MARKETPLACE_ADDRESS,
   PASS_ADDRESS,
+  getApproval,
   getArtifacts,
+  getMarket,
   getPass,
   getTipJar,
   readToken,
@@ -63,6 +66,26 @@ export const explainTxError = (error: unknown): string => {
   }
 
   const text = `${shortMessage ?? ''} ${message ?? ''}`;
+
+  if (/NotApproved/i.test(text)) {
+    return 'The market is not allowed to move that token yet — approve it and try again.';
+  }
+
+  if (/AlreadyListed/i.test(text)) {
+    return 'That token is already on sale.';
+  }
+
+  if (/NotListed/i.test(text)) {
+    return 'That listing is gone — it has been sold or taken down.';
+  }
+
+  if (/OwnSale/i.test(text)) {
+    return 'You cannot buy your own listing.';
+  }
+
+  if (/NothingToWithdraw/i.test(text)) {
+    return 'There is nothing to withdraw yet.';
+  }
 
   if (/SoldOut/i.test(text)) {
     return 'That tier is sold out — the cap is enforced by the contract.';
@@ -264,6 +287,98 @@ export const readBalance = async (address: string): Promise<string> => {
   const balance = await signer.provider.getBalance(address);
 
   return balance.toString();
+};
+
+/**
+ * Listing takes two transactions the first time: one to let the market move your
+ * tokens, one to name a price. The approval is checked rather than blindly re-sent
+ * — asking a seller to pay gas for permission they already granted is rude.
+ */
+export const listToken = async (
+  collection: string,
+  tokenId: string,
+  priceWei: bigint,
+  handlers: ITxHandlers,
+): Promise<string> => {
+  const signer = await currentSigner();
+  const approval = await getApproval(signer, collection);
+
+  const approved = await approval.isApprovedForAll(await signer.getAddress(), MARKETPLACE_ADDRESS);
+
+  if (!approved) {
+    const tx = await approval.setApprovalForAll(MARKETPLACE_ADDRESS, true);
+    await tx.wait(1);
+  }
+
+  const market = await getMarket(signer);
+
+  const {hash} = await send(
+    () => market.list.estimateGas(collection, tokenId, priceWei),
+    () => market.list(collection, tokenId, priceWei),
+    handlers,
+    await gasPriceOf(signer),
+  );
+
+  return hash;
+};
+
+export const buyListing = async (
+  collection: string,
+  tokenId: string,
+  priceWei: bigint,
+  handlers: ITxHandlers,
+): Promise<string> => {
+  const signer = await currentSigner();
+  const market = await getMarket(signer);
+
+  const {hash} = await send(
+    () => market.buy.estimateGas(collection, tokenId, {value: priceWei}),
+    () => market.buy(collection, tokenId, {value: priceWei}),
+    handlers,
+    await gasPriceOf(signer),
+  );
+
+  return hash;
+};
+
+export const cancelListing = async (
+  collection: string,
+  tokenId: string,
+  handlers: ITxHandlers,
+): Promise<string> => {
+  const signer = await currentSigner();
+  const market = await getMarket(signer);
+
+  const {hash} = await send(
+    () => market.cancel.estimateGas(collection, tokenId),
+    () => market.cancel(collection, tokenId),
+    handlers,
+    await gasPriceOf(signer),
+  );
+
+  return hash;
+};
+
+export const withdrawProceeds = async (handlers: ITxHandlers): Promise<string> => {
+  const signer = await currentSigner();
+  const market = await getMarket(signer);
+
+  const {hash} = await send(
+    () => market.withdraw.estimateGas(),
+    () => market.withdraw(),
+    handlers,
+    await gasPriceOf(signer),
+  );
+
+  return hash;
+};
+
+/** What this wallet has earned and not yet taken out, in wei. */
+export const readProceeds = async (wallet: string): Promise<string> => {
+  const signer = await currentSigner();
+  const market = await getMarket(signer);
+
+  return (await market.proceeds(wallet)).toString();
 };
 
 export const hasClaimed = async (wallet: string): Promise<boolean> => {

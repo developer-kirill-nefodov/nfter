@@ -2,6 +2,7 @@ export const NavigateUrls = {
   home: '/',
   dashboard: '/dashboard',
   collect: '/collect',
+  market: '/market',
   rating: '/rating',
   auth: {
     // The originals shipped as "/sing-in" and "/sing-up" — a typo in a

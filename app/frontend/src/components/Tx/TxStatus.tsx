@@ -13,6 +13,16 @@ import {Panel, Step, Steps} from './styles';
 
 const STAGES = ['estimating', 'signing', 'pending', 'confirmed'] as const;
 
+const TITLES: Record<string, string> = {
+  claim: 'claiming',
+  mint: 'minting',
+  tip: 'tipping',
+  list: 'listing',
+  buy: 'buying',
+  cancel: 'cancelling',
+  withdraw: 'withdrawing',
+};
+
 /**
  * Shows a transaction for what it is: a state machine, not a spinner.
  *
@@ -58,7 +68,7 @@ const TxStatus = () => {
     <Panel role="status" aria-live="polite" $tone={failed ? 'error' : done ? 'success' : 'info'}>
       <Stack $gap="12px">
         <Row $justify="space-between">
-          <strong>{t(`tx.${kind === 'claim' ? 'claiming' : kind === 'mint' ? 'minting' : 'tipping'}`)}</strong>
+          <strong>{t(`tx.${TITLES[kind]}`)}</strong>
           {!done && !failed && <Spinner size={16} />}
         </Row>
 

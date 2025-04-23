@@ -74,7 +74,11 @@
       "pending": "Broadcast — waiting for the chain",
       "confirmed": "Confirmed on chain"
     },
-    "minting": "Minting your artifact"
+    "minting": "Minting your artifact",
+    "listing": "Listing your token",
+    "buying": "Buying",
+    "cancelling": "Taking the listing down",
+    "withdrawing": "Withdrawing"
   },
   "tip": {
     "nav": "Tip",
@@ -189,5 +193,30 @@
     "claimed": "claimed a pass",
     "tipped": "donated {{amount}} Ξ",
     "free": "free"
+  },
+  "market": {
+    "nav": "Market",
+    "title": "Market",
+    "subtitle": "Buy and sell on chain. The market never holds your token — only permission to move it — and takes {{fee}}% of a sale.",
+    "sell": "Sell a token",
+    "refresh": "Refresh the book",
+    "empty": "Nothing is for sale yet. List the first one.",
+    "price": "price",
+    "buy": "Buy for {{price}} Ξ",
+    "cancel": "Take down",
+    "yourListing": "Your listing",
+    "history": "Recent sales",
+    "noSales": "No sales yet.",
+    "soldLine": "{{buyer}} bought #{{tokenId}} from {{seller}}",
+    "earned": "Earned from sales, waiting for you",
+    "withdraw": "Withdraw",
+    "contract": "Marketplace:",
+    "pickToken": "Which token?",
+    "priceLabel": "Price (ETH)",
+    "fee": "Market fee (2.5%)",
+    "youGet": "You receive",
+    "listIt": "List it",
+    "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
+    "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
   }
 }

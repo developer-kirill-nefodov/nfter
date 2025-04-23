@@ -3,6 +3,21 @@ import type {JsonRpcSigner} from 'ethers';
 export const PASS_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 export const TIP_JAR_ADDRESS = import.meta.env.VITE_TIP_JAR_ADDRESS;
 export const ARTIFACTS_ADDRESS = import.meta.env.VITE_ARTIFACTS_ADDRESS;
+export const MARKETPLACE_ADDRESS = import.meta.env.VITE_MARKETPLACE_ADDRESS;
+
+export const MARKETPLACE_ABI = [
+  'function list(address collection, uint256 tokenId, uint256 price)',
+  'function cancel(address collection, uint256 tokenId)',
+  'function buy(address collection, uint256 tokenId) payable',
+  'function withdraw()',
+  'function proceeds(address) view returns (uint256)',
+];
+
+/** setApprovalForAll is how the market is allowed to move a token it never holds. */
+export const ERC721_APPROVAL_ABI = [
+  'function setApprovalForAll(address operator, bool approved)',
+  'function isApprovedForAll(address owner, address operator) view returns (bool)',
+];
 
 export type ITier = 0 | 1 | 2 | 3;
 
@@ -53,6 +68,22 @@ export interface IPassContract {
 
 export interface ITipJarContract {
   tip: IContractMethod<[message: string, overrides: {value: bigint}], ITransactionResponse>;
+}
+
+export interface IMarketContract {
+  list: IContractMethod<[collection: string, tokenId: string, price: bigint], ITransactionResponse>;
+  cancel: IContractMethod<[collection: string, tokenId: string], ITransactionResponse>;
+  buy: IContractMethod<
+    [collection: string, tokenId: string, overrides: {value: bigint}],
+    ITransactionResponse
+  >;
+  withdraw: IContractMethod<[], ITransactionResponse>;
+  proceeds: IContractMethod<[account: string], bigint>;
+}
+
+export interface IApprovalContract {
+  setApprovalForAll: IContractMethod<[operator: string, approved: boolean], ITransactionResponse>;
+  isApprovedForAll: IContractMethod<[owner: string, operator: string], boolean>;
 }
 
 export interface IArtifactsContract {
@@ -121,6 +152,21 @@ export const readToken = async (
   };
 
   return {tokenId, tokenUri, ...json};
+};
+
+export const getMarket = async (signer: JsonRpcSigner): Promise<IMarketContract> => {
+  const {Contract} = await import('ethers');
+
+  return new Contract(MARKETPLACE_ADDRESS, MARKETPLACE_ABI, signer) as unknown as IMarketContract;
+};
+
+export const getApproval = async (
+  signer: JsonRpcSigner,
+  collection: string,
+): Promise<IApprovalContract> => {
+  const {Contract} = await import('ethers');
+
+  return new Contract(collection, ERC721_APPROVAL_ABI, signer) as unknown as IApprovalContract;
 };
 
 export const explorerTx = (hash: string) => `https://sepolia.etherscan.io/tx/${hash}`;
