@@ -18,8 +18,11 @@ Express 5 · Sequelize · PostgreSQL · Redis · BullMQ · Argon2 · Joi · Pino
 **Its own contracts.** `EthersWeb3Pass` is a free, one-per-wallet ERC-721 whose artwork is
 generated *inside the contract* — a symmetric identicon derived from `keccak256(your address)`,
 returned from `tokenURI` as a `data:` URI. No IPFS, no metadata server, nothing that can rot.
-`TipJar` takes tips with a note attached and emits an event for each, which is what makes the
-tip feed a `queryFilter` away instead of an indexer subscription.
+`EthersWeb3Artifacts` sells the same idea in four tiers, with a hard supply cap enforced on chain.
+`TipJar` takes tips with a note attached. `Marketplace` lists, sells and cancels — taking 2.5% and
+never taking custody: it holds an approval to move your token, not the token itself, and pays
+nobody during a sale. Proceeds are credited and withdrawn, which is what makes a hostile seller
+unable to re-enter or to revert a stranger's purchase.
 
 **An account, and the wallet it owns.** Sessions come from email and password: a short-lived
 access token in memory plus an httpOnly refresh cookie, allow-listed in Redis. A wallet is
@@ -88,8 +91,9 @@ make down
 
 ```
 app/contracts
-  contracts/         EthersWeb3Pass (on-chain generative art) · TipJar
-  test/              23 Hardhat tests — mint rules, SVG validity, tip accounting
+  contracts/         EthersWeb3Pass · EthersWeb3Artifacts · TipJar · Marketplace
+  test/              54 Hardhat tests — mint rules, SVG validity, supply caps,
+                     tip accounting, escrow-by-approval, pull payments
   scripts/           deploy · preview (renders a sheet of passes to look at)
 
 app/backend
