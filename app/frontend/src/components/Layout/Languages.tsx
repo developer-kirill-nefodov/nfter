@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {api} from '../../api/client';
 import {loadLanguage} from '../../i18n';
-import {toast} from '../Toastify';
+import {toast} from '../Toastify/toast';
 
 import {Flag, Menu, MenuItem, Trigger, Wrapper} from './languages.styles';
 

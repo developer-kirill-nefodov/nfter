@@ -7,7 +7,7 @@ import {NavLink, Row} from '../../styles';
 import {NavigateUrls} from '../../utils/navigate-urls';
 import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
 import Button from '../Button';
-import {toast} from '../Toastify';
+import {toast} from '../Toastify/toast';
 
 import {AddressPill} from './styles';
 

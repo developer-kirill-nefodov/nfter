@@ -28,7 +28,7 @@ interface IAppRoute {
   redirect?: string;
 }
 
-export const appRoutes: IAppRoute[] = [
+const appRoutes: IAppRoute[] = [
   // "/" is the landing page: readable by anyone, no wallet and no account. The
   // dashboard lives behind it, where a session actually means something.
   {path: NavigateUrls.home, element: <LandingPage />, access: 'public'},

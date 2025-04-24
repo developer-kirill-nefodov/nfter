@@ -9,7 +9,7 @@ import {explorerAddress} from '../../web3/contracts';
 import {CHAIN_ID, CHAIN_NAME, formatAddress, formatBalance} from '../../web3/wallet';
 import {useHasWallet} from '../../hooks/useHasWallet';
 import Button from '../Button';
-import {toast} from '../Toastify';
+import {toast} from '../Toastify/toast';
 
 import {
   Avatar,

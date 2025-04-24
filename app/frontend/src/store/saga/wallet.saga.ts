@@ -3,7 +3,7 @@ import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {authApi} from '../../api/auth';
 import {errorMessage} from '../../api/client';
-import {toast} from '../../components/Toastify';
+import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
 import {buildSiweMessage} from '../../web3/siwe';
 import {

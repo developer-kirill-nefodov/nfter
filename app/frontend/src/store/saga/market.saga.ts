@@ -2,7 +2,7 @@ import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {errorMessage} from '../../api/client';
 import {marketApi} from '../../api/market';
-import {toast} from '../../components/Toastify';
+import {toast} from '../../components/Toastify/toast';
 import type {IMarket} from '../../types/market';
 import {
   buyListing,

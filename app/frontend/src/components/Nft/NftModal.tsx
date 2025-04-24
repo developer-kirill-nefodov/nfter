@@ -5,7 +5,7 @@ import type {INft} from '../../types/nft';
 import {explorerToken} from '../../web3/contracts';
 import Button from '../Button';
 import Modal from '../Modal';
-import {toast} from '../Toastify';
+import {toast} from '../Toastify/toast';
 
 import {
   Attribute,

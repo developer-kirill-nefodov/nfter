@@ -6,7 +6,7 @@ import type {RootState} from '../';
 
 import {errorMessage} from '../../api/client';
 import {tipApi} from '../../api/tip';
-import {toast} from '../../components/Toastify';
+import {toast} from '../../components/Toastify/toast';
 import type {ITipFeed} from '../../types/tip';
 import {
   claimPass,

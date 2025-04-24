@@ -1,6 +1,6 @@
 import {call, put} from 'redux-saga/effects';
 
-import {toast} from '../../components/Toastify';
+import {toast} from '../../components/Toastify/toast';
 import {explainTxError, isRejection} from '../../web3/transactions';
 import {
   txBroadcast,

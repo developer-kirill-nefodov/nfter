@@ -2,7 +2,7 @@ import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {authApi, type IForgotResult} from '../../api/auth';
 import {errorMessage, setAccessToken} from '../../api/client';
-import {toast} from '../../components/Toastify';
+import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
 import {revokeWalletAccess} from '../../web3/wallet';
 import {
