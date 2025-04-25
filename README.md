@@ -129,6 +129,20 @@ process with a readable error, rather than surfacing as a `NaN` token lifetime a
 
 ---
 
+## Deployed on Sepolia
+
+| Contract | Address |
+|---|---|
+| EthersWeb3Pass | [`0x5Fd8D760…F1504`](https://sepolia.etherscan.io/address/0x5Fd8D760e8E013798D894F606E7f273c354F1504) |
+| EthersWeb3Artifacts | [`0xF9778a7A…86B12`](https://sepolia.etherscan.io/address/0xF9778a7AF0fD9E7DCdcC3Dd852f3F58228386B12) |
+| TipJar | [`0x277Cd3A1…3A7B6`](https://sepolia.etherscan.io/address/0x277Cd3A10B2c37eC1df654EA65a6D6D11bE3A7B6) |
+| Marketplace | [`0x153b0d69…9537e`](https://sepolia.etherscan.io/address/0x153b0d690fa50E3eCF2430EBBF14C0542079537e) |
+
+Addresses and the deployment block live in `app/contracts/deployments/sepolia.json` — the indexer
+starts there rather than at genesis, because a public node will not read logs any further back.
+
+---
+
 ## Tests
 
 ```shell
