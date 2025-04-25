@@ -55,6 +55,7 @@ contract Marketplace {
     );
     event Cancelled(address indexed seller, address indexed collection, uint256 indexed tokenId);
     event Withdrawn(address indexed to, uint256 amount);
+    event OwnerChanged(address indexed previousOwner, address indexed newOwner);
 
     error NotOwner();
     error NotApproved();
@@ -156,6 +157,19 @@ contract Marketplace {
         if (!sent) revert TransferFailed();
 
         emit Withdrawn(msg.sender, amount);
+    }
+
+    /**
+     * @notice Hand the fee stream to someone else.
+     * @dev Fees already credited stay where they were credited — moving another
+     *      address's balance would be theft, however well intentioned.
+     */
+    function transferOwnership(address newOwner) external {
+        if (msg.sender != owner) revert NotOwner();
+        if (newOwner == address(0)) revert ZeroAddress();
+
+        emit OwnerChanged(owner, newOwner);
+        owner = newOwner;
     }
 
     // ------------------------------------------------------------------- reading

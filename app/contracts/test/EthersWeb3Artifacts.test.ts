@@ -182,6 +182,45 @@ describe('EthersWeb3Artifacts', () => {
     });
   });
 
+  describe('ownership', () => {
+    it('can be handed to its real owner', async () => {
+      const {artifacts, owner, alice} = await loadFixture(deploy);
+
+      // A throwaway deployer must be able to hand the contract over — otherwise
+      // the key that happened to deploy it owns the revenue forever.
+      await expect(artifacts.transferOwnership(alice.address))
+        .to.emit(artifacts, 'OwnerChanged')
+        .withArgs(owner.address, alice.address);
+
+      expect(await artifacts.owner()).to.equal(alice.address);
+    });
+
+    it('pays the new owner, not the old one', async () => {
+      const {artifacts, alice, bob} = await loadFixture(deploy);
+
+      await artifacts.connect(bob).mint(EPIC, {value: PRICE[EPIC]});
+      await artifacts.transferOwnership(alice.address);
+
+      await expect(artifacts.connect(alice).withdraw()).to.changeEtherBalance(alice, PRICE[EPIC]);
+    });
+
+    it('lets nobody else hand it away', async () => {
+      const {artifacts, alice, bob} = await loadFixture(deploy);
+
+      await expect(
+        artifacts.connect(alice).transferOwnership(bob.address),
+      ).to.be.revertedWithCustomError(artifacts, 'NotOwner');
+    });
+
+    it('refuses to hand it to nobody', async () => {
+      const {artifacts} = await loadFixture(deploy);
+
+      await expect(
+        artifacts.transferOwnership(ethers.ZeroAddress),
+      ).to.be.revertedWithCustomError(artifacts, 'ZeroAddress');
+    });
+  });
+
   describe('proceeds', () => {
     it('pays out to the owner', async () => {
       const {artifacts, owner, alice} = await loadFixture(deploy);

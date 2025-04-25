@@ -48,6 +48,7 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
     uint256[4] public PRICES = [0.001 ether, 0.003 ether, 0.01 ether, 0.03 ether];
     uint256[4] public SUPPLY_CAPS = [1000, 250, 50, 10];
 
+    event OwnerChanged(address indexed previousOwner, address indexed newOwner);
     event Minted(
         address indexed minter,
         uint256 indexed tokenId,
@@ -114,6 +115,22 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
     }
 
     // --------------------------------------------------------------- withdrawal
+
+    /**
+     * @notice Hand the contract — and the right to its proceeds — to someone else.
+     * @dev The first version fixed the owner in the constructor with no way to
+     *      change it, which meant the deploying key owned the revenue forever.
+     *      A throwaway deployer should be able to hand the contract to its real
+     *      owner; a contract that cannot be handed over is a contract nobody
+     *      should deploy on someone else's behalf.
+     */
+    function transferOwnership(address newOwner) external {
+        if (msg.sender != owner) revert NotOwner();
+        if (newOwner == address(0)) revert ZeroAddress();
+
+        emit OwnerChanged(owner, newOwner);
+        owner = newOwner;
+    }
 
     /// @dev Pull, not push: the proceeds sit here until the owner comes for them.
     function withdraw() external {

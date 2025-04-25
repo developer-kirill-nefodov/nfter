@@ -191,6 +191,40 @@ describe('Marketplace', () => {
     });
   });
 
+  describe('ownership', () => {
+    it('hands the fee stream over', async () => {
+      const {market, owner, alice} = await loadFixture(deploy);
+
+      await expect(market.transferOwnership(alice.address))
+        .to.emit(market, 'OwnerChanged')
+        .withArgs(owner.address, alice.address);
+
+      expect(await market.owner()).to.equal(alice.address);
+    });
+
+    it('leaves fees already credited where they are', async () => {
+      const {market, owner, alice, bob, collection} = await loadFixture(deploy);
+
+      await market.connect(alice).list(collection, 1, PRICE);
+      await market.connect(bob).buy(collection, 1, {value: PRICE});
+
+      await market.transferOwnership(bob.address);
+
+      // Moving somebody else's credited balance would be theft, however well
+      // intentioned: the fee was earned while the old owner held the contract.
+      expect(await market.proceeds(owner.address)).to.equal(FEE);
+      expect(await market.proceeds(bob.address)).to.equal(0n);
+    });
+
+    it('lets nobody else hand it away', async () => {
+      const {market, alice, bob} = await loadFixture(deploy);
+
+      await expect(
+        market.connect(alice).transferOwnership(bob.address),
+      ).to.be.revertedWithCustomError(market, 'NotOwner');
+    });
+  });
+
   describe('withdrawing', () => {
     it('pays the seller what they are owed', async () => {
       const {market, alice, bob, collection} = await loadFixture(deploy);
