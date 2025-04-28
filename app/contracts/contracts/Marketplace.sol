@@ -3,6 +3,8 @@ pragma solidity 0.8.28;
 
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
+import {Referrals} from "./Referrals.sol";
+
 /**
  * @title Marketplace
  * @notice List an ERC-721 at a fixed price, buy it, or take it back off sale.
@@ -34,9 +36,19 @@ contract Marketplace {
 
     address public owner;
 
+    /// @notice Immutable, for the same reason as the fee: a registry the owner
+    ///         could swap out is one nobody can rely on for a stream of earnings.
+    Referrals public immutable referrals;
+
     /// @notice 2.5%, in basis points. Fixed at deployment: a market that can raise
     ///         its own cut after you list is a market you cannot price against.
     uint256 public constant FEE_BPS = 250;
+
+    /// @notice The referrer's share **of the fee**, not of the sale: 10% of 2.5%.
+    ///         It comes out of the market's cut, so the seller is paid the same
+    ///         either way.
+    uint256 public constant REFERRAL_BPS = 1_000;
+
     uint256 private constant BPS = 10_000;
 
     event Listed(
@@ -68,9 +80,11 @@ contract Marketplace {
     error TransferFailed();
     error ZeroAddress();
 
-    constructor(address feeRecipient) {
-        if (feeRecipient == address(0)) revert ZeroAddress();
+    constructor(address feeRecipient, address referralsRegistry) {
+        if (feeRecipient == address(0) || referralsRegistry == address(0)) revert ZeroAddress();
+
         owner = feeRecipient;
+        referrals = Referrals(referralsRegistry);
     }
 
     // -------------------------------------------------------------------- selling
@@ -119,7 +133,7 @@ contract Marketplace {
      *      otherwise find the listing still standing and buy it twice with one
      *      payment. Clearing state first is what makes that impossible.
      */
-    function buy(address collection, uint256 tokenId) external payable {
+    function buy(address collection, uint256 tokenId, address referrer) external payable {
         Listing memory listing = listings[collection][tokenId];
 
         if (listing.price == 0) revert NotListed();
@@ -128,11 +142,16 @@ contract Marketplace {
 
         delete listings[collection][tokenId];
 
+        referrals.record(msg.sender, referrer);
+
         uint256 fee = (msg.value * FEE_BPS) / BPS;
+        uint256 referralCut = _payReferrer(fee);
 
         unchecked {
+            // The seller is paid the same whether or not a referrer exists: the
+            // reward comes out of the market's fee, never out of the sale.
             proceeds[listing.seller] += msg.value - fee;
-            proceeds[owner] += fee;
+            proceeds[owner] += fee - referralCut;
         }
 
         // transferFrom, not safeTransferFrom: the buyer chose to be here, and the
@@ -157,6 +176,16 @@ contract Marketplace {
         if (!sent) revert TransferFailed();
 
         emit Withdrawn(msg.sender, amount);
+    }
+
+    function _payReferrer(uint256 fee) private returns (uint256 cut) {
+        if (referrals.referrerOf(msg.sender) == address(0)) {
+            return 0;
+        }
+
+        cut = (fee * REFERRAL_BPS) / BPS;
+
+        referrals.credit{value: cut}(msg.sender);
     }
 
     /**

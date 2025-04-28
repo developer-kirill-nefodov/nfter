@@ -10,19 +10,37 @@ const ARTIFACT_PRICE = ethers.parseEther('0.001');
 
 describe('Marketplace', () => {
   const deploy = async () => {
-    const [owner, alice, bob] = await ethers.getSigners();
+    const [owner, alice, bob, carol] = await ethers.getSigners();
 
-    const market = await (await ethers.getContractFactory('Marketplace')).deploy(owner.address);
+    const referrals = await (await ethers.getContractFactory('Referrals')).deploy(owner.address);
+    const market = await (await ethers.getContractFactory('Marketplace')).deploy(
+      owner.address,
+      await referrals.getAddress(),
+    );
     const artifacts = await (
       await ethers.getContractFactory('EthersWeb3Artifacts')
-    ).deploy(owner.address);
+    ).deploy(owner.address, await referrals.getAddress());
+
+    await referrals.setCaller(await market.getAddress(), true);
+    await referrals.setCaller(await artifacts.getAddress(), true);
 
     // Alice buys an artifact, then approves the market to move it for her.
-    await artifacts.connect(alice).mint(0, {value: ARTIFACT_PRICE});
+    await artifacts.connect(alice).mint(0, ethers.ZeroAddress, {value: ARTIFACT_PRICE});
     await artifacts.connect(alice).setApprovalForAll(await market.getAddress(), true);
 
-    return {market, artifacts, owner, alice, bob, collection: await artifacts.getAddress()};
+    return {
+      market,
+      artifacts,
+      referrals,
+      owner,
+      alice,
+      bob,
+      carol,
+      collection: await artifacts.getAddress(),
+    };
   };
+
+  const NOBODY = ethers.ZeroAddress;
 
   describe('listing', () => {
     it('lists a token the seller owns', async () => {
@@ -90,7 +108,7 @@ describe('Marketplace', () => {
 
       await market.connect(alice).list(collection, 1, PRICE);
 
-      await expect(market.connect(bob).buy(collection, 1, {value: PRICE}))
+      await expect(market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE}))
         .to.emit(market, 'Sold')
         .withArgs(bob.address, collection, 1n, alice.address, PRICE, FEE);
 
@@ -102,7 +120,7 @@ describe('Marketplace', () => {
       const {market, owner, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
 
       const [fee, toSeller] = await market.quote(PRICE);
 
@@ -120,7 +138,7 @@ describe('Marketplace', () => {
       // Pushing ETH to the seller mid-purchase is what lets a hostile seller
       // re-enter, or revert and take the buyer down with them.
       await expect(
-        market.connect(bob).buy(collection, 1, {value: PRICE}),
+        market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.changeEtherBalances([bob, alice, market], [-PRICE, 0, PRICE]);
     });
 
@@ -128,13 +146,13 @@ describe('Marketplace', () => {
       const {market, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
 
       const [, price] = await market.listingOf(collection, 1);
       expect(price).to.equal(0n);
 
       await expect(
-        market.connect(bob).buy(collection, 1, {value: PRICE}),
+        market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.be.revertedWithCustomError(market, 'NotListed');
     });
 
@@ -144,11 +162,11 @@ describe('Marketplace', () => {
       await market.connect(alice).list(collection, 1, PRICE);
 
       await expect(
-        market.connect(bob).buy(collection, 1, {value: PRICE - 1n}),
+        market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE - 1n}),
       ).to.be.revertedWithCustomError(market, 'WrongPrice');
 
       await expect(
-        market.connect(bob).buy(collection, 1, {value: PRICE + 1n}),
+        market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE + 1n}),
       ).to.be.revertedWithCustomError(market, 'WrongPrice');
     });
 
@@ -159,7 +177,7 @@ describe('Marketplace', () => {
 
       // Wash trading is not a feature.
       await expect(
-        market.connect(alice).buy(collection, 1, {value: PRICE}),
+        market.connect(alice).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.be.revertedWithCustomError(market, 'OwnSale');
     });
   });
@@ -175,7 +193,7 @@ describe('Marketplace', () => {
         .withArgs(alice.address, collection, 1n);
 
       await expect(
-        market.connect(bob).buy(collection, 1, {value: PRICE}),
+        market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.be.revertedWithCustomError(market, 'NotListed');
     });
 
@@ -206,7 +224,7 @@ describe('Marketplace', () => {
       const {market, owner, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
 
       await market.transferOwnership(bob.address);
 
@@ -230,7 +248,7 @@ describe('Marketplace', () => {
       const {market, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
 
       await expect(market.connect(alice).withdraw()).to.changeEtherBalances(
         [alice, market],
@@ -244,7 +262,7 @@ describe('Marketplace', () => {
       const {market, owner, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
 
       await expect(market.connect(owner).withdraw()).to.changeEtherBalance(owner, FEE);
     });
@@ -253,7 +271,7 @@ describe('Marketplace', () => {
       const {market, alice, bob, collection} = await loadFixture(deploy);
 
       await market.connect(alice).list(collection, 1, PRICE);
-      await market.connect(bob).buy(collection, 1, {value: PRICE});
+      await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
       await market.connect(alice).withdraw();
 
       // The balance is zeroed before the transfer, so a re-entering seller finds

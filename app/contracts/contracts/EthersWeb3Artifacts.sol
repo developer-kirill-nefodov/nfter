@@ -6,6 +6,8 @@ import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
+import {Referrals} from "./Referrals.sol";
+
 /**
  * @title EthersWeb3Artifacts
  * @notice A paid, collectable ERC-721. Unlimited per wallet, four tiers, and —
@@ -41,6 +43,17 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
     mapping(Tier tier => uint256 minted) public mintedOf;
 
     address public owner;
+
+    /// @notice Where invitations and their rewards are recorded. Immutable: a
+    ///         registry the owner could swap out later is a registry nobody can
+    ///         rely on for a stream of earnings.
+    Referrals public immutable referrals;
+
+    /// @notice The referrer's share of a mint, in basis points. Paid by the
+    ///         treasury out of its own revenue — the buyer's price does not move.
+    uint256 public constant REFERRAL_BPS = 1_000; // 10%
+    uint256 private constant BPS = 10_000;
+
     uint256 private _nextTokenId = 1;
 
     /// @dev Prices and caps are immutable: a mint is a purchase, and moving the
@@ -66,9 +79,14 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
     error NonexistentToken();
     error ZeroAddress();
 
-    constructor(address initialOwner) ERC721("EthersWeb3 Artifact", "EW3A") {
-        if (initialOwner == address(0)) revert ZeroAddress();
+    constructor(
+        address initialOwner,
+        address referralsRegistry
+    ) ERC721("EthersWeb3 Artifact", "EW3A") {
+        if (initialOwner == address(0) || referralsRegistry == address(0)) revert ZeroAddress();
+
         owner = initialOwner;
+        referrals = Referrals(referralsRegistry);
     }
 
     // ------------------------------------------------------------------ minting
@@ -87,11 +105,17 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
      *      back to an arbitrary caller mid-mint, which is precisely the shape of
      *      a reentrancy hole; demanding the exact price removes the callback.
      */
-    function mint(Tier tier) external payable returns (uint256 tokenId) {
+    function mint(Tier tier, address referrer) external payable returns (uint256 tokenId) {
         uint256 price = priceOf(tier);
 
         if (msg.value != price) revert WrongPrice(price, msg.value);
         if (remaining(tier) == 0) revert SoldOut(uint8(tier));
+
+        // The invite is remembered on the first purchase the buyer makes, so it
+        // costs them no extra transaction and no extra gas of their own.
+        referrals.record(msg.sender, referrer);
+
+        _payReferrer(price);
 
         unchecked {
             ++mintedOf[tier];
@@ -112,6 +136,21 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
 
     function totalMinted() external view returns (uint256) {
         return _nextTokenId - 1;
+    }
+
+    /**
+     * @dev The treasury's own cut of the sale, forwarded to whoever brought this
+     *      buyer in. The price the buyer paid is untouched: a referral is the
+     *      treasury paying for a customer, not a surcharge on the customer.
+     */
+    function _payReferrer(uint256 price) private {
+        if (referrals.referrerOf(msg.sender) == address(0)) {
+            return;
+        }
+
+        uint256 cut = (price * REFERRAL_BPS) / BPS;
+
+        referrals.credit{value: cut}(msg.sender);
     }
 
     // --------------------------------------------------------------- withdrawal
