@@ -5,7 +5,13 @@ import {logger} from '../lib/logger';
 import {ChainEventModel, IndexerStateModel} from '../models/chain-event.model';
 
 import {provider} from './provider';
-import {ARTIFACT_EVENTS_ABI, MARKETPLACE_ABI, PASS_EVENTS_ABI, TIP_JAR_ABI} from './abis';
+import {
+  ARTIFACT_EVENTS_ABI,
+  MARKETPLACE_ABI,
+  PASS_EVENTS_ABI,
+  REFERRALS_ABI,
+  TIP_JAR_ABI,
+} from './abis';
 
 /**
  * Public RPC nodes cap `eth_getLogs` at a few dozen blocks — publicnode answers
@@ -32,6 +38,7 @@ const SOURCES: ISource[] = [
     abi: MARKETPLACE_ABI,
     events: ['Listed', 'Sold', 'Cancelled'],
   },
+  {address: env.web3.referrals, abi: REFERRALS_ABI, events: ['Referred', 'Credited']},
 ];
 
 const serialiseArgs = (log: Log, contract: Contract): Record<string, string> | null => {

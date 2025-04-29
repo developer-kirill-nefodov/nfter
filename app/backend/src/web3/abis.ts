@@ -36,3 +36,16 @@ export const PASS_EVENTS_ABI = [
 export const ARTIFACT_EVENTS_ABI = [
   'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
 ];
+
+export const REFERRALS_ABI = [
+  'function referrerOf(address) view returns (address)',
+  'function earned(address) view returns (uint256)',
+  'function lifetime(address) view returns (uint256)',
+  'function invited(address) view returns (uint256)',
+  'function statsOf(address) view returns (uint256 pending, uint256 total, uint256 people)',
+  'function withdraw()',
+  'event Referred(address indexed user, address indexed referrer)',
+  'event Credited(address indexed referrer, address indexed user, uint256 amount)',
+];
+
+export const OWNABLE_ABI = ['function owner() view returns (address)'];
