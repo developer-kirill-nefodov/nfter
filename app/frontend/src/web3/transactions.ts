@@ -3,11 +3,13 @@ import type {JsonRpcSigner} from 'ethers';
 import {
   ARTIFACTS_ADDRESS,
   MARKETPLACE_ADDRESS,
+  NO_REFERRER,
   PASS_ADDRESS,
   getApproval,
   getArtifacts,
   getMarket,
   getPass,
+  getReferrals,
   getTipJar,
   readToken,
   TIERS,
@@ -247,6 +249,7 @@ export const sendTip = async (
 export const mintArtifact = async (
   tier: ITier,
   handlers: ITxHandlers,
+  referrer: string = NO_REFERRER,
 ): Promise<IMintResult> => {
   const signer = await currentSigner();
   const artifacts = await getArtifacts(signer);
@@ -255,9 +258,11 @@ export const mintArtifact = async (
   // the bundle would send the wrong value and revert.
   const price = await artifacts.priceOf(tier);
 
+  // The invite rides along with the purchase the buyer was making anyway — no
+  // second transaction, no extra gas, and the contract ignores it if it is stale.
   const {hash, receipt} = await send(
-    () => artifacts.mint.estimateGas(tier, {value: price}),
-    () => artifacts.mint(tier, {value: price}),
+    () => artifacts.mint.estimateGas(tier, referrer, {value: price}),
+    () => artifacts.mint(tier, referrer, {value: price}),
     handlers,
     await gasPriceOf(signer),
   );
@@ -327,13 +332,14 @@ export const buyListing = async (
   tokenId: string,
   priceWei: bigint,
   handlers: ITxHandlers,
+  referrer: string = NO_REFERRER,
 ): Promise<string> => {
   const signer = await currentSigner();
   const market = await getMarket(signer);
 
   const {hash} = await send(
-    () => market.buy.estimateGas(collection, tokenId, {value: priceWei}),
-    () => market.buy(collection, tokenId, {value: priceWei}),
+    () => market.buy.estimateGas(collection, tokenId, referrer, {value: priceWei}),
+    () => market.buy(collection, tokenId, referrer, {value: priceWei}),
     handlers,
     await gasPriceOf(signer),
   );
@@ -366,6 +372,21 @@ export const withdrawProceeds = async (handlers: ITxHandlers): Promise<string> =
   const {hash} = await send(
     () => market.withdraw.estimateGas(),
     () => market.withdraw(),
+    handlers,
+    await gasPriceOf(signer),
+  );
+
+  return hash;
+};
+
+/** Referral rewards: credited by the contracts, withdrawn by the referrer. */
+export const withdrawReferralEarnings = async (handlers: ITxHandlers): Promise<string> => {
+  const signer = await currentSigner();
+  const referrals = await getReferrals(signer);
+
+  const {hash} = await send(
+    () => referrals.withdraw.estimateGas(),
+    () => referrals.withdraw(),
     handlers,
     await gasPriceOf(signer),
   );

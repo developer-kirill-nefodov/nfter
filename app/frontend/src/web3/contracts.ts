@@ -4,11 +4,21 @@ export const PASS_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 export const TIP_JAR_ADDRESS = import.meta.env.VITE_TIP_JAR_ADDRESS;
 export const ARTIFACTS_ADDRESS = import.meta.env.VITE_ARTIFACTS_ADDRESS;
 export const MARKETPLACE_ADDRESS = import.meta.env.VITE_MARKETPLACE_ADDRESS;
+export const REFERRALS_ADDRESS = import.meta.env.VITE_REFERRALS_ADDRESS;
+
+/** Nobody invited them — a valid answer, and the default one. */
+export const NO_REFERRER = '0x0000000000000000000000000000000000000000';
+
+export const REFERRALS_ABI = [
+  'function withdraw()',
+  'function earned(address) view returns (uint256)',
+  'function referrerOf(address) view returns (address)',
+];
 
 export const MARKETPLACE_ABI = [
   'function list(address collection, uint256 tokenId, uint256 price)',
   'function cancel(address collection, uint256 tokenId)',
-  'function buy(address collection, uint256 tokenId) payable',
+  'function buy(address collection, uint256 tokenId, address referrer) payable',
   'function withdraw()',
   'function proceeds(address) view returns (uint256)',
 ];
@@ -30,7 +40,7 @@ export const TIERS = [
 ];
 
 export const ARTIFACTS_ABI = [
-  'function mint(uint8 tier) payable returns (uint256)',
+  'function mint(uint8 tier, address referrer) payable returns (uint256)',
   'function priceOf(uint8 tier) view returns (uint256)',
   'function remaining(uint8 tier) view returns (uint256)',
   'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
@@ -74,7 +84,7 @@ export interface IMarketContract {
   list: IContractMethod<[collection: string, tokenId: string, price: bigint], ITransactionResponse>;
   cancel: IContractMethod<[collection: string, tokenId: string], ITransactionResponse>;
   buy: IContractMethod<
-    [collection: string, tokenId: string, overrides: {value: bigint}],
+    [collection: string, tokenId: string, referrer: string, overrides: {value: bigint}],
     ITransactionResponse
   >;
   withdraw: IContractMethod<[], ITransactionResponse>;
@@ -86,8 +96,16 @@ export interface IApprovalContract {
   isApprovedForAll: IContractMethod<[owner: string, operator: string], boolean>;
 }
 
+export interface IReferralsContract {
+  withdraw: IContractMethod<[], ITransactionResponse>;
+  earned: IContractMethod<[account: string], bigint>;
+}
+
 export interface IArtifactsContract {
-  mint: IContractMethod<[tier: number, overrides: {value: bigint}], ITransactionResponse>;
+  mint: IContractMethod<
+    [tier: number, referrer: string, overrides: {value: bigint}],
+    ITransactionResponse
+  >;
   priceOf: IContractMethod<[tier: number], bigint>;
   remaining: IContractMethod<[tier: number], bigint>;
 }
@@ -167,6 +185,12 @@ export const getApproval = async (
   const {Contract} = await import('ethers');
 
   return new Contract(collection, ERC721_APPROVAL_ABI, signer) as unknown as IApprovalContract;
+};
+
+export const getReferrals = async (signer: JsonRpcSigner): Promise<IReferralsContract> => {
+  const {Contract} = await import('ethers');
+
+  return new Contract(REFERRALS_ADDRESS, REFERRALS_ABI, signer) as unknown as IReferralsContract;
 };
 
 export const explorerTx = (hash: string) => `https://sepolia.etherscan.io/tx/${hash}`;

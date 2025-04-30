@@ -4,6 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import authReducer from './reducers/auth-slice';
 import nftReducer from './reducers/nft-slice';
 import marketReducer from './reducers/market-slice';
+import referralReducer from './reducers/referral-slice';
 import statsReducer from './reducers/stats-slice';
 import tipReducer from './reducers/tip-slice';
 import txReducer from './reducers/tx-slice';
@@ -19,6 +20,7 @@ export const rootReducer = combineReducers({
   tip: tipReducer,
   stats: statsReducer,
   market: marketReducer,
+  referral: referralReducer,
   tx: txReducer,
 });
 

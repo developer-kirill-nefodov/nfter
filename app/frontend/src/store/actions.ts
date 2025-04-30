@@ -8,7 +8,11 @@ import {createAction} from '@reduxjs/toolkit';
 export const bootstrapSession = createAction('session/bootstrap');
 
 export const loginRequest = createAction<{email: string; password: string}>('auth/login');
-export const registerRequest = createAction<{email: string; password: string}>('auth/register');
+export const registerRequest = createAction<{
+  email: string;
+  password: string;
+  inviteCode?: string;
+}>('auth/register');
 export const logoutRequest = createAction('auth/logout');
 
 export const forgotPasswordRequest = createAction<{email: string}>('auth/forgotPassword');
@@ -68,3 +72,11 @@ export const cancelListingRequest = createAction<{collection: string; tokenId: s
   'market/cancel',
 );
 export const withdrawProceedsRequest = createAction('market/withdraw');
+
+// -------------------------------------------------------------------- referrals
+
+export const fetchReferralsRequest = createAction('referral/fetch');
+export const fetchInvitersRequest = createAction('referral/inviters');
+/** 403 unless the caller owns the contracts — the server asks the chain. */
+export const fetchTreasuryRequest = createAction('referral/treasury');
+export const withdrawReferralRequest = createAction('referral/withdraw');

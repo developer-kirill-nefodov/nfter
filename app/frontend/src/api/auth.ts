@@ -29,7 +29,11 @@ export const authApi = {
     return startSession(data);
   },
 
-  register: async (payload: {email: string; password: string}): Promise<IUser> => {
+  register: async (payload: {
+    email: string;
+    password: string;
+    inviteCode?: string;
+  }): Promise<IUser> => {
     const {data} = await api.post<ISessionResponse>('/auth/register', payload);
     return startSession(data);
   },

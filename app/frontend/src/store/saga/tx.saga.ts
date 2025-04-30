@@ -18,7 +18,7 @@ import {
   type IMintResult,
   type ITierInfo,
 } from '../../web3/transactions';
-import type {ITier} from '../../web3/contracts';
+import {NO_REFERRER, type ITier} from '../../web3/contracts';
 import {
   checkClaimRequest,
   claimPassRequest,
@@ -69,8 +69,16 @@ function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
 }
 
 function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
+  // Whoever invited this account, resolved by the server from the code they typed
+  // at sign-up. The contract records it on the first purchase and ignores it ever
+  // after — so passing it every time costs nothing and is simpler than tracking
+  // whether it has already been used.
+  const referrer: string = yield select(
+    (state: RootState) => state.referral.stats?.referredByAddress ?? NO_REFERRER,
+  );
+
   const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'mint', (handlers) =>
-    mintArtifact(payload, handlers),
+    mintArtifact(payload, handlers, referrer),
   );
 
   if (!result) {
