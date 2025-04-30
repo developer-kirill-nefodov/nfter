@@ -31,6 +31,15 @@ const UserModel = db.define<IUserModel>(
       type: DataTypes.JSONB,
       allowNull: false,
     },
+    referral_code: {
+      type: DataTypes.STRING(16),
+      allowNull: true,
+      unique: true,
+    },
+    referred_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     tableName: 'users',

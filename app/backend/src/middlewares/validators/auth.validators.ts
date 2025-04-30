@@ -16,7 +16,13 @@ const password = Joi.string()
     'string.min': 'Password must be at least 12 characters',
   });
 
-export const registerValidator = Joi.object({email, password});
+export const registerValidator = Joi.object({
+  email,
+  password,
+  // Optional, and forgiving: an invite typed in lower case, or with stray spaces,
+  // is still an invite.
+  inviteCode: Joi.string().trim().uppercase().max(16).allow('').optional(),
+});
 
 // Login must not enforce the policy — it only checks what the user already has,
 // and rejecting a legacy password with a validation error would leak that it exists.

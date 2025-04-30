@@ -28,6 +28,7 @@ const schema = Joi.object({
   TIP_JAR_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   ARTIFACTS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   MARKETPLACE_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
+  REFERRALS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   // The block the contracts were deployed in. Public RPC nodes cap how far back
   // a log query may reach, so the tip indexer starts here rather than at genesis.
   CONTRACTS_FROM_BLOCK: Joi.number().min(0).default(0),
@@ -64,6 +65,7 @@ interface IRawEnv {
   TIP_JAR_ADDRESS: string;
   ARTIFACTS_ADDRESS: string;
   MARKETPLACE_ADDRESS: string;
+  REFERRALS_ADDRESS: string;
   CONTRACTS_FROM_BLOCK: number;
   IPFS_GATEWAY: string;
   SMTP_HOST: string;
@@ -128,6 +130,7 @@ export const env = {
     tipJar: config.TIP_JAR_ADDRESS,
     artifacts: config.ARTIFACTS_ADDRESS,
     marketplace: config.MARKETPLACE_ADDRESS,
+    referrals: config.REFERRALS_ADDRESS,
     fromBlock: config.CONTRACTS_FROM_BLOCK,
     ipfsGateway: config.IPFS_GATEWAY,
   },

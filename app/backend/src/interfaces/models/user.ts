@@ -24,8 +24,15 @@ export interface IUserModelData extends ModelAttributes {
   /** Lowercased checksum-validated address, or null until a wallet is linked. */
   wallet_address: string | null;
   role: IRole;
+  /** This user's own invite code. Short enough to say out loud. */
+  referral_code: string | null;
+  /** The user who invited them, if any. */
+  referred_by: number | null;
 }
 
-type IUserCreation = Optional<IUserModelData, 'id' | 'email' | 'password' | 'wallet_address'>;
+type IUserCreation = Optional<
+  IUserModelData,
+  'id' | 'email' | 'password' | 'wallet_address' | 'referral_code' | 'referred_by'
+>;
 
 export interface IUserModel extends Model<IUserModelData, IUserCreation>, IUserModelData {}

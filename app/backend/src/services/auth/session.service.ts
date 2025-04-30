@@ -3,6 +3,7 @@ import type {Response} from 'express';
 import {REFRESH_COOKIE_NAME, REFRESH_COOKIE_OPTIONS} from '../../constants';
 import {createTokens, type IUserData} from '../../helpers/token/token';
 import type {IUserModel} from '../../interfaces/models/user';
+import {isFounder} from '../../web3/referral.service';
 
 export const toUserData = (user: IUserModel): IUserData => ({
   id: user.id,
@@ -21,8 +22,12 @@ export const issueSession = async (res: Response, user: IUserModel, message: str
   const data = toUserData(user);
   const tokens = await createTokens(data);
 
+  // The founder flag is derived, never stored: it is read from the contract's
+  // owner() every time, so it cannot be forged by editing a row.
+  const founder = await isFounder(data.walletAddress);
+
   res
     .status(200)
     .cookie(REFRESH_COOKIE_NAME, tokens.refreshToken, REFRESH_COOKIE_OPTIONS)
-    .json({token: tokens.accessToken, user: data, message});
+    .json({token: tokens.accessToken, user: {...data, isFounder: founder}, message});
 };
