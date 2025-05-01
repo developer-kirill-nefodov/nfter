@@ -177,13 +177,16 @@
     "subtitle": "Two boards, both folded out of the chain’s own event log — so anyone can recompute either one and get the same numbers.",
     "tabs": {
       "donors": "Donations",
-      "collectors": "Collectors"
+      "collectors": "Collectors",
+      "inviters": "Inviters"
     },
     "emptyDonors": "No donations yet — the first name on the board could be yours.",
     "emptyCollectors": "Nobody has minted anything yet. Be the first.",
     "bestTier": "Best: {{tier}}",
     "spent": "{{amount}} Ξ spent",
-    "vacant": "Waiting for someone"
+    "vacant": "Waiting for someone",
+    "emptyInviters": "Nobody has invited anyone yet — the first name on the board could be yours.",
+    "invited": "invited"
   },
   "activity": {
     "title": "Activity",
@@ -218,5 +221,39 @@
     "listIt": "List it",
     "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
     "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
+  },
+  "invite": {
+    "nav": "Invite",
+    "title": "Invite friends",
+    "subtitle": "Share your code. Whenever someone you invited mints or buys, the registry credits you 10% of the fee — paid out of our revenue, never added to their price.",
+    "yourCode": "Your invite code",
+    "copyLink": "Copy invite link",
+    "copiedShort": "Copied",
+    "copied": "Invite link copied to the clipboard.",
+    "connectToEarn": "Connect a wallet to receive your rewards — the chain needs an address to pay.",
+    "invited": "Invited",
+    "lifetime": "Earned in total",
+    "pending": "Ready to claim",
+    "readyToWithdraw": "You have unclaimed rewards",
+    "withdraw": "Withdraw",
+    "invitedBy": "You joined with the invite code {{code}}",
+    "signInFirst": "Sign in to get your invite code.",
+    "howTitle": "How it works",
+    "how1": "1. Send your link. Whoever signs up with it is linked to you the first time they buy on chain — permanently, and only once.",
+    "how2": "2. Every mint or sale by that person credits you 10% of the commission. The buyer pays the same price either way.",
+    "how3": "3. Withdraw whenever you like. Your balance is held by the registry contract, not by us."
+  },
+  "treasury": {
+    "nav": "Treasury",
+    "title": "Treasury",
+    "subtitle": "What the contracts are holding for their owner. Read straight from chain — this page reports, it does not decide.",
+    "total": "Total held for the treasury",
+    "owner": "Owner",
+    "mintRevenue": "Mint revenue",
+    "tips": "Donations",
+    "marketFees": "Marketplace fees",
+    "owedToReferrers": "Owed to referrers (not yours)",
+    "withdrawHint": "Withdraw from the owner wallet — each contract pays out only to the address that owns it.",
+    "notFounder": "This page belongs to the founder. The server checks it against the contracts’ owner, so there is nothing to see here."
   }
 }

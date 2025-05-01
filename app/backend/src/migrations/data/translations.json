@@ -178,13 +178,16 @@
       "subtitle": "Two boards, both folded out of the chain’s own event log — so anyone can recompute either one and get the same numbers.",
       "tabs": {
         "donors": "Donations",
-        "collectors": "Collectors"
+        "collectors": "Collectors",
+        "inviters": "Inviters"
       },
       "emptyDonors": "No donations yet — the first name on the board could be yours.",
       "emptyCollectors": "Nobody has minted anything yet. Be the first.",
       "bestTier": "Best: {{tier}}",
       "spent": "{{amount}} Ξ spent",
-      "vacant": "Waiting for someone"
+      "vacant": "Waiting for someone",
+      "emptyInviters": "Nobody has invited anyone yet — the first name on the board could be yours.",
+      "invited": "invited"
     },
     "activity": {
       "title": "Activity",
@@ -219,6 +222,40 @@
       "listIt": "List it",
       "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
       "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
+    },
+    "invite": {
+      "nav": "Invite",
+      "title": "Invite friends",
+      "subtitle": "Share your code. Whenever someone you invited mints or buys, the registry credits you 10% of the fee — paid out of our revenue, never added to their price.",
+      "yourCode": "Your invite code",
+      "copyLink": "Copy invite link",
+      "copiedShort": "Copied",
+      "copied": "Invite link copied to the clipboard.",
+      "connectToEarn": "Connect a wallet to receive your rewards — the chain needs an address to pay.",
+      "invited": "Invited",
+      "lifetime": "Earned in total",
+      "pending": "Ready to claim",
+      "readyToWithdraw": "You have unclaimed rewards",
+      "withdraw": "Withdraw",
+      "invitedBy": "You joined with the invite code {{code}}",
+      "signInFirst": "Sign in to get your invite code.",
+      "howTitle": "How it works",
+      "how1": "1. Send your link. Whoever signs up with it is linked to you the first time they buy on chain — permanently, and only once.",
+      "how2": "2. Every mint or sale by that person credits you 10% of the commission. The buyer pays the same price either way.",
+      "how3": "3. Withdraw whenever you like. Your balance is held by the registry contract, not by us."
+    },
+    "treasury": {
+      "nav": "Treasury",
+      "title": "Treasury",
+      "subtitle": "What the contracts are holding for their owner. Read straight from chain — this page reports, it does not decide.",
+      "total": "Total held for the treasury",
+      "owner": "Owner",
+      "mintRevenue": "Mint revenue",
+      "tips": "Donations",
+      "marketFees": "Marketplace fees",
+      "owedToReferrers": "Owed to referrers (not yours)",
+      "withdrawHint": "Withdraw from the owner wallet — each contract pays out only to the address that owns it.",
+      "notFounder": "This page belongs to the founder. The server checks it against the contracts’ owner, so there is nothing to see here."
     }
   },
   "DE": {
@@ -400,13 +437,16 @@
       "subtitle": "Zwei Ranglisten, beide aus dem Event-Log der Chain berechnet — jede lässt sich unabhängig nachrechnen.",
       "tabs": {
         "donors": "Spenden",
-        "collectors": "Sammler"
+        "collectors": "Sammler",
+        "inviters": "Werber"
       },
       "emptyDonors": "Noch keine Spenden — der erste Name könnte deiner sein.",
       "emptyCollectors": "Noch hat niemand etwas geprägt. Sei die/der Erste.",
       "bestTier": "Beste: {{tier}}",
       "spent": "{{amount}} Ξ ausgegeben",
-      "vacant": "Wartet auf jemanden"
+      "vacant": "Wartet auf jemanden",
+      "emptyInviters": "Noch hat niemand jemanden eingeladen — der erste Name auf der Tafel könnte deiner sein.",
+      "invited": "eingeladen"
     },
     "activity": {
       "title": "Aktivität",
@@ -441,6 +481,40 @@
       "listIt": "Anbieten",
       "approvalHint": "Beim ersten Angebot fragt deine Wallet nach der Erlaubnis für diese Sammlung. Dein Token bleibt bei dir, bis es verkauft ist.",
       "nothingToSell": "Du hast noch nichts zu verkaufen. Präge zuerst ein Artefakt."
+    },
+    "invite": {
+      "nav": "Einladen",
+      "title": "Freunde einladen",
+      "subtitle": "Teile deinen Code. Wenn jemand, den du eingeladen hast, mintet oder kauft, schreibt dir das Register 10 % der Gebühr gut — aus unserem Erlös bezahlt, nie auf seinen Preis aufgeschlagen.",
+      "yourCode": "Dein Einladungscode",
+      "copyLink": "Einladungslink kopieren",
+      "copiedShort": "Kopiert",
+      "copied": "Einladungslink in die Zwischenablage kopiert.",
+      "connectToEarn": "Verbinde eine Wallet, um Belohnungen zu erhalten — die Kette braucht eine Adresse, an die sie zahlen kann.",
+      "invited": "Eingeladen",
+      "lifetime": "Insgesamt verdient",
+      "pending": "Abholbereit",
+      "readyToWithdraw": "Du hast nicht abgeholte Belohnungen",
+      "withdraw": "Auszahlen",
+      "invitedBy": "Du bist mit dem Einladungscode {{code}} beigetreten",
+      "signInFirst": "Melde dich an, um deinen Einladungscode zu erhalten.",
+      "howTitle": "So funktioniert es",
+      "how1": "1. Schick deinen Link. Wer sich damit anmeldet, wird beim ersten Kauf on chain dauerhaft mit dir verknüpft — genau einmal.",
+      "how2": "2. Jeder Mint und jeder Verkauf dieser Person bringt dir 10 % der Provision. Der Käufer zahlt in jedem Fall denselben Preis.",
+      "how3": "3. Zahl dir aus, wann du willst. Dein Guthaben liegt im Register-Vertrag, nicht bei uns."
+    },
+    "treasury": {
+      "nav": "Kasse",
+      "title": "Kasse",
+      "subtitle": "Was die Verträge für ihren Eigentümer halten. Direkt von der Kette gelesen — diese Seite berichtet, sie entscheidet nicht.",
+      "total": "Insgesamt für die Kasse gehalten",
+      "owner": "Eigentümer",
+      "mintRevenue": "Mint-Erlös",
+      "tips": "Spenden",
+      "marketFees": "Marktplatz-Gebühren",
+      "owedToReferrers": "Für Werber reserviert (nicht deins)",
+      "withdrawHint": "Auszahlung aus der Eigentümer-Wallet — jeder Vertrag zahlt nur an die Adresse, der er gehört.",
+      "notFounder": "Diese Seite gehört dem Gründer. Der Server prüft das gegen den Eigentümer der Verträge — hier gibt es nichts zu sehen."
     }
   },
   "CN": {
@@ -622,13 +696,16 @@
       "subtitle": "两个榜单，都由链上事件日志推导得出——任何人都能自行重算，结果一致。",
       "tabs": {
         "donors": "打赏",
-        "collectors": "收藏家"
+        "collectors": "收藏家",
+        "inviters": "邀请人"
       },
       "emptyDonors": "还没有打赏——榜首可以是你。",
       "emptyCollectors": "还没有人铸造过，来做第一个吧。",
       "bestTier": "最高：{{tier}}",
       "spent": "已花费 {{amount}} Ξ",
-      "vacant": "虚位以待"
+      "vacant": "虚位以待",
+      "emptyInviters": "还没有人邀请过任何人 —— 榜单上的第一个名字可能就是你。",
+      "invited": "已邀请"
     },
     "activity": {
       "title": "动态",
@@ -663,6 +740,40 @@
       "listIt": "挂单",
       "approvalHint": "首次挂单时，钱包会请求授权市场转移该系列。在售出之前，代币始终属于你。",
       "nothingToSell": "你还没有可出售的东西，先铸造一个神器吧。"
+    },
+    "invite": {
+      "nav": "邀请",
+      "title": "邀请好友",
+      "subtitle": "分享你的邀请码。你邀请的人每次铸造或购买，登记合约都会把手续费的 10% 记到你名下 —— 从我们的收入中支付，绝不会加到他们的价格上。",
+      "yourCode": "你的邀请码",
+      "copyLink": "复制邀请链接",
+      "copiedShort": "已复制",
+      "copied": "邀请链接已复制到剪贴板。",
+      "connectToEarn": "连接钱包才能收到奖励 —— 链上需要一个地址才能付款。",
+      "invited": "已邀请",
+      "lifetime": "累计收益",
+      "pending": "可领取",
+      "readyToWithdraw": "你有尚未领取的奖励",
+      "withdraw": "提取",
+      "invitedBy": "你通过邀请码 {{code}} 加入",
+      "signInFirst": "登录后即可获得你的邀请码。",
+      "howTitle": "规则说明",
+      "how1": "1. 发送你的链接。用它注册的人，会在第一次链上购买时与你永久绑定 —— 只绑定一次。",
+      "how2": "2. 此后他每次铸造或成交，你都能拿到佣金的 10%。买家支付的价格不变。",
+      "how3": "3. 随时提取。余额由登记合约保管，而不是由我们保管。"
+    },
+    "treasury": {
+      "nav": "金库",
+      "title": "金库",
+      "subtitle": "合约为其所有者保管的资金，直接从链上读取 —— 本页只做展示，不做决定。",
+      "total": "金库累计持有",
+      "owner": "所有者",
+      "mintRevenue": "铸造收入",
+      "tips": "捐赠",
+      "marketFees": "市场手续费",
+      "owedToReferrers": "应付给推荐人（不属于你）",
+      "withdrawHint": "请用所有者钱包提取 —— 每个合约只会付款给拥有它的地址。",
+      "notFounder": "本页属于创始人。服务器会对照合约的所有者进行校验，这里没有可看的内容。"
     }
   },
   "UA": {
@@ -844,13 +955,16 @@
       "subtitle": "Дві таблиці, обидві згорнуті з лога подій мережі — кожен може перерахувати їх сам і отримати ті самі числа.",
       "tabs": {
         "donors": "Донати",
-        "collectors": "Колекціонери"
+        "collectors": "Колекціонери",
+        "inviters": "Запрошувачі"
       },
       "emptyDonors": "Донатів ще немає — першим у рейтингу можете стати ви.",
       "emptyCollectors": "Ще ніхто нічого не викарбував. Будьте першим.",
       "bestTier": "Найкращий: {{tier}}",
       "spent": "Витрачено {{amount}} Ξ",
-      "vacant": "Чекає на когось"
+      "vacant": "Чекає на когось",
+      "emptyInviters": "Ще ніхто нікого не запросив — першим у таблиці можете стати ви.",
+      "invited": "запрошено"
     },
     "activity": {
       "title": "Активність",
@@ -885,6 +999,40 @@
       "listIt": "Виставити",
       "approvalHint": "Перше виставлення також попросить гаманець дозволити ринку переміщати цю колекцію. Токен лишається у вас до продажу.",
       "nothingToSell": "Вам поки нічого продавати. Спершу викарбуйте артефакт."
+    },
+    "invite": {
+      "nav": "Запросити",
+      "title": "Запросити друзів",
+      "subtitle": "Поділіться своїм кодом. Щоразу, коли запрошений вами мінтить або купує, реєстр нараховує вам 10% комісії — з нашого доходу, а не понад його ціну.",
+      "yourCode": "Ваш код запрошення",
+      "copyLink": "Скопіювати посилання",
+      "copiedShort": "Скопійовано",
+      "copied": "Посилання скопійовано в буфер обміну.",
+      "connectToEarn": "Під'єднайте гаманець, щоб отримувати винагороду — мережі потрібна адреса, на яку платити.",
+      "invited": "Запрошено",
+      "lifetime": "Зароблено всього",
+      "pending": "Готово до виплати",
+      "readyToWithdraw": "У вас є невитребувана винагорода",
+      "withdraw": "Вивести",
+      "invitedBy": "Ви приєдналися за кодом {{code}}",
+      "signInFirst": "Увійдіть, щоб отримати свій код запрошення.",
+      "howTitle": "Як це працює",
+      "how1": "1. Надішліть посилання. Той, хто зареєструється за ним, прив'яжеться до вас під час першої покупки в мережі — назавжди і лише один раз.",
+      "how2": "2. Кожен мінт чи продаж цієї людини приносить вам 10% комісії. Покупець платить ту саму ціну.",
+      "how3": "3. Виводьте будь-коли. Ваш баланс зберігає контракт-реєстр, а не ми."
+    },
+    "treasury": {
+      "nav": "Казна",
+      "title": "Казна",
+      "subtitle": "Те, що контракти тримають для свого власника. Читається просто з мережі — ця сторінка звітує, а не вирішує.",
+      "total": "Усього в казні",
+      "owner": "Власник",
+      "mintRevenue": "Дохід із мінтів",
+      "tips": "Донати",
+      "marketFees": "Комісії маркетплейсу",
+      "owedToReferrers": "Належить рефералам (не вам)",
+      "withdrawHint": "Виводьте з гаманця-власника — кожен контракт платить лише тій адресі, якій належить.",
+      "notFounder": "Ця сторінка належить засновнику. Сервер звіряє це з власником контрактів, тож тут нічого дивитися."
     }
   }
 }
