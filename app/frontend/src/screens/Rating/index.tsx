@@ -6,19 +6,23 @@ import {Tab, Tabs} from '../../components/Rating/styles';
 import Button from '../../components/Button';
 import Modal from '../../components/Modal';
 import TipForm from '../../components/Tip/TipForm';
-import {fetchCollectorsRequest, fetchLeaderboardRequest} from '../../store/actions';
+import {
+  fetchCollectorsRequest,
+  fetchInvitersRequest,
+  fetchLeaderboardRequest,
+} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 
-type IBoardKey = 'donors' | 'collectors';
+type IBoardKey = 'donors' | 'collectors' | 'inviters';
 
 /**
- * Two boards, one page.
+ * Three boards, one page.
  *
- * Both are folded out of the chain's own event log — the donations board from
- * TipJar, the collectors board from the two mint contracts — so anybody can
- * recompute either one and get the same numbers. A leaderboard nobody has to
- * take on trust is the reason those events exist.
+ * All three are folded out of the chain's own event log — donations from TipJar,
+ * collectors from the two mint contracts, inviters from the referral registry —
+ * so anybody can recompute any of them and get the same numbers. A leaderboard
+ * nobody has to take on trust is the reason those events exist.
  */
 const RatingPage = () => {
   const {t} = useTranslation();
@@ -28,11 +32,13 @@ const RatingPage = () => {
   const [donating, setDonating] = useState(false);
 
   const {leaderboard, collectors, loading} = useStoreSelector((state) => state.stats);
+  const inviters = useStoreSelector((state) => state.referral.inviters);
   const wallet = useStoreSelector((state) => state.user.user.walletAddress);
 
   useEffect(() => {
     dispatch(fetchLeaderboardRequest());
     dispatch(fetchCollectorsRequest());
+    dispatch(fetchInvitersRequest());
   }, [dispatch]);
 
   const donorRows: IBoardRow[] = leaderboard.map((entry) => ({
@@ -54,7 +60,20 @@ const RatingPage = () => {
       .join(' · '),
   }));
 
-  const rows = board === 'donors' ? donorRows : collectorRows;
+  const inviterRows: IBoardRow[] = inviters.map((entry) => ({
+    rank: entry.rank,
+    address: entry.address,
+    value: `${Number(entry.earnedEth).toFixed(4)} Ξ`,
+    subtitle: `${entry.invited} ${t('rating.invited')}`,
+  }));
+
+  const rows = {donors: donorRows, collectors: collectorRows, inviters: inviterRows}[board];
+
+  const emptyText = {
+    donors: 'rating.emptyDonors',
+    collectors: 'rating.emptyCollectors',
+    inviters: 'rating.emptyInviters',
+  }[board];
 
   return (
     <Stack $gap="40px">
@@ -65,7 +84,7 @@ const RatingPage = () => {
 
       <Row $justify="space-between" $wrap $gap="16px">
         <Tabs role="tablist">
-          {(['donors', 'collectors'] as const).map((key) => (
+          {(['donors', 'collectors', 'inviters'] as const).map((key) => (
             <Tab
               key={key}
               type="button"
@@ -89,7 +108,7 @@ const RatingPage = () => {
           rows={rows}
           you={wallet}
           loading={loading && rows.length === 0}
-          emptyText={t(board === 'donors' ? 'rating.emptyDonors' : 'rating.emptyCollectors')}
+          emptyText={t(emptyText)}
         />
       </Stack>
 

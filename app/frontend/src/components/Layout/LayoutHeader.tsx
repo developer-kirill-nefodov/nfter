@@ -38,6 +38,10 @@ const LayoutHeader = () => {
     {to: NavigateUrls.collect, label: t('collect.nav')},
     {to: NavigateUrls.market, label: t('market.nav')},
     {to: NavigateUrls.rating, label: t('rating.nav')},
+    ...(isVisitor ? [] : [{to: NavigateUrls.invite, label: t('invite.nav')}]),
+    // The treasury link is only drawn for the founder — but the endpoint behind
+    // it refuses everyone else regardless, which is where the security lives.
+    ...(user.isFounder ? [{to: NavigateUrls.treasury, label: t('treasury.nav')}] : []),
   ];
 
   const nav = links.map(({to, label}) => (

@@ -36,9 +36,15 @@ export const loginFields: IInputText[] = [
 
 export interface IRegisterValues extends ILoginValues {
   confirmPassword: string;
+  inviteCode: string;
 }
 
-export const registerInitial: IRegisterValues = {email: '', password: '', confirmPassword: ''};
+export const registerInitial: IRegisterValues = {
+  email: '',
+  password: '',
+  confirmPassword: '',
+  inviteCode: '',
+};
 
 export const registerSchema: Yup.ObjectSchema<IRegisterValues> = Yup.object({
   email,
@@ -46,12 +52,16 @@ export const registerSchema: Yup.ObjectSchema<IRegisterValues> = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Required'),
+  // Optional, and never a reason to refuse an account: a mistyped invite costs
+  // the inviter their reward, not the newcomer their sign-up.
+  inviteCode: Yup.string().max(16, 'Too long').default(''),
 });
 
 export const registerFields: IInputText[] = [
   {name: 'email', label: 'Email', type: 'email', placeholder: 'you@example.com', autoComplete: 'email'},
   {name: 'password', label: 'Password', type: 'password', placeholder: 'At least 12 characters', autoComplete: 'new-password'},
   {name: 'confirmPassword', label: 'Confirm password', type: 'password', placeholder: 'Repeat your password', autoComplete: 'new-password'},
+  {name: 'inviteCode', label: 'Invite code (optional)', type: 'text', placeholder: 'EW3-XXXXXX'},
 ];
 
 export interface IForgotValues {

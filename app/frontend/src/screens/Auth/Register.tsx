@@ -1,4 +1,5 @@
 import {useTranslation} from 'react-i18next';
+import {useSearchParams} from 'react-router-dom';
 
 import Button from '../../components/Button';
 import BaseForm from '../../components/Forms';
@@ -25,15 +26,22 @@ const RegisterPage = () => {
   const dispatch = useStoreDispatch();
 
   const loading = useStoreSelector((state) => state.user.loading);
+  const [params] = useSearchParams();
+
+  // An invite link lands here with the code already in the URL — asking someone
+  // to copy it across by hand is how a referral programme loses its referrals.
+  const invite = params.get('invite') ?? '';
 
   return (
     <AuthShell>
       <BaseForm<IRegisterValues>
         title={t('auth.register')}
         subtitle={t('auth.registerSubtitle')}
-        initialValues={registerInitial}
+        initialValues={{...registerInitial, inviteCode: invite}}
         validationSchema={registerSchema}
-        onSubmit={({email, password}) => dispatch(registerRequest({email, password}))}
+        onSubmit={({email, password, inviteCode}) =>
+          dispatch(registerRequest({email, password, inviteCode: inviteCode || undefined}))
+        }
       >
         {registerFields.map((field) => (
           <InputText key={field.name} {...field} />
