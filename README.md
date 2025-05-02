@@ -24,6 +24,19 @@ never taking custody: it holds an approval to move your token, not the token its
 nobody during a sale. Proceeds are credited and withdrawn, which is what makes a hostile seller
 unable to re-enter or to revert a stranger's purchase.
 
+**Invite someone, earn a share of the fee.** `Referrals` is a registry: the first time an invited
+account buys on chain, it records who invited them — once, permanently, and never for themselves.
+From then on every mint and every sale by that account credits the inviter 10% of *our* commission.
+The buyer's price does not move by a wei; the reward comes out of the project's revenue, not out
+of their pocket. Balances are pulled, not pushed, so an inviter who cannot receive ETH cannot
+brick anyone else's purchase.
+
+**Two roles, and only one of them is a claim.** A regular account invites and collects. The founder
+also sees the treasury. That role is *not* a column in the users table — a flag in Postgres is a
+claim anybody with database access can make. The founder is whoever the contracts say owns them:
+the server reads `owner()` from the chain and compares. To forge the role you would have to forge
+ownership, and the chain will not let you.
+
 **An account, and the wallet it owns.** Sessions come from email and password: a short-lived
 access token in memory plus an httpOnly refresh cookie, allow-listed in Redis. A wallet is
 something an account *has* — it is linked to a signed-in user, never a way to become one. Every
@@ -134,9 +147,14 @@ process with a readable error, rather than surfacing as a `NaN` token lifetime a
 | Contract | Address |
 |---|---|
 | EthersWeb3Pass | [`0x5Fd8D760…F1504`](https://sepolia.etherscan.io/address/0x5Fd8D760e8E013798D894F606E7f273c354F1504) |
-| EthersWeb3Artifacts | [`0xF9778a7A…86B12`](https://sepolia.etherscan.io/address/0xF9778a7AF0fD9E7DCdcC3Dd852f3F58228386B12) |
-| TipJar | [`0x277Cd3A1…3A7B6`](https://sepolia.etherscan.io/address/0x277Cd3A10B2c37eC1df654EA65a6D6D11bE3A7B6) |
-| Marketplace | [`0x153b0d69…9537e`](https://sepolia.etherscan.io/address/0x153b0d690fa50E3eCF2430EBBF14C0542079537e) |
+| EthersWeb3Artifacts | [`0x14F1373d…01B0f`](https://sepolia.etherscan.io/address/0x14F1373dff11e915d8AcAAB505D6b3F427901B0f) |
+| TipJar | [`0xC51D2D96…C6567`](https://sepolia.etherscan.io/address/0xC51D2D96bCbB4E70b0F7a5a4Fc06B234931C6567) |
+| Marketplace | [`0x9DCc60Cf…b8994`](https://sepolia.etherscan.io/address/0x9DCc60CfDd8ad78F9557D2bB83e62afeA0Fb8994) |
+| Referrals | [`0xCEa9ba1d…1Ba85`](https://sepolia.etherscan.io/address/0xCEa9ba1d0fd011C7F6D472572b4489483E41Ba85) |
+
+The three contracts that hold money are owned by the treasury wallet — deliberately not the
+wallet the author collects with, so that the founder's balance and the project's are never the
+same number.
 
 Addresses and the deployment block live in `app/contracts/deployments/sepolia.json` — the indexer
 starts there rather than at genesis, because a public node will not read logs any further back.
