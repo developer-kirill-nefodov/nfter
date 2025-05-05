@@ -15,7 +15,8 @@ import {
   type IRegisterValues,
 } from '../../validations/auth';
 
-import {AuthShell, FormActions} from './styles';
+import AuthLayout from './AuthLayout';
+import {FormActions, InviteNote} from './styles';
 
 /**
  * The sign-up screen the app always advertised in its header but never had —
@@ -33,7 +34,15 @@ const RegisterPage = () => {
   const invite = params.get('invite') ?? '';
 
   return (
-    <AuthShell>
+    <AuthLayout
+      note={
+        invite ? (
+          <InviteNote>
+            {t('auth.invitedBy')} <strong>{invite}</strong>
+          </InviteNote>
+        ) : undefined
+      }
+    >
       <BaseForm<IRegisterValues>
         title={t('auth.register')}
         subtitle={t('auth.registerSubtitle')}
@@ -54,7 +63,7 @@ const RegisterPage = () => {
           </Button>
         </FormActions>
       </BaseForm>
-    </AuthShell>
+    </AuthLayout>
   );
 };
 

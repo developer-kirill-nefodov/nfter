@@ -12,7 +12,8 @@ import {clearAuthFlow} from '../../store/reducers/auth-slice';
 import {NavigateUrls} from '../../utils/navigate-urls';
 import {resetFields, resetInitial, resetSchema, type IResetValues} from '../../validations/auth';
 
-import {AuthShell, FormActions} from './styles';
+import AuthLayout from './AuthLayout';
+import {FormActions} from './styles';
 
 const ResetPasswordPage = () => {
   const {t} = useTranslation();
@@ -40,7 +41,7 @@ const ResetPasswordPage = () => {
   }
 
   return (
-    <AuthShell>
+    <AuthLayout>
       <BaseForm<IResetValues>
         title={t('auth.resetPassword')}
         subtitle={t('auth.resetSubtitle')}
@@ -61,7 +62,7 @@ const ResetPasswordPage = () => {
           </Button>
         </FormActions>
       </BaseForm>
-    </AuthShell>
+    </AuthLayout>
   );
 };
 

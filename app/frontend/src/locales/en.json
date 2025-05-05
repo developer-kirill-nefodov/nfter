@@ -15,7 +15,17 @@
     "haveAccount": "Already have an account?",
     "or": "or",
     "resendIn": "A link was just sent. You can ask for another in {{seconds}}s.",
-    "resendCountdown": "Resend in {{seconds}}s"
+    "resendCountdown": "Resend in {{seconds}}s",
+    "pitch": "An account, a wallet, and four contracts that draw their own artwork. Sign in to mint, trade, donate — and to invite.",
+    "bulletContracts": "Artwork generated inside the contract — no IPFS, nothing to rot",
+    "bulletSiwe": "Sign-In with Ethereum, with single-use nonces",
+    "bulletReferrals": "Invite a friend and earn 10% of our commission",
+    "invitedBy": "You were invited with",
+    "demoFill": "Fill in the demo account",
+    "show": "Show",
+    "hide": "Hide",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "wallet": {
     "connect": "Connect wallet",

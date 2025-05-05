@@ -28,7 +28,37 @@ export const Label = styled.label`
   font-weight: 600;
 `;
 
-export const Input = styled.input<{$invalid: boolean}>`
+/** Wraps the input so the reveal button can sit inside it rather than beside it. */
+export const InputWrap = styled.div`
+  position: relative;
+  display: flex;
+`;
+
+export const Reveal = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0 ${({theme}) => theme.space.sm};
+  background: none;
+  border: 0;
+  color: ${({theme}) => theme.colors.textMuted};
+  cursor: pointer;
+  font-size: ${({theme}) => theme.fontSizes.xs};
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transition: color ${({theme}) => theme.transitions.fast};
+  ${focusRing};
+
+  &:hover {
+    color: ${({theme}) => theme.colors.accent};
+  }
+`;
+
+export const Input = styled.input<{$invalid: boolean; $padded?: boolean}>`
+  flex: 1;
+  padding-right: ${({theme, $padded}) => ($padded ? theme.space.xxl : theme.space.sm)};
   font: inherit;
   color: ${({theme}) => theme.colors.text};
   background: ${({theme}) => theme.colors.surfaceRaised};

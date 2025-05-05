@@ -13,7 +13,8 @@ import {NavLink, Subtitle} from '../../styles';
 import {NavigateUrls} from '../../utils/navigate-urls';
 import {forgotFields, forgotInitial, forgotSchema, type IForgotValues} from '../../validations/auth';
 
-import {AuthShell, FormActions} from './styles';
+import AuthLayout from './AuthLayout';
+import {FormActions} from './styles';
 
 const ForgotPasswordPage = () => {
   const {t} = useTranslation();
@@ -28,7 +29,7 @@ const ForgotPasswordPage = () => {
   const pending = status === 'pending';
 
   return (
-    <AuthShell>
+    <AuthLayout>
       <BaseForm<IForgotValues>
         title={t('auth.forgotPassword')}
         subtitle={t('auth.forgotSubtitle')}
@@ -54,7 +55,7 @@ const ForgotPasswordPage = () => {
           </Button>
         </FormActions>
       </BaseForm>
-    </AuthShell>
+    </AuthLayout>
   );
 };
 

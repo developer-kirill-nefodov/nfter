@@ -16,7 +16,17 @@
       "haveAccount": "Already have an account?",
       "or": "or",
       "resendIn": "A link was just sent. You can ask for another in {{seconds}}s.",
-      "resendCountdown": "Resend in {{seconds}}s"
+      "resendCountdown": "Resend in {{seconds}}s",
+      "pitch": "An account, a wallet, and four contracts that draw their own artwork. Sign in to mint, trade, donate — and to invite.",
+      "bulletContracts": "Artwork generated inside the contract — no IPFS, nothing to rot",
+      "bulletSiwe": "Sign-In with Ethereum, with single-use nonces",
+      "bulletReferrals": "Invite a friend and earn 10% of our commission",
+      "invitedBy": "You were invited with",
+      "demoFill": "Fill in the demo account",
+      "show": "Show",
+      "hide": "Hide",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
     },
     "wallet": {
       "connect": "Connect wallet",
@@ -275,7 +285,17 @@
       "haveAccount": "Bereits ein Konto?",
       "or": "oder",
       "resendIn": "Ein Link wurde gerade gesendet. Ein neuer ist in {{seconds}}s möglich.",
-      "resendCountdown": "Erneut senden in {{seconds}}s"
+      "resendCountdown": "Erneut senden in {{seconds}}s",
+      "pitch": "Ein Konto, eine Wallet und vier Verträge, die ihre Bilder selbst zeichnen. Melde dich an, um zu minten, zu handeln, zu spenden — und einzuladen.",
+      "bulletContracts": "Bilder im Vertrag erzeugt — kein IPFS, nichts, was verrotten kann",
+      "bulletSiwe": "Sign-In with Ethereum, mit Einmal-Nonces",
+      "bulletReferrals": "Lade jemanden ein und erhalte 10 % unserer Provision",
+      "invitedBy": "Du wurdest eingeladen mit",
+      "demoFill": "Demo-Konto eintragen",
+      "show": "Zeigen",
+      "hide": "Verbergen",
+      "showPassword": "Passwort anzeigen",
+      "hidePassword": "Passwort verbergen"
     },
     "wallet": {
       "connect": "Wallet verbinden",
@@ -534,7 +554,17 @@
       "haveAccount": "已经有账户了？",
       "or": "或",
       "resendIn": "链接刚刚已发送。{{seconds}} 秒后可再次请求。",
-      "resendCountdown": "{{seconds}} 秒后可重发"
+      "resendCountdown": "{{seconds}} 秒后可重发",
+      "pitch": "一个账户、一个钱包，以及四份自己绘制作品的合约。登录即可铸造、交易、捐赠 —— 也可以邀请他人。",
+      "bulletContracts": "作品在合约内部生成 —— 不用 IPFS，没有会失效的东西",
+      "bulletSiwe": "以太坊登录（SIWE），随机数一次性有效",
+      "bulletReferrals": "邀请好友，赚取我们佣金的 10%",
+      "invitedBy": "邀请你的是",
+      "demoFill": "填入演示账户",
+      "show": "显示",
+      "hide": "隐藏",
+      "showPassword": "显示密码",
+      "hidePassword": "隐藏密码"
     },
     "wallet": {
       "connect": "连接钱包",
@@ -793,7 +823,17 @@
       "haveAccount": "Вже маєте акаунт?",
       "or": "або",
       "resendIn": "Посилання щойно надіслано. Наступне можна запросити через {{seconds}}с.",
-      "resendCountdown": "Надіслати ще раз через {{seconds}}с"
+      "resendCountdown": "Надіслати ще раз через {{seconds}}с",
+      "pitch": "Обліковий запис, гаманець і чотири контракти, що самі малюють свої зображення. Увійдіть, щоб мінтити, торгувати, донатити — і запрошувати.",
+      "bulletContracts": "Зображення генерується всередині контракту — без IPFS, нема чому зіпсуватися",
+      "bulletSiwe": "Вхід через Ethereum (SIWE) з одноразовими nonce",
+      "bulletReferrals": "Запросіть друга й отримуйте 10% нашої комісії",
+      "invitedBy": "Вас запросили за кодом",
+      "demoFill": "Підставити демо-акаунт",
+      "show": "Показати",
+      "hide": "Сховати",
+      "showPassword": "Показати пароль",
+      "hidePassword": "Сховати пароль"
     },
     "wallet": {
       "connect": "Підключити гаманець",
