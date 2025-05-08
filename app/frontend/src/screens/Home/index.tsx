@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
+import NetworkPanel from '../../components/Chain/NetworkPanel';
 import ClaimPass from '../../components/Nft/ClaimPass';
 import NftGallery from '../../components/Nft/NftGallery';
 import ConnectButton from '../../components/Wallet/ConnectButton';
@@ -71,6 +72,8 @@ const HomePage = () => {
           </Stat>
         </Row>
       </Card>
+
+      <NetworkPanel />
 
       <ClaimPass />
 

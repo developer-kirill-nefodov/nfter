@@ -12,13 +12,10 @@ export const loginController = async (req: Request, res: Response) => {
 
   const user = await UserModel.scope('withPassword').findOne({where: {email}});
 
-  // One identical error for "no such user" and "wrong password" — anything else
-  // turns the login form into an account-enumeration oracle.
   if (!user?.password || !(await verifyPassword(user.password, password))) {
     throw AppError.unauthorized(MESSAGE_INVALID_CREDENTIALS);
   }
 
-  // Transparently upgrade hashes when the Argon2 cost parameters are raised.
   if (needsRehash(user.password)) {
     await user.update({password: await hashPassword(password)});
   }

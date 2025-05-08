@@ -13,11 +13,6 @@ export interface IPodiumEntry {
 
 const CROWNS = ['🥇', '🥈', '🥉'];
 
-/**
- * The top three, on a real podium: second, first, third — the way a podium is
- * actually shaped, so the winner reads as the winner without anyone having to
- * check the number.
- */
 const Podium = ({entries, you}: {entries: IPodiumEntry[]; you: string | null}) => {
   const {t} = useTranslation();
 

@@ -4,11 +4,11 @@ import {ethers} from 'hardhat';
 
 const COMMON = 0;
 const MINT_PRICE = ethers.parseEther('0.001');
-const MINT_CUT = MINT_PRICE / 10n; // 10% of the price, paid by the treasury
+const MINT_CUT = MINT_PRICE / 10n;
 
 const LIST_PRICE = ethers.parseEther('0.5');
-const FEE = (LIST_PRICE * 250n) / 10_000n; // 2.5%
-const FEE_CUT = FEE / 10n; // 10% of the fee, not of the sale
+const FEE = (LIST_PRICE * 250n) / 10_000n;
+const FEE_CUT = FEE / 10n;
 
 const NOBODY = ethers.ZeroAddress;
 
@@ -45,8 +45,6 @@ describe('Referrals', () => {
     it('remembers who invited whom, on the buyer’s first purchase', async () => {
       const {referrals, artifacts, alice, bob} = await loadFixture(deploy);
 
-      // No extra transaction, no extra gas: the invite rides along with the mint
-      // the buyer was going to make anyway.
       await expect(artifacts.connect(bob).mint(COMMON, alice.address, {value: MINT_PRICE}))
         .to.emit(referrals, 'Referred')
         .withArgs(bob.address, alice.address);
@@ -61,8 +59,6 @@ describe('Referrals', () => {
       await artifacts.connect(bob).mint(COMMON, alice.address, {value: MINT_PRICE});
       await artifacts.connect(bob).mint(COMMON, carol.address, {value: MINT_PRICE});
 
-      // Otherwise whoever moved last could steal a stream of earnings from
-      // whoever actually did the inviting.
       expect(await referrals.referrerOf(bob.address)).to.equal(alice.address);
       expect(await referrals.invited(carol.address)).to.equal(0n);
     });
@@ -78,8 +74,6 @@ describe('Referrals', () => {
     it('lets a purchase through even when the invite is nonsense', async () => {
       const {artifacts, bob} = await loadFixture(deploy);
 
-      // A stale invite link is not a reason to take somebody's transaction down
-      // with it — the sale simply proceeds with no referrer.
       await expect(artifacts.connect(bob).mint(COMMON, NOBODY, {value: MINT_PRICE})).to.not.be
         .reverted;
     });
@@ -101,7 +95,6 @@ describe('Referrals', () => {
     it('pays the referrer 10% — out of the treasury’s share, not the buyer’s pocket', async () => {
       const {referrals, artifacts, alice, bob} = await loadFixture(deploy);
 
-      // The buyer pays exactly the listed price either way.
       await expect(
         artifacts.connect(bob).mint(COMMON, alice.address, {value: MINT_PRICE}),
       ).to.changeEtherBalance(bob, -MINT_PRICE);
@@ -118,7 +111,6 @@ describe('Referrals', () => {
       await artifacts.connect(bob).mint(COMMON, alice.address, {value: MINT_PRICE});
       await artifacts.connect(bob).mint(COMMON, NOBODY, {value: MINT_PRICE});
 
-      // The referrer is remembered, so the second mint pays them too.
       expect(await referrals.earned(alice.address)).to.equal(MINT_CUT * 2n);
     });
 
@@ -148,7 +140,6 @@ describe('Referrals', () => {
 
       await market.connect(bob).buy(collection, 1, carol.address, {value: LIST_PRICE});
 
-      // The seller is paid the same whether or not a referrer exists.
       expect(await market.proceeds(alice.address)).to.equal(LIST_PRICE - FEE);
       expect(await referrals.earned(carol.address)).to.equal(FEE_CUT);
       expect(await market.proceeds(treasury.address)).to.equal(FEE - FEE_CUT);
@@ -237,8 +228,6 @@ describe('Referrals', () => {
     it('cannot be pointed at a different registry after deployment', async () => {
       const {artifacts, market, referrals} = await loadFixture(deploy);
 
-      // Immutable: a registry the owner could swap out is one nobody can rely on
-      // for a stream of earnings.
       expect(await artifacts.referrals()).to.equal(await referrals.getAddress());
       expect(await market.referrals()).to.equal(await referrals.getAddress());
     });

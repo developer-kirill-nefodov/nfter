@@ -14,7 +14,6 @@ export type IHttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 export interface IRoute {
   method: IHttpMethod;
   path: string;
-  /** Runs in order: rate limit → guard → body validation → handler. */
   middleware?: RequestHandler[];
   handler: RequestHandler;
 }

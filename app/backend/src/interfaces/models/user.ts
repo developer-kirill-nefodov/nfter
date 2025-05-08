@@ -13,20 +13,12 @@ export interface IRole {
   };
 }
 
-/**
- * An account is reachable through either credential — email+password or a wallet
- * — so both sides are nullable and the row is identified by `id` alone. A
- * wallet-first user has no email until they choose to add one.
- */
 export interface IUserModelData extends ModelAttributes {
   email: string | null;
   password: string | null;
-  /** Lowercased checksum-validated address, or null until a wallet is linked. */
   wallet_address: string | null;
   role: IRole;
-  /** This user's own invite code. Short enough to say out loud. */
   referral_code: string | null;
-  /** The user who invited them, if any. */
   referred_by: number | null;
 }
 

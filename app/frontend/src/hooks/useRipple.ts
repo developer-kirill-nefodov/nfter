@@ -12,8 +12,6 @@ export const useRipple = () => {
   const [isRippling, setIsRippling] = useState(false);
 
   const onRipple = useCallback((event: React.MouseEvent<HTMLElement>) => {
-    // currentTarget is the button itself. The old code measured event.target,
-    // so clicking the label inside the button put the ripple in the wrong place.
     const rect = event.currentTarget.getBoundingClientRect();
 
     setCoords({x: event.clientX - rect.left, y: event.clientY - rect.top});

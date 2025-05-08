@@ -6,7 +6,6 @@ export const ARTIFACTS_ADDRESS = import.meta.env.VITE_ARTIFACTS_ADDRESS;
 export const MARKETPLACE_ADDRESS = import.meta.env.VITE_MARKETPLACE_ADDRESS;
 export const REFERRALS_ADDRESS = import.meta.env.VITE_REFERRALS_ADDRESS;
 
-/** Nobody invited them — a valid answer, and the default one. */
 export const NO_REFERRER = '0x0000000000000000000000000000000000000000';
 
 export const REFERRALS_ABI = [
@@ -23,7 +22,6 @@ export const MARKETPLACE_ABI = [
   'function proceeds(address) view returns (uint256)',
 ];
 
-/** setApprovalForAll is how the market is allowed to move a token it never holds. */
 export const ERC721_APPROVAL_ABI = [
   'function setApprovalForAll(address operator, bool approved)',
   'function isApprovedForAll(address owner, address operator) view returns (bool)',
@@ -31,7 +29,6 @@ export const ERC721_APPROVAL_ABI = [
 
 export type ITier = 0 | 1 | 2 | 3;
 
-/** Mirrors the contract: prices and caps are immutable there, so they are here. */
 export const TIERS = [
   {id: 0 as ITier, key: 'common' as const, price: '0.001', cap: 1000},
   {id: 1 as ITier, key: 'rare' as const, price: '0.003', cap: 250},
@@ -46,7 +43,6 @@ export const ARTIFACTS_ABI = [
   'event Minted(address indexed minter, uint256 indexed tokenId, uint8 tier, uint256 price, uint256 seed)',
 ];
 
-/** Only the fragments this app calls. A full ABI would be dead weight in the bundle. */
 export const PASS_ABI = [
   'function claim() returns (uint256)',
   'function claimed(address) view returns (bool)',
@@ -61,11 +57,6 @@ export const TIP_JAR_ABI = [
   'event Tipped(address indexed from, uint256 amount, string message, uint256 timestamp)',
 ];
 
-/**
- * ethers types contract methods through an index signature, so a struct that
- * `extends Contract` cannot also name them. Describing just the calls we make —
- * each with its `estimateGas` twin — gives real types at the call sites.
- */
 interface IContractMethod<TArgs extends unknown[], TResult> {
   (...args: TArgs): Promise<TResult>;
   estimateGas(...args: TArgs): Promise<bigint>;
@@ -122,16 +113,11 @@ export interface ITxReceipt {
   logs: readonly ITxLog[];
 }
 
-/** The slice of ethers' TransactionResponse we actually use. */
 export interface ITransactionResponse {
   hash: string;
   wait(confirmations?: number): Promise<ITxReceipt | null>;
 }
 
-/**
- * ethers is imported lazily everywhere in this app — it is the heaviest thing we
- * ship and it is worth nothing to a visitor who never opens a wallet.
- */
 export const getPass = async (signer: JsonRpcSigner): Promise<IPassContract> => {
   const {Contract} = await import('ethers');
 
@@ -150,7 +136,6 @@ export const getArtifacts = async (signer: JsonRpcSigner): Promise<IArtifactsCon
   return new Contract(ARTIFACTS_ADDRESS, ARTIFACTS_ABI, signer) as unknown as IArtifactsContract;
 };
 
-/** Reads one token's metadata straight off the chain, decoding the data: URI. */
 export const readToken = async (
   signer: JsonRpcSigner,
   contract: string,

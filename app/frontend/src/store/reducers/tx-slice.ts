@@ -1,16 +1,5 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 
-/**
- * A transaction is not a request/response — it is a small state machine, and
- * pretending otherwise is what makes most dapps feel broken. Every stage below
- * is a thing the user can actually be waiting on:
- *
- *   estimating → the wallet has not been opened yet; we are pricing the call
- *   signing    → MetaMask is open, waiting on a human
- *   pending    → broadcast, sitting in the mempool, hash known
- *   confirmed  → mined, and the chain agrees
- *   failed     → rejected, reverted, or out of gas
- */
 export type ITxStage = 'idle' | 'estimating' | 'signing' | 'pending' | 'confirmed' | 'failed';
 
 export type ITxKind = 'claim' | 'tip' | 'mint' | 'list' | 'buy' | 'cancel' | 'withdraw';
@@ -20,9 +9,7 @@ export interface ITxState {
   stage: ITxStage;
   hash: string | null;
   error: string | null;
-  /** True when the user declined in the wallet, rather than something breaking. */
   rejected: boolean;
-  /** Estimated cost in wei, shown before the wallet is ever opened. */
   gasEstimate: string | null;
 }
 

@@ -1,6 +1,8 @@
 import styled, {createGlobalStyle, css} from 'styled-components';
 import {Link} from 'react-router-dom';
 
+import {media} from './theme';
+
 export const AppGlobalStyles = createGlobalStyle`
   *, *::before, *::after {
     box-sizing: border-box;
@@ -12,6 +14,14 @@ export const AppGlobalStyles = createGlobalStyle`
     min-height: 100%;
   }
 
+  html {
+    overflow-x: hidden;
+  }
+
+  img, svg, video, canvas {
+    max-width: 100%;
+  }
+
   body {
     font-family: 'Nunito', system-ui, sans-serif;
     background: ${({theme}) => theme.colors.background};
@@ -19,12 +29,6 @@ export const AppGlobalStyles = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
   }
 
-  /*
-   * A button does not inherit colour: the user agent forces its own buttontext,
-   * which on a dark surface is near-black. Every card that became a button — the
-   * gallery, the shop window — quietly took its title back to black with it. This
-   * is the fix for the whole class of that bug, not just the two places it showed.
-   */
   button,
   input,
   select,
@@ -33,7 +37,6 @@ export const AppGlobalStyles = createGlobalStyle`
     font-family: inherit;
   }
 
-  /* One visible focus ring for everything, so keyboard users are never lost. */
   :focus-visible {
     outline: 2px solid ${({theme}) => theme.colors.accent};
     outline-offset: 2px;
@@ -77,12 +80,17 @@ export const Card = styled.section`
   border-radius: ${({theme}) => theme.radii.lg};
   box-shadow: ${({theme}) => theme.shadows.md};
   padding: ${({theme}) => theme.space.lg};
+
+  ${media.down('sm')} {
+    padding: ${({theme}) => theme.space.md};
+  }
 `;
 
 export const Title = styled.h1`
   margin: 0;
-  font-size: ${({theme}) => theme.fontSizes.xl};
+  font-size: clamp(22px, 5vw, ${({theme}) => theme.fontSizes.xl});
   font-weight: 700;
+  overflow-wrap: anywhere;
 `;
 
 export const Subtitle = styled.p`

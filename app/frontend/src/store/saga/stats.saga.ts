@@ -26,7 +26,6 @@ function* fetchStatsSaga({payload}: ReturnType<typeof fetchStatsRequest>) {
     const stats: IPublicStats = yield call(statsApi.public, payload?.refresh ?? false);
     yield put(setStats(stats));
   } catch {
-    // The landing page renders with zeros rather than not rendering at all.
     yield put(setStatsLoaded());
   }
 }

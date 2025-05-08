@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import {media} from '../../theme';
+
 import {focusRing} from '../../styles';
 
 export const AddressPill = styled.span`
@@ -19,11 +21,6 @@ export const Wrapper = styled.div`
   position: relative;
 `;
 
-/**
- * The address, the balance and a colour derived from the address itself — one
- * control that says who you are and what you have, and opens everything you can
- * do about it.
- */
 export const Trigger = styled.button`
   display: inline-flex;
   align-items: center;
@@ -46,7 +43,6 @@ export const Trigger = styled.button`
   }
 `;
 
-/** A wallet-coloured dot: the address, turned into a hue. Zero assets, zero requests. */
 export const Avatar = styled.span<{$address: string}>`
   width: 24px;
   height: 24px;
@@ -59,6 +55,10 @@ export const Avatar = styled.span<{$address: string}>`
 
 export const Balance = styled.strong`
   color: ${({theme}) => theme.colors.accent};
+
+  ${media.down('sm')} {
+    display: none;
+  }
 `;
 
 export const MenuPanel = styled.div`

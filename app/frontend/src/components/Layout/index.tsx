@@ -13,7 +13,6 @@ interface ILayout {
 const Layout = ({children}: ILayout) => (
   <Shell>
     <LayoutHeader />
-    {/* A real <main> landmark: screen readers can jump straight to the content. */}
     <Main id="main">{children}</Main>
     <LayoutFooter />
     <Toastify />

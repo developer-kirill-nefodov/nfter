@@ -1,8 +1,5 @@
 const argon2 = require('argon2');
 
-// Development fixtures. The password satisfies the live password policy and is
-// hashed with the same Argon2id parameters the app uses at runtime, so these
-// accounts log in through exactly the code path a real user does.
 const DEV_PASSWORD = 'DevPassword123';
 
 const hash = (password) =>

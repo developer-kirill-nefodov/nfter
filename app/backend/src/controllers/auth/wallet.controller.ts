@@ -11,15 +11,6 @@ export const nonceController = async (_req: Request, res: Response) => {
   res.status(200).json({nonce: await issueNonce()});
 };
 
-/**
- * Links a wallet to the account that is already signed in.
- *
- * Sign-In with Ethereum (EIP-4361) is used to prove ownership: the wallet signs
- * a one-time nonce, and the server checks the signature. It proves the address,
- * not the person — which is exactly why it cannot create a session on its own
- * here. An account is an email and a password; a wallet is something an account
- * *has*.
- */
 export const walletLinkController = async (req: IRequestAuth, res: Response) => {
   const {message, signature} = readBody<{message: string; signature: string}>(req);
 
@@ -39,11 +30,9 @@ export const walletLinkController = async (req: IRequestAuth, res: Response) => 
 
   await user.update({wallet_address: address});
 
-  // Re-issue the session: the old access token still says walletAddress: null.
   await issueSession(res, user, 'Wallet linked to your account.');
 };
 
-/** Unlinks the wallet, freeing it to be linked to a different account. */
 export const walletUnlinkController = async (req: IRequestAuth, res: Response) => {
   const user = await UserModel.findByPk(req.session.id);
 

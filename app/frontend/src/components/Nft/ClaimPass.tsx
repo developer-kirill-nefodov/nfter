@@ -8,11 +8,6 @@ import Button from '../Button';
 
 import {ClaimCard} from './styles';
 
-/**
- * The pass is one per wallet, forever — so the button disappears for good once
- * it has been used. The chain is the source of truth for that, not the gallery:
- * a wallet that claimed and then gave the pass away still cannot claim again.
- */
 const ClaimPass = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();

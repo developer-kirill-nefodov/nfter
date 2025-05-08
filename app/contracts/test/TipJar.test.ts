@@ -31,9 +31,6 @@ describe('TipJar', () => {
       await jar.connect(alice).tip('first', {value: ONE_TENTH});
       await jar.connect(bob).tip('second', {value: ONE_TENTH * 2n});
 
-      // This is the whole reason tips go through a contract instead of straight
-      // to a wallet: the history is a queryFilter away — no explorer API key,
-      // no third-party indexer.
       const events = await jar.queryFilter(jar.filters.Tipped());
 
       expect(events.map((e) => e.args.message)).to.deep.equal(['first', 'second']);

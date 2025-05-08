@@ -22,7 +22,6 @@ interface INftModal {
   nft: INft | null;
   contract: string;
   onClose: () => void;
-  /** Set right after a mint: the dialog congratulates instead of just informing. */
   reveal?: boolean;
   txHash?: string | null;
 }
@@ -59,8 +58,6 @@ const NftModal = ({nft, contract, onClose, reveal = false, txHash}: INftModal) =
 
       {reveal && <ModalSubtitle>{nft.name}</ModalSubtitle>}
 
-      {/* The image is a data: URI straight from the contract — nothing is fetched
-          to render this, which is the whole point of the collection. */}
       <ModalArt src={nft.image} alt={nft.name} $reveal={reveal} />
 
       {nft.description && <ModalSubtitle>{nft.description}</ModalSubtitle>}
@@ -95,8 +92,6 @@ const NftModal = ({nft, contract, onClose, reveal = false, txHash}: INftModal) =
           </a>
         )}
 
-        {/* Paste it into a browser and the JSON appears. That is the proof the
-            metadata is on chain and not on somebody's server. */}
         <Button variant="ghost" onClick={() => void copyUri()}>
           {copied ? t('nftModal.copied') : t('nftModal.copyUri')}
         </Button>

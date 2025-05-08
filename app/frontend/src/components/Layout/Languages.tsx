@@ -12,20 +12,9 @@ interface ICountry {
   lang: string;
 }
 
-/**
- * An ISO-3166 alpha-2 code maps onto a flag emoji by shifting each letter into
- * the Regional Indicator block. The font draws it — which is how this component
- * replaced react-flags-select, whose base64 flag sprites were 880 kB, more than
- * the rest of the vendor bundle put together, for four languages.
- */
 const flagOf = (iso2: string): string =>
   String.fromCodePoint(...[...iso2.toUpperCase()].map((char) => 0x1f1e6 + char.charCodeAt(0) - 65));
 
-/**
- * This selector existed in the old codebase but was never imported anywhere, so
- * the app was pinned to one hardcoded locale while an i18n backend sat behind it
- * doing nothing. It is mounted in the header now.
- */
 const Languages = ({compact}: {compact: boolean}) => {
   const {i18n} = useTranslation();
   const [countries, setCountries] = useState<ICountry[]>([]);
@@ -38,8 +27,6 @@ const Languages = ({compact}: {compact: boolean}) => {
     api
       .get<ICountry[]>('/countries/lang')
       .then(({data}) => !cancelled && setCountries(data))
-      // A missing language list is not worth a toast: the app still works in the
-      // locale that is already loaded.
       .catch(() => undefined);
 
     return () => {
@@ -86,7 +73,6 @@ const Languages = ({compact}: {compact: boolean}) => {
   const select = (iso2: string) => {
     setOpen(false);
 
-    // Fetch the dictionary before switching, or the UI flashes raw keys.
     void loadLanguage(iso2)
       .then(() => i18n.changeLanguage(iso2))
       .catch(() => toast('Could not load that language', 'error'));

@@ -17,10 +17,6 @@ interface IRequireRole {
 
 const RANK: Record<IRoleName, number> = {VISITOR: 0, USER: 1, MODERATOR: 2, ADMIN: 3};
 
-/**
- * Access is a rank comparison, not string equality: the old gate tested
- * `route.role === user.role.name`, so a page marked USER locked out ADMIN.
- */
 const RequireRole = ({access, redirect, children}: IRequireRole) => {
   const {user, loading} = useStoreSelector((state) => state.user);
 

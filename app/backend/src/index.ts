@@ -6,8 +6,6 @@ import {emailWorker} from './workers/email.worker';
 import {startTipIndexer, tipIndexerWorker} from './workers/tip-indexer.worker';
 
 const start = async () => {
-  // A server that boots without its database only turns every request into a
-  // 500, so a failed connection is fatal here rather than a logged warning.
   await redis.connect();
   logger.info('redis connected');
 

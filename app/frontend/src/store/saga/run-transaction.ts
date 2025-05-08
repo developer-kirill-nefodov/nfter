@@ -11,12 +11,6 @@ import {
   type ITxKind,
 } from '../reducers/tx-slice';
 
-/**
- * The wallet callbacks fire from inside ethers, outside the saga's own yields —
- * so they push their progress in through the store rather than returning it.
- * That is what lets the UI show "pending, here is your hash" while the chain is
- * still thinking.
- */
 export function* runTransaction<TResult>(
   kind: ITxKind,
   execute: (handlers: {
@@ -34,7 +28,6 @@ export function* runTransaction<TResult>(
       onBroadcast: (value) => dispatched.push(txBroadcast(value)),
     })) as TResult;
 
-    // Replay whatever ethers reported while we were awaiting it.
     for (const action of dispatched) {
       yield put(action);
     }
@@ -56,4 +49,3 @@ export function* runTransaction<TResult>(
     return null;
   }
 }
-

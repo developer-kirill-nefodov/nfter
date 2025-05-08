@@ -56,8 +56,6 @@ describe('reset password', () => {
     await user.type(screen.getByLabelText('Confirm password'), 'BrandNewPass123');
     await user.click(screen.getByRole('button', {name: /set a new password/i}));
 
-    // The password is changed and every session was revoked server-side, so the
-    // only thing left to do is sign in with it.
     expect(await screen.findByRole('heading', {name: 'Sign in'})).toBeInTheDocument();
   });
 
@@ -87,7 +85,6 @@ describe('reset password', () => {
     await user.type(screen.getByLabelText('Confirm password'), 'BrandNewPass123');
     await user.click(screen.getByRole('button', {name: /set a new password/i}));
 
-    // Still on the form — and it must not be left holding the passwords.
     expect(await screen.findByLabelText('New password')).toHaveValue('');
     expect(screen.getByLabelText('Confirm password')).toHaveValue('');
   });

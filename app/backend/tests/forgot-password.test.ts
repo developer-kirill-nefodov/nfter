@@ -55,8 +55,6 @@ describe('password reset', () => {
     await createResetToken(7, EMAIL);
     await createResetToken(7, EMAIL);
 
-    // Per-mailbox, not per-IP: otherwise anyone can flood a stranger's inbox
-    // simply by rotating addresses.
     expect(emailJobs).toHaveLength(1);
   });
 
@@ -70,7 +68,6 @@ describe('password reset', () => {
   it('sends again once the cooldown has expired', async () => {
     await createResetToken(7, EMAIL);
 
-    // The cooldown is a Redis key with a TTL; expiring it is what the clock does.
     for (const key of [...redis.store.keys()].filter((k) => k.startsWith('reset-cooldown:'))) {
       redis.store.delete(key);
     }

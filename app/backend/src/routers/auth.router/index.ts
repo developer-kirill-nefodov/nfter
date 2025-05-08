@@ -66,9 +66,6 @@ const AuthRouters: IAnyRouter = {
       middleware: [authLimiter, validate(resetPasswordValidator)],
       handler: resetPasswordController,
     },
-    // Sign-In with Ethereum, used to prove ownership of an address — never to
-    // create a session. Both routes demand an authenticated caller: a wallet is
-    // something an account has, not a way to become one.
     {
       method: 'get',
       path: 'nonce',

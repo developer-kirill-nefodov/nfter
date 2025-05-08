@@ -22,13 +22,6 @@ const market = new Contract(
   provider,
 ) as unknown as {proceeds(account: string): Promise<bigint>};
 
-/**
- * What the project has actually earned, read from the contracts themselves.
- *
- * Nothing here is accounting the server keeps: every figure is a balance or a
- * credited amount the chain will confirm. A treasury page that shows numbers only
- * its own database believes is a dashboard, not a ledger.
- */
 export const getTreasury = async (): Promise<ITreasury> => {
   const owner = await getTreasuryAddress();
 
@@ -52,8 +45,6 @@ export const getTreasury = async (): Promise<ITreasury> => {
     artifacts: {contract: env.web3.artifacts, balanceEth: formatEther(artifactsBalance)},
     tipJar: {contract: env.web3.tipJar, balanceEth: formatEther(jarBalance)},
     marketplace: {contract: env.web3.marketplace, proceedsEth: formatEther(marketProceeds)},
-    // The referrals contract holds money that belongs to referrers, not to the
-    // treasury. It is shown for honesty, and deliberately not counted in the total.
     referrals: {contract: env.web3.referrals, balanceEth: formatEther(referralsBalance)},
     totalEth: formatEther(total),
   };

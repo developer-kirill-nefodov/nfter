@@ -1,5 +1,3 @@
-// The app validates its environment at import time, so the suite has to provide
-// a complete one before anything under src/ is loaded.
 Object.assign(process.env, {
   NODE_ENV: 'test',
   LOG_LEVEL: 'fatal',

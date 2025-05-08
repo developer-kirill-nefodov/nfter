@@ -3,7 +3,6 @@ import {useTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
 
 import LogoMark from '../../assets/svg/nfter-logo.svg';
-import LogoWithText from '../../assets/svg/nfter-logo-w-text.svg';
 import {useMediaQuery} from '../../hooks/useMediaQuery';
 import {logoutRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
@@ -13,16 +12,21 @@ import Spinner from '../Spinner';
 import WalletMenu from '../Wallet/WalletMenu';
 
 import Languages from './Languages';
-import {Actions, Burger, Header, Inner, Logo, MobileNav, Nav, NavItem, Zone} from './styles';
+import {
+  Actions,
+  Brand,
+  BrandLink,
+  Burger,
+  Header,
+  Inner,
+  Logo,
+  MobileNav,
+  MobileTools,
+  Nav,
+  NavItem,
+  Zone,
+} from './styles';
 
-/**
- * Three zones — brand, navigation, actions — instead of one wrapping row.
- *
- * The old header threw links, a language select, a wallet pill and a red
- * Disconnect button into a single flex row with `wrap`, so on any middling
- * screen it folded in half. Zones do not fold: on mobile the navigation moves
- * into a menu rather than spilling across two lines.
- */
 const LayoutHeader = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -39,8 +43,6 @@ const LayoutHeader = () => {
     {to: NavigateUrls.market, label: t('market.nav')},
     {to: NavigateUrls.rating, label: t('rating.nav')},
     ...(isVisitor ? [] : [{to: NavigateUrls.invite, label: t('invite.nav')}]),
-    // The treasury link is only drawn for the founder — but the endpoint behind
-    // it refuses everyone else regardless, which is where the security lives.
     ...(user.isFounder ? [{to: NavigateUrls.treasury, label: t('treasury.nav')}] : []),
   ];
 
@@ -54,9 +56,10 @@ const LayoutHeader = () => {
     <Header>
       <Inner>
         <Zone>
-          <Link to={NavigateUrls.home} aria-label="ethers-web3 home">
-            <Logo src={isMobile ? LogoMark : LogoWithText} alt="" />
-          </Link>
+          <BrandLink to={NavigateUrls.home} aria-label="EthersWeb3 home">
+            <Logo src={LogoMark} alt="" />
+            <Brand>EthersWeb3</Brand>
+          </BrandLink>
         </Zone>
 
         {!isMobile && <Nav aria-label="Main">{nav}</Nav>}
@@ -66,8 +69,8 @@ const LayoutHeader = () => {
             <Spinner />
           ) : (
             <>
-              <Languages compact />
-              <WalletMenu />
+              {!isMobile && <Languages compact />}
+              {!isVisitor && <WalletMenu />}
 
               {isVisitor ? (
                 <Link to={NavigateUrls.auth.login}>
@@ -94,7 +97,15 @@ const LayoutHeader = () => {
         </Actions>
       </Inner>
 
-      {isMobile && menuOpen && <MobileNav aria-label="Main">{nav}</MobileNav>}
+      {isMobile && menuOpen && (
+        <MobileNav aria-label="Main">
+          {nav}
+
+          <MobileTools>
+            <Languages compact />
+          </MobileTools>
+        </MobileNav>
+      )}
     </Header>
   );
 };

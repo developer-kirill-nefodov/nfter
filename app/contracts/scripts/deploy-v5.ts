@@ -1,18 +1,6 @@
 import {readFileSync, writeFileSync} from 'fs';
 import {ethers, network} from 'hardhat';
 
-/**
- * Deploys the referral registry and re-points the money contracts at it, with the
- * treasury — not the founder's own wallet — as their owner.
- *
- * The registry is deployed owned by the deployer, wired up, and only then handed
- * over: `setCaller` is owner-only, so transferring first would lock us out of the
- * very configuration the contracts need to work. Ownership moves last, once there
- * is nothing left to configure.
- *
- * The pass is left alone. It holds no money and has no owner, so redeploying it
- * would only invalidate the passes people already hold.
- */
 async function main() {
   const treasury = process.env.TREASURY_ADDRESS;
 
@@ -55,8 +43,6 @@ async function main() {
   await market.waitForDeployment();
   const marketAddress = await market.getAddress();
 
-  // Only these two may credit a referrer. Anything else calling `credit()` would
-  // be paying rewards out of thin air.
   await (await referrals.setCaller(artifactsAddress, true)).wait();
   await (await referrals.setCaller(marketAddress, true)).wait();
   await (await referrals.transferOwnership(treasury)).wait();

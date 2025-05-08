@@ -12,18 +12,10 @@ export const toUserData = (user: IUserModel): IUserData => ({
   walletAddress: user.wallet_address,
 });
 
-/**
- * The refresh token goes into an httpOnly cookie so JavaScript can never read
- * it; the short-lived access token goes in the body, where the SPA keeps it in
- * memory only. A stolen access token expires in minutes — a stolen refresh
- * token would not.
- */
 export const issueSession = async (res: Response, user: IUserModel, message: string) => {
   const data = toUserData(user);
   const tokens = await createTokens(data);
 
-  // The founder flag is derived, never stored: it is read from the contract's
-  // owner() every time, so it cannot be forged by editing a row.
   const founder = await isFounder(data.walletAddress);
 
   res

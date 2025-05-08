@@ -16,6 +16,5 @@ export interface ITipFeed {
   totalTipsEth: string;
   tipCount: number;
   tips: ITip[];
-  /** False until the jar exists at the configured address on this chain. */
   deployed: boolean;
 }

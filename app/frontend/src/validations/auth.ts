@@ -7,8 +7,6 @@ const email = Yup.string()
   .max(255, 'Too long')
   .required('Required');
 
-// Mirrors the server's policy exactly. Client validation is a courtesy, not a
-// control — the API rejects a weak password regardless.
 const strongPassword = Yup.string()
   .min(12, 'At least 12 characters')
   .max(128, 'Too long')
@@ -52,8 +50,6 @@ export const registerSchema: Yup.ObjectSchema<IRegisterValues> = Yup.object({
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required('Required'),
-  // Optional, and never a reason to refuse an account: a mistyped invite costs
-  // the inviter their reward, not the newcomer their sign-up.
   inviteCode: Yup.string().max(16, 'Too long').default(''),
 });
 

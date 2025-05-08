@@ -40,14 +40,6 @@ interface ISignedSiwe {
   signature: string;
 }
 
-/**
- * The Sign-In with Ethereum handshake, end to end:
- *   connect → (switch network) → fetch a server nonce → sign it → send it back.
- *
- * Nothing is signed until the user has explicitly connected, and the nonce comes
- * from the server, so the signature we produce is worthless to anyone who
- * captures it — the backend burns the nonce on first use.
- */
 function* signIn(): Generator<unknown, ISignedSiwe, never> {
   yield put(setWalletStatus('connecting'));
 
@@ -55,7 +47,6 @@ function* signIn(): Generator<unknown, ISignedSiwe, never> {
 
   if (connection.chainId !== CHAIN_ID) {
     toast(`Switching your wallet to ${CHAIN_NAME}…`, 'info');
-    // Returns a signer bound to the new chain — the pre-switch one is stale.
     connection = (yield call(switchChain, CHAIN_ID)) as IWalletConnection;
   }
 
@@ -74,7 +65,6 @@ function* signIn(): Generator<unknown, ISignedSiwe, never> {
 }
 
 const failed = function* (error: unknown) {
-  // A rejected prompt is a decision, not a fault: say it plainly and quietly.
   if (error instanceof WalletError) {
     yield put(setWalletError(error.message));
     toast(error.message, 'info');
@@ -116,8 +106,6 @@ function* walletUnlinkSaga() {
     yield put(disconnectWallet());
     yield put(clearNfts());
 
-    // Detaching it from the account is only half the job — the wallet itself has
-    // to forget the site, or it hands the address straight back on reconnect.
     yield call(revokeWalletAccess);
 
     toast('Wallet disconnected.', 'success');
@@ -126,13 +114,6 @@ function* walletUnlinkSaga() {
   }
 }
 
-/**
- * MetaMask fires accountsChanged as part of granting access, i.e. in the middle
- * of our own connect flow — and it fires again with the same address on a
- * reconnect. Treating either as "the user switched accounts" is what made the
- * app tear down the session it was busy establishing. Only a genuinely different
- * address, on a session that is already signed in, means anything here.
- */
 function* accountChangedSaga({payload}: ReturnType<typeof walletAccountChanged>) {
   const {status} = yield select((state: RootState) => state.wallet);
   const signedInAddress: string | null = yield select(
@@ -153,8 +134,6 @@ function* accountChangedSaga({payload}: ReturnType<typeof walletAccountChanged>)
     return;
   }
 
-  // The session belongs to the previous address, so it is no longer the account
-  // holding these tokens — make the new one prove itself.
   yield put(disconnectWallet());
   yield put(clearNfts());
 
@@ -171,7 +150,6 @@ function* chainChangedSaga({payload}: ReturnType<typeof walletChainChanged>) {
 
   yield put(setChainId(payload));
 
-  // Our own switch triggers this event; warning about it mid-flow is noise.
   if (status === 'connecting' || status === 'signing') {
     return;
   }

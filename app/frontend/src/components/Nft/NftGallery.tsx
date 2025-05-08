@@ -17,7 +17,6 @@ import NftCard from './NftCard';
 import NftModal from './NftModal';
 import {EmptyState, Grid} from './styles';
 
-/** One section per collection: the pass you are given, the artifacts you buy. */
 const NftGallery = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -25,8 +24,6 @@ const NftGallery = () => {
   const {holdings, loading, error} = useStoreSelector((state) => state.nft);
   const [open, setOpen] = useState<{nft: INft; contract: string} | null>(null);
 
-  // The grid keeps its shape while the chain answers, so nothing jumps into
-  // place when it does.
   if (loading && !holdings) {
     return (
       <SkeletonGrid aria-label={t('nft.loading')} aria-busy="true">

@@ -24,7 +24,6 @@ describe('Marketplace', () => {
     await referrals.setCaller(await market.getAddress(), true);
     await referrals.setCaller(await artifacts.getAddress(), true);
 
-    // Alice buys an artifact, then approves the market to move it for her.
     await artifacts.connect(alice).mint(0, ethers.ZeroAddress, {value: ARTIFACT_PRICE});
     await artifacts.connect(alice).setApprovalForAll(await market.getAddress(), true);
 
@@ -61,7 +60,6 @@ describe('Marketplace', () => {
 
       await market.connect(alice).list(collection, 1, PRICE);
 
-      // A market that cannot lose your token is a market you do not have to trust.
       expect(await artifacts.ownerOf(1)).to.equal(alice.address);
     });
 
@@ -79,7 +77,6 @@ describe('Marketplace', () => {
 
       await artifacts.connect(alice).setApprovalForAll(await market.getAddress(), false);
 
-      // Better to fail here than to let a buyer discover it after paying.
       await expect(market.connect(alice).list(collection, 1, PRICE)).to.be.revertedWithCustomError(
         market,
         'NotApproved',
@@ -135,8 +132,6 @@ describe('Marketplace', () => {
 
       await market.connect(alice).list(collection, 1, PRICE);
 
-      // Pushing ETH to the seller mid-purchase is what lets a hostile seller
-      // re-enter, or revert and take the buyer down with them.
       await expect(
         market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.changeEtherBalances([bob, alice, market], [-PRICE, 0, PRICE]);
@@ -175,7 +170,6 @@ describe('Marketplace', () => {
 
       await market.connect(alice).list(collection, 1, PRICE);
 
-      // Wash trading is not a feature.
       await expect(
         market.connect(alice).buy(collection, 1, NOBODY, {value: PRICE}),
       ).to.be.revertedWithCustomError(market, 'OwnSale');
@@ -228,8 +222,6 @@ describe('Marketplace', () => {
 
       await market.transferOwnership(bob.address);
 
-      // Moving somebody else's credited balance would be theft, however well
-      // intentioned: the fee was earned while the old owner held the contract.
       expect(await market.proceeds(owner.address)).to.equal(FEE);
       expect(await market.proceeds(bob.address)).to.equal(0n);
     });
@@ -274,8 +266,6 @@ describe('Marketplace', () => {
       await market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE});
       await market.connect(alice).withdraw();
 
-      // The balance is zeroed before the transfer, so a re-entering seller finds
-      // nothing left to claim.
       await expect(market.connect(alice).withdraw()).to.be.revertedWithCustomError(
         market,
         'NothingToWithdraw',

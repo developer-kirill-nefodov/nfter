@@ -13,14 +13,8 @@ import {
   TIP_JAR_ABI,
 } from './abis';
 
-/**
- * Public RPC nodes cap `eth_getLogs` at a few dozen blocks — publicnode answers
- * "archive requests require a personal token" for anything older, and 1rpc caps
- * the range at 50. So the indexer never asks for more than it is allowed to.
- */
 const WINDOW = 40;
 
-/** How far back a first run reaches. Beyond this the node will refuse anyway. */
 const MAX_BACKFILL = 5_000;
 
 interface ISource {
@@ -51,8 +45,6 @@ const serialiseArgs = (log: Log, contract: Contract): Record<string, string> | n
   const args: Record<string, string> = {event: parsed.name};
 
   parsed.fragment.inputs.forEach((input, index) => {
-    // Everything is stored as a string: a uint256 does not survive JSON, and a
-    // wei amount that silently loses precision is worse than no feed at all.
     args[input.name] = String(parsed.args[index]);
   });
 
@@ -85,8 +77,6 @@ const syncSource = async (source: ISource, head: number): Promise<number> => {
         continue;
       }
 
-      // The unique (tx_hash, log_index) index makes this idempotent: a re-scan
-      // after a restart, or across a reorg, cannot double-count anything.
       const [, created] = await ChainEventModel.findOrCreate({
         where: {tx_hash: log.transactionHash, log_index: log.index},
         defaults: {
@@ -112,7 +102,6 @@ const syncSource = async (source: ISource, head: number): Promise<number> => {
   return written;
 };
 
-/** Advances every source to the current head. Safe to run concurrently with reads. */
 export const syncChainEvents = async (): Promise<number> => {
   const head = await provider.getBlockNumber();
 
@@ -122,8 +111,6 @@ export const syncChainEvents = async (): Promise<number> => {
     try {
       written += await syncSource(source, head);
     } catch (err) {
-      // One flaky source must not stall the others, and the cursor only advances
-      // on success — the next tick simply picks up where this one gave up.
       logger.warn({err, contract: source.address}, 'indexer source failed');
     }
   }

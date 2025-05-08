@@ -9,17 +9,10 @@ export const getMyReferralsController = async (req: IRequestAuth, res: Response)
   res.status(200).json(await getReferralStats(req.session.id));
 };
 
-/** Public: the inviters' board is public information, like the other two. */
 export const getInvitersController = async (_req: Request, res: Response) => {
   res.status(200).json({entries: await getInviters()});
 };
 
-/**
- * The treasury, for the founder only.
- *
- * The check is on the server and against the chain — hiding the button would not
- * hide the endpoint, and an endpoint that trusts the client is not a check.
- */
 export const getTreasuryController = async (req: IRequestAuth, res: Response) => {
   if (!(await isFounder(req.session.walletAddress))) {
     throw AppError.forbidden('The treasury is for the founder — the wallet that owns the contracts');

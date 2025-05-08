@@ -16,8 +16,6 @@ export const useMediaQuery = ({type, size}: IUseMediaQuery): boolean => {
 
     setMatches(list.matches);
 
-    // Listening to the MediaQueryList rather than window resize: it fires once
-    // when the answer actually changes, not on every frame of a drag.
     const onChange = (event: MediaQueryListEvent) => setMatches(event.matches);
 
     list.addEventListener('change', onChange);

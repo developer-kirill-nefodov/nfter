@@ -12,7 +12,6 @@ export const referralApi = {
     return data.entries;
   },
 
-  /** 403 for anyone who does not own the contracts — the check is on the server. */
   treasury: async (): Promise<ITreasury> => {
     const {data} = await api.get<ITreasury>('/referrals/treasury');
     return data;

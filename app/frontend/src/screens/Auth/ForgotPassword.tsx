@@ -41,11 +41,8 @@ const ForgotPasswordPage = () => {
           <InputText key={field.name} {...field} disabled={waiting || pending} />
         ))}
 
-        {/* Once the link is on its way, the address has done its job. */}
         <ResetOnSuccess when={status === 'success'} />
 
-        {/* The server refuses a second link to the same mailbox for 30 seconds,
-            so the button says so rather than letting the user click into a wall. */}
         {waiting && <Subtitle role="status">{t('auth.resendIn', {seconds: cooldown})}</Subtitle>}
 
         <FormActions>

@@ -4,7 +4,6 @@ import {focusRing} from '../../styles';
 
 type ITierKey = 'common' | 'rare' | 'epic' | 'legendary';
 
-/** The tier is legible from the card itself, not only from the price. */
 const enter = keyframes`
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: none; }
@@ -100,7 +99,6 @@ export const Sold = styled.span`
   text-transform: uppercase;
 `;
 
-/** Where the choice becomes a purchase — pinned under the tiers, never far. */
 export const MintBar = styled.div`
   display: flex;
   align-items: center;
@@ -117,23 +115,10 @@ export const MintBar = styled.div`
   }
 `;
 
-/**
- * A slider, not a scroll container.
- *
- * The previous version nudged `scrollLeft` frame by frame, which scroll-snap
- * quietly undid: the browser re-snapped to the nearest card on every programmatic
- * step, so the rail sat exactly still while the code believed it was moving. And
- * a scrollbar under a shop window is furniture nobody asked for.
- *
- * So the track slides instead. The list is rendered twice and the animation
- * travels exactly half its width — landing on the identical card, which is what
- * makes the loop seamless — and the window simply clips what hangs out.
- */
 export const Showcase = styled.div`
   position: relative;
   overflow: hidden;
 
-  /* The cards emerge and dissolve rather than being sliced off at the edges. */
   mask-image: linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
 `;
 
@@ -148,7 +133,6 @@ export const ShowcaseTrack = styled.div<{$duration: number}>`
   width: max-content;
   animation: ${({$duration}) => $duration}s linear infinite ${slide};
 
-  /* Read it, do not chase it. */
   ${Showcase}:hover &,
   ${Showcase}:focus-within & {
     animation-play-state: paused;
@@ -180,9 +164,6 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $min
     transform: translateY(-4px);
   }
 
-  /* The one the buyer just paid for. It keeps the ring for as long as it is
-     marked — a glow that fades after three blinks is a glow they will miss while
-     the reveal dialog is still open in front of it. */
   ${({$mine, theme}) =>
     $mine &&
     css`
@@ -231,7 +212,6 @@ export const ShowcaseCard = styled.button<{$rarity: string; $delay: number; $min
   }
 `;
 
-/** "Yours" — a badge on the card the buyer just minted. */
 export const Yours = styled.span`
   position: absolute;
   top: ${({theme}) => theme.space.sm};

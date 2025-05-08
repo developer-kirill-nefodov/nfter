@@ -1,7 +1,5 @@
 import argon2 from 'argon2';
 
-// OWASP 2024 baseline for Argon2id. Each hash carries its own random salt and
-// these parameters, so raising them later does not invalidate existing hashes.
 const ARGON2_OPTIONS: argon2.Options = {
   type: argon2.argon2id,
   memoryCost: 19456,

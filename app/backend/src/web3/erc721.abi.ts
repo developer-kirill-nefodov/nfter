@@ -1,7 +1,3 @@
-/**
- * The slice of ERC-721 (+ the Enumerable extension) this app actually reads.
- * A human-readable fragment list is all ethers v6 needs to encode these calls.
- */
 export const ERC721_ABI = [
   'function name() view returns (string)',
   'function symbol() view returns (string)',

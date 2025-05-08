@@ -19,12 +19,6 @@ import {
 } from './contracts';
 import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
 
-/**
- * Did the user simply say no?
- *
- * That is a decision, not a failure, and the two deserve different treatment:
- * a rejection can disappear on its own, a real error has to be read.
- */
 export const isRejection = (error: unknown): boolean => {
   if (error instanceof WalletError) {
     return /reject/i.test(error.message);
@@ -43,11 +37,6 @@ export const isRejection = (error: unknown): boolean => {
   );
 };
 
-/**
- * Turns whatever the wallet or the node threw into a sentence a person can act
- * on. Raw provider errors are the single worst part of using a dapp: nobody
- * should be shown "execution reverted (unknown custom error)".
- */
 export const explainTxError = (error: unknown): string => {
   if (error instanceof WalletError) {
     return error.message;
@@ -121,18 +110,8 @@ export interface ITxHandlers {
   onBroadcast: (hash: string) => void;
 }
 
-/** The signer the wallet is holding right now — never a cached, stale one. */
 const currentSigner = async (): Promise<JsonRpcSigner> => (await connectWallet()).signer;
 
-/**
- * Prices the call, sends it, and waits for one confirmation.
- *
- * The gas estimate is deliberately taken *before* the wallet is opened: a user
- * deserves to know what a transaction costs while they can still walk away,
- * rather than discovering it in a MetaMask popup. It doubles as a dry run — a
- * call that would revert fails here, with a real reason, and never reaches the
- * wallet at all.
- */
 const send = async (
   estimate: () => Promise<bigint>,
   execute: () => Promise<ITransactionResponse>,
@@ -156,13 +135,6 @@ const send = async (
   return {hash: tx.hash, receipt};
 };
 
-/**
- * Pulls the new token id out of the receipt.
- *
- * Not out of the gallery: that is cached server-side and, at the moment the mint
- * confirms, does not know the token exists yet. The receipt is the only place the
- * answer is already true.
- */
 const mintedTokenId = async (receipt: ITxReceipt, contract: string): Promise<string | null> => {
   const {Interface} = await import('ethers');
 
@@ -254,12 +226,8 @@ export const mintArtifact = async (
   const signer = await currentSigner();
   const artifacts = await getArtifacts(signer);
 
-  // The price is read from the contract, never from the UI: a stale constant in
-  // the bundle would send the wrong value and revert.
   const price = await artifacts.priceOf(tier);
 
-  // The invite rides along with the purchase the buyer was making anyway — no
-  // second transaction, no extra gas, and the contract ignores it if it is stale.
   const {hash, receipt} = await send(
     () => artifacts.mint.estimateGas(tier, referrer, {value: price}),
     () => artifacts.mint(tier, referrer, {value: price}),
@@ -274,7 +242,6 @@ export interface ITierInfo {
   remaining: number;
 }
 
-/** How many of each tier are left — straight from the chain, not from a banner. */
 export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
   const signer = await currentSigner();
   const artifacts = await getArtifacts(signer);
@@ -286,7 +253,6 @@ export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
   return Object.fromEntries(entries) as Record<ITier, ITierInfo>;
 };
 
-/** The wallet's ETH balance, in wei — shown in the header and after every tx. */
 export const readBalance = async (address: string): Promise<string> => {
   const signer = await currentSigner();
   const balance = await signer.provider.getBalance(address);
@@ -294,11 +260,6 @@ export const readBalance = async (address: string): Promise<string> => {
   return balance.toString();
 };
 
-/**
- * Listing takes two transactions the first time: one to let the market move your
- * tokens, one to name a price. The approval is checked rather than blindly re-sent
- * — asking a seller to pay gas for permission they already granted is rude.
- */
 export const listToken = async (
   collection: string,
   tokenId: string,
@@ -379,7 +340,6 @@ export const withdrawProceeds = async (handlers: ITxHandlers): Promise<string> =
   return hash;
 };
 
-/** Referral rewards: credited by the contracts, withdrawn by the referrer. */
 export const withdrawReferralEarnings = async (handlers: ITxHandlers): Promise<string> => {
   const signer = await currentSigner();
   const referrals = await getReferrals(signer);
@@ -394,7 +354,6 @@ export const withdrawReferralEarnings = async (handlers: ITxHandlers): Promise<s
   return hash;
 };
 
-/** What this wallet has earned and not yet taken out, in wei. */
 export const readProceeds = async (wallet: string): Promise<string> => {
   const signer = await currentSigner();
   const market = await getMarket(signer);

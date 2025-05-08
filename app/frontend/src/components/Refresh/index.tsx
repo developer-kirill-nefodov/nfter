@@ -8,11 +8,6 @@ interface IRefresh {
   label?: string;
 }
 
-/**
- * A refresh control that behaves like one: it is an icon, it spins while the
- * request is in flight, and it says so to a screen reader. The old one was a
- * full-width text button that gave no sign it had done anything at all.
- */
 const Refresh = ({onClick, spinning = false, label}: IRefresh) => {
   const {t} = useTranslation();
   const text = label ?? t('nft.refresh');

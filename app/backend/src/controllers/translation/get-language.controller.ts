@@ -16,7 +16,5 @@ export const getByLanguageController = async (req: Request, res: Response) => {
     throw AppError.notFound(`No translations for language "${lang}"`);
   }
 
-  // Returning the bare dictionary keeps the i18next HTTP backend happy: it can
-  // consume this response as-is, with no unwrapping on the client.
   res.status(200).json(translation.data);
 };

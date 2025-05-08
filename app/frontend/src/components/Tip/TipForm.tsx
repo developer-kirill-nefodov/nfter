@@ -14,14 +14,12 @@ import {AmountInput, Field, Preset, Presets} from './styles';
 const PRESETS = ['0.001', '0.01', '0.1'];
 const MAX_MESSAGE = 140;
 
-/** Wei has 18 decimals, and floating point cannot hold them. Parse the string. */
 const toWei = (eth: string): bigint => {
   const [whole = '0', fraction = ''] = eth.split('.');
 
   return BigInt(whole + fraction.padEnd(18, '0').slice(0, 18));
 };
 
-/** The donation form itself — the way onto the donors board. */
 const TipForm = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -78,8 +76,6 @@ const TipForm = () => {
             disabled={busy}
             onChange={(event) => setMessage(event.target.value)}
           />
-          {/* The note is stored in the event log, which is why it is capped: the
-              contract refuses anything longer. */}
           <Subtitle>{t('tip.messageHint', {left: MAX_MESSAGE - message.length})}</Subtitle>
         </Field>
 

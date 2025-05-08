@@ -27,9 +27,7 @@ export interface IPublicStats {
   holders: number;
   tipsTotalEth: string;
   tipCount: number;
-  /** The most recently minted passes, with their art, ready to render. */
   showcase: IShowcaseItem[];
-  /** The most recently bought artifacts — the collect page's shop window. */
   artifactShowcase: IShowcaseItem[];
   deployed: boolean;
 }
@@ -65,7 +63,6 @@ const CACHE_KEY = `stats:${env.web3.chainId}:${env.web3.nftContract.toLowerCase(
 const CACHE_TTL_SEC = 60;
 const SHOWCASE_SIZE = 8;
 
-/** The metadata is a base64 data: URI — the chain is the whole answer. */
 const decodeMetadata = (uri: string): {name: string; image: string} => {
   const payload = uri.slice(uri.indexOf(',') + 1);
   const json = JSON.parse(Buffer.from(payload, 'base64').toString('utf8')) as {
@@ -76,13 +73,6 @@ const decodeMetadata = (uri: string): {name: string; image: string} => {
   return {name: json.name, image: json.image};
 };
 
-/**
- * Everything the landing page shows, read from the chain.
- *
- * The point of this endpoint is that a visitor sees real numbers and real art
- * without connecting anything — no wallet, no account. A landing page that
- * demands a wallet before it will explain itself is a landing page nobody reads.
- */
 const readStats = async (): Promise<IPublicStats> => {
   const [totalSupply, tips, claims, mints] = await Promise.all([
     pass.totalSupply(),
@@ -97,9 +87,6 @@ const readStats = async (): Promise<IPublicStats> => {
     recent.map(async ({args}) => {
       const tokenId = args.tokenId ?? '0';
 
-      // tokenURI and rarityOf are plain contract calls — those a public node is
-      // happy to answer. It is only historical *logs* it refuses, and those now
-      // come from the index.
       const [uri, rarity] = await Promise.all([
         pass.tokenURI(tokenId),
         pass.rarityOf(BigInt(args.seed ?? '0')),
@@ -135,8 +122,6 @@ const readStats = async (): Promise<IPublicStats> => {
       }),
   );
 
-  // A pass can be traded after the mint, so the number of distinct *minters* is
-  // the honest count of people who have taken part.
   const holders = new Set(
     [...claims, ...mints].map(({args}) => (args.minter ?? '').toLowerCase()),
   ).size;
@@ -188,8 +173,6 @@ export const getPublicStats = async ({refresh = false} = {}): Promise<IPublicSta
   try {
     stats = await readStats();
   } catch (err) {
-    // The landing page is the first thing anyone sees. It renders with zeros
-    // rather than not rendering at all.
     logger.warn({err}, 'stats unreadable — serving zeros');
     stats = emptyStats();
   }
@@ -204,7 +187,6 @@ export const formatEth = formatEther;
 export interface ICollectorEntry {
   rank: number;
   address: string;
-  /** Passes are one per wallet; artifacts are not. Both count as "collected". */
   tokens: number;
   passes: number;
   artifacts: number;
@@ -213,14 +195,6 @@ export interface ICollectorEntry {
   bestTier: string;
 }
 
-
-/**
- * Who has collected what, folded out of the indexed mint events.
- *
- * Two leaderboards, one source: the donations board sums money sent to the jar,
- * this one sums what people minted. Both are recomputable by anyone from the
- * chain — which is the whole reason the events exist.
- */
 export const getCollectors = async (limit = 20): Promise<ICollectorEntry[]> => {
   const [claims, mints] = await Promise.all([
     readEvents(env.web3.nftContract, 'Claimed'),
@@ -257,8 +231,6 @@ export const getCollectors = async (limit = 20): Promise<ICollectorEntry[]> => {
 
   return [...totals.entries()]
     .map(([address, value]) => ({address, ...value, tokens: value.passes + value.artifacts}))
-    // Ranked by what they spent, then by how many they hold: a Legendary buyer
-    // outranks someone who minted ten Commons, which is what the prices mean.
     .sort((a, b) => (b.spent === a.spent ? b.tokens - a.tokens : b.spent > a.spent ? 1 : -1))
     .slice(0, limit)
     .map((value, index) => ({
@@ -278,7 +250,6 @@ export type IActivityKind = 'artifact' | 'pass' | 'tip';
 export interface IActivityItem {
   kind: IActivityKind;
   actor: string;
-  /** Token id for a mint, wei amount for a tip. */
   tokenId?: string;
   tier?: string;
   priceEth?: string;
@@ -288,13 +259,6 @@ export interface IActivityItem {
   blockNumber: number;
 }
 
-/**
- * Everything that has happened on these contracts, newest first.
- *
- * The collection page was a wall of your own tokens and nothing else — no sign
- * that anyone else exists. This is the pulse: who minted what, who tipped, and
- * for how much. It comes out of the index, so showing it costs a SELECT.
- */
 export const getActivity = async (limit = 30): Promise<IActivityItem[]> => {
   const [claims, mints, tips] = await Promise.all([
     readEvents(env.web3.nftContract, 'Claimed'),

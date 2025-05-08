@@ -17,7 +17,6 @@ export interface IPublicStats {
   tipsTotalEth: string;
   tipCount: number;
   showcase: IShowcaseItem[];
-  /** The artifacts other people have actually bought — the shop window. */
   artifactShowcase: IShowcaseItem[];
   deployed: boolean;
 }

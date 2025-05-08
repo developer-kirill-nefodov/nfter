@@ -26,8 +26,6 @@ export const NftArticle = styled.article<{$rarity?: string}>`
     transform ${({theme}) => theme.transitions.base},
     box-shadow ${({theme}) => theme.transitions.base};
 
-  /* The tier is the thing people paid for — it should be visible from across the
-     room, not hidden in a caption. */
   ${({$rarity}) =>
     $rarity &&
     RARITY_COLOURS[$rarity] &&
@@ -129,9 +127,6 @@ export const ClaimCard = styled.section`
   );
 `;
 
-// ------------------------------------------------------------------ NFT dialog
-
-
 export const ModalHeader = styled.div`
   display: flex;
   align-items: center;
@@ -200,7 +195,6 @@ const enter = keyframes`
   to   { opacity: 1; transform: none; }
 `;
 
-/** The card is a button now: the art is the point, so it has to be openable. */
 export const CardTrigger = styled.button<{$delay?: number}>`
   animation: 320ms ease both ${enter};
   animation-delay: ${({$delay}) => $delay ?? 0}ms;

@@ -46,8 +46,6 @@ describe('session tokens', () => {
 
     redis.store.delete(`session:access:42:${sid}`);
 
-    // This is the whole point of the allow-list: the JWT still verifies
-    // cryptographically, and it must still be refused.
     await expect(getValidSession(accessToken, 'access')).resolves.toBeNull();
   });
 

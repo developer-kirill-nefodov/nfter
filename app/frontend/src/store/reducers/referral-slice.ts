@@ -6,7 +6,6 @@ export interface IReferralState {
   stats: IReferralStats | null;
   inviters: IInviterEntry[];
   treasury: ITreasury | null;
-  /** An invite code typed at sign-up, held until the account exists. */
   pendingCode: string | null;
 }
 
@@ -21,7 +20,7 @@ export const referralSlice = createSlice({
   name: 'referral',
   initialState,
   reducers: {
-    setReferralStats: (state, {payload}: PayloadAction<IReferralStats>) => {
+    setReferralStats: (state, {payload}: PayloadAction<IReferralStats | null>) => {
       state.stats = payload;
     },
     setInviters: (state, {payload}: PayloadAction<IInviterEntry[]>) => {

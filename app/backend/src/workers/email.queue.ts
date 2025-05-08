@@ -28,9 +28,4 @@ export const emailQueue = new Queue<IEmailJob>(EMAIL_QUEUE_NAME, {
   },
 });
 
-/**
- * Sending mail inline would make the request wait on an SMTP round trip and let
- * a slow mail server leak "this address exists" through response timing. The
- * queue keeps the endpoint fast and constant-time.
- */
 export const addEmailJob = (job: IEmailJob) => emailQueue.add(job.name, job);

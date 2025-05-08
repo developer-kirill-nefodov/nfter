@@ -43,9 +43,6 @@ describe('the shop window after a mint', () => {
     const loaded = statsReducer(undefined, setStats(stats([item('5')])));
     const minted = statsReducer(loaded, showcaseMinted(item('6')));
 
-    // The indexer runs every 30 seconds, so the API genuinely does not know
-    // about token 6 yet. Answering with the old list must not delete the card
-    // the buyer just paid for — that was the bug.
     const refetched = statsReducer(minted, setStats(stats([item('5')])));
 
     expect(refetched.stats?.artifactShowcase.map((i) => i.tokenId)).toEqual(['6', '5']);

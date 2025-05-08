@@ -49,7 +49,7 @@ function* fetchProceedsSaga() {
       yield put(setProceeds(amount));
     }
   } catch {
-    // Nothing to show is a fine answer here.
+    yield put(setProceeds('0'));
   }
 }
 
@@ -59,7 +59,6 @@ function* listTokenSaga({payload}: ReturnType<typeof listTokenRequest>) {
   );
 
   if (hash) {
-    // The indexer needs a moment; ask the contract itself in the meantime.
     yield put(fetchMarketRequest({refresh: true}));
     yield put(refreshBalanceRequest());
     toast('Your token is on sale.', 'success');

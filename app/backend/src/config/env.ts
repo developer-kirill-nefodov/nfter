@@ -29,8 +29,6 @@ const schema = Joi.object({
   ARTIFACTS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   MARKETPLACE_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   REFERRALS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
-  // The block the contracts were deployed in. Public RPC nodes cap how far back
-  // a log query may reach, so the tip indexer starts here rather than at genesis.
   CONTRACTS_FROM_BLOCK: Joi.number().min(0).default(0),
   IPFS_GATEWAY: Joi.string().uri().default('https://ipfs.io/ipfs/'),
 
@@ -84,8 +82,6 @@ if (error) {
   throw new Error(`Invalid environment configuration:\n${details}`);
 }
 
-// Joi hands back `any`; this is the one place the shape is asserted, and the
-// schema above is what makes the assertion true.
 const config = result.value as IRawEnv;
 
 const seconds = (duration: string): number => Math.floor(ms(duration as ms.StringValue) / 1000);

@@ -1,5 +1,6 @@
 import {
   getActivityController,
+  getChainController,
   getCollectorsController,
   getStatsController,
 } from '../../controllers/stats';
@@ -20,6 +21,12 @@ const StatsRouter: IAnyRouter = {
       path: 'collectors',
       middleware: [apiLimiter],
       handler: getCollectorsController,
+    },
+    {
+      method: 'get',
+      path: 'chain',
+      middleware: [apiLimiter],
+      handler: getChainController,
     },
     {
       method: 'get',

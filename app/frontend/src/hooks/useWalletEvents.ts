@@ -3,11 +3,6 @@ import {useEffect} from 'react';
 import {walletAccountChanged, walletChainChanged} from '../store/actions';
 import {useStoreDispatch} from '../store/hooks';
 
-/**
- * MetaMask can change the account or the network out from under the app at any
- * moment, and it never asks first. Without these listeners the UI would keep
- * showing a collection that belongs to an address the user has already left.
- */
 export const useWalletEvents = () => {
   const dispatch = useStoreDispatch();
 

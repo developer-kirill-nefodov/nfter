@@ -32,11 +32,6 @@ export interface INftCollection {
   items: INft[];
 }
 
-/**
- * ethers types a Contract's methods through an index signature, which under
- * `noUncheckedIndexedAccess` makes every call possibly-undefined. Naming the
- * fragments we use restores real types at the call sites.
- */
 interface IErc721 {
   name(): Promise<string>;
   symbol(): Promise<string>;
@@ -49,15 +44,10 @@ interface IErc721 {
 const contractAt = (address: string) =>
   new Contract(address, ERC721_ABI, provider) as unknown as IErc721;
 
-/**
- * Artifacts first: they are what people buy, collect and come back for. The pass
- * is a membership card — it belongs under the collection, not above it.
- */
 export const COLLECTIONS = [env.web3.artifacts, env.web3.nftContract];
 
 const METADATA_FETCH_TIMEOUT_MS = 5_000;
 
-/** ipfs://Qm… is not a URL a browser can fetch; rewrite it onto an HTTP gateway. */
 export const resolveUri = (uri: string): string =>
   uri.startsWith('ipfs://') ? `${env.web3.ipfsGateway}${uri.slice('ipfs://'.length)}` : uri;
 
@@ -68,14 +58,9 @@ const emptyMetadata = (tokenId: string): Omit<INft, 'tokenId' | 'tokenUri'> => (
   attributes: [],
 });
 
-/**
- * Our own pass returns its metadata as a base64 `data:` URI — the JSON *is* the
- * chain's answer, there is nothing to go and fetch. Decoding it locally skips a
- * network round trip that would only ever fail.
- */
 const decodeDataUri = (uri: string): unknown => {
   const comma = uri.indexOf(',');
-  const meta = uri.slice(5, comma); // strip "data:"
+  const meta = uri.slice(5, comma);
   const payload = uri.slice(comma + 1);
 
   const raw = meta.endsWith(';base64')
@@ -119,24 +104,15 @@ const fetchMetadata = async (tokenId: string, tokenUri: string): Promise<INft> =
       attributes: Array.isArray(metadata.attributes) ? metadata.attributes : [],
     };
   } catch (err) {
-    // A dead IPFS pin must not take the whole gallery down — render the token
-    // with a placeholder and move on.
     logger.warn({err, tokenId, url}, 'nft metadata unavailable');
     return {tokenId, tokenUri, ...emptyMetadata(tokenId)};
   }
 };
 
-/** ERC-165 id of the ERC721Enumerable extension. */
 const ERC721_ENUMERABLE_INTERFACE = '0x780e9d63';
 
 const enumerable = new Map<string, Promise<boolean>>();
 
-/**
- * Walking a wallet's tokens needs tokenOfOwnerByIndex, which is an optional
- * extension. Asking up front turns "execution reverted" — which tells the user
- * nothing — into a sentence they can act on. The answer is a property of the
- * contract, so it is asked once per process, not once per request.
- */
 const assertEnumerable = async (address: string): Promise<void> => {
   if (!enumerable.has(address)) {
     enumerable.set(
@@ -193,11 +169,6 @@ const readCollection = async (address: string, owner: string): Promise<INftColle
   };
 };
 
-/**
- * Public RPC endpoints rate-limit hard, and a gallery re-renders often, so the
- * whole collection is cached per owner. `?refresh=true` is the escape hatch a
- * user needs right after minting.
- */
 export const getNftsByOwner = async (
   wallet: string,
   {refresh = false}: {refresh?: boolean} = {},

@@ -15,12 +15,6 @@ import {Demo, Divider, FormActions} from './styles';
 
 const DEMO: ILoginValues = {email: 'user@ethers-web3.dev', password: 'DevPassword123'};
 
-/**
- * Fills the demo account in rather than signing in behind the user's back.
- *
- * Whoever clicks this is here to look around — most likely from a CV. They should
- * be able to see what was typed, and to change it, before anything is sent.
- */
 const DemoFill = () => {
   const {t} = useTranslation();
   const {setValues} = useFormikContext<ILoginValues>();

@@ -1,10 +1,6 @@
 import {writeFileSync} from 'fs';
 import {ethers} from 'hardhat';
 
-/**
- * Renders a sheet of passes to preview.html so the art can be judged with eyes
- * rather than with assertions. Not part of the test suite — a design tool.
- */
 async function main() {
   const pass = await (await ethers.getContractFactory('EthersWeb3Pass')).deploy();
   const signers = await ethers.getSigners();

@@ -15,11 +15,6 @@ interface IBaseForm<TValues extends object> {
   children: ReactNode;
 }
 
-/**
- * Generic over the form's own value type, so `values`, `errors` and `onSubmit`
- * all stay checked. The previous version typed every prop as `any`, which meant
- * a typo in a field name failed silently at runtime.
- */
 const BaseForm = <TValues extends object>({
   title,
   subtitle,

@@ -25,8 +25,6 @@ export const resetPasswordController = async (req: Request, res: Response) => {
 
   await user.update({password: await hashPassword(password)});
 
-  // A password change is also how a user locks out someone who already stole a
-  // session, so every device must be signed out — not just this one.
   await revokeAllSessions(user.id);
 
   res.status(200).json({message: MESSAGE_PASSWORD_CHANGED});

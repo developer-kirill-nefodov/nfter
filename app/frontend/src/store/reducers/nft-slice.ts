@@ -8,11 +8,8 @@ export interface INftState {
   holdings: IWalletHoldings | null;
   loading: boolean;
   error: string | null;
-  /** null until the chain has been asked whether this wallet claimed its pass. */
   claimed: boolean | null;
-  /** How many of each artifact tier are left. */
   tiers: Record<ITier, ITierInfo> | null;
-  /** The token just minted, shown to the buyer the moment it confirms. */
   reveal: {token: INft; contract: string; txHash: string} | null;
 }
 
@@ -45,7 +42,7 @@ export const nftSlice = createSlice({
     setClaimed: (state, {payload}: PayloadAction<boolean>) => {
       state.claimed = payload;
     },
-    setTiers: (state, {payload}: PayloadAction<Record<ITier, ITierInfo>>) => {
+    setTiers: (state, {payload}: PayloadAction<Record<ITier, ITierInfo> | null>) => {
       state.tiers = payload;
     },
     setReveal: (

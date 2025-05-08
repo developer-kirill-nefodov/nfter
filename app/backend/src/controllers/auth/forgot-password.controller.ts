@@ -14,7 +14,5 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
     await createResetToken(user.id, user.email);
   }
 
-  // Always the same answer, whether or not the address is registered — otherwise
-  // this endpoint tells an attacker which emails have accounts.
   res.status(200).json({message: MESSAGE_RESET_PASSWORD, retryAfter: RESET_COOLDOWN_SEC});
 };

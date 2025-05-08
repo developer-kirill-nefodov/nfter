@@ -7,8 +7,6 @@ import type {IRequestAuth} from '../../middlewares/guard/authorized';
 export const logoutController = async (req: IRequestAuth, res: Response) => {
   const {id, sid} = req.session;
 
-  // Revoking the Redis entries is what actually kills the tokens; clearing the
-  // cookie alone would leave a copied refresh token usable until it expired.
   await revokeSession(id, sid);
 
   res

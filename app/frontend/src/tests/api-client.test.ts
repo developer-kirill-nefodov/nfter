@@ -32,8 +32,6 @@ describe('errorMessage', () => {
   });
 
   it('explains a network failure instead of crashing on the missing response', () => {
-    // Reading `e.response.data` here — as the old sagas did — throws a
-    // TypeError inside the catch block and takes the saga watcher down with it.
     expect(errorMessage(axiosError())).toMatch(/cannot reach the server/i);
   });
 

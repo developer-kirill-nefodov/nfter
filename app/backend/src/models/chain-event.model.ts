@@ -3,15 +3,6 @@ import {DataTypes} from 'sequelize';
 import {db} from '../db';
 import type {IChainEventModel, IIndexerStateModel} from '../interfaces/models/chain-event';
 
-/**
- * Every log the indexer has seen, kept locally.
- *
- * Public RPC nodes will not serve historical `eth_getLogs` — they cap the range
- * at a few dozen blocks and want money for anything older. So the app follows the
- * head in small windows and keeps its own copy. Reading a tip feed then costs a
- * SELECT rather than an archive query, and the history survives whatever the RPC
- * provider decides to do next.
- */
 export const ChainEventModel = db.define<IChainEventModel>(
   'chain_event',
   {

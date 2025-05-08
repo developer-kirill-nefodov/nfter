@@ -20,9 +20,6 @@ export const registerController = async (req: Request, res: Response) => {
     throw AppError.conflict('An account with that email already exists');
   }
 
-  // A bad invite code is not a reason to refuse somebody an account. It is
-  // recorded if it resolves, ignored if it does not — nobody should be locked out
-  // of a sign-up because a friend mistyped a link.
   const inviter = inviteCode ? await findByCode(inviteCode) : null;
 
   const user = await UserModel.create({

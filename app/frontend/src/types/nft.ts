@@ -21,7 +21,6 @@ export interface INftCollection {
   items: INft[];
 }
 
-/** Every collection this wallet holds, plus its native balance. */
 export interface IWalletHoldings {
   owner: string;
   nativeBalance: string;

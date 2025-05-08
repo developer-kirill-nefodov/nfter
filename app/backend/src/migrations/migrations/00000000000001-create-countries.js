@@ -11,9 +11,6 @@ module.exports = {
         type: Sequelize.STRING(30),
         allowNull: false,
       },
-      // iso2/iso3 are unique identifiers, not primary keys. Marking every column
-      // primaryKey — as this table originally did — produces a single composite
-      // key and leaves none of them unique on their own.
       iso2: {
         type: Sequelize.STRING(2),
         allowNull: false,

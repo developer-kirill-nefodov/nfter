@@ -43,13 +43,10 @@ export const Medal = styled.span`
   min-width: 2rem;
 `;
 
-/** The signed-in user's own row, so they can find themselves at a glance. */
 export const You = styled(Entry)`
   border-color: ${({theme}) => theme.colors.primary};
   background: ${({theme}) => theme.colors.surfaceRaised};
 `;
-
-// ------------------------------------------------------- donation form
 
 export const Field = styled.div`
   display: flex;

@@ -24,14 +24,6 @@ import {
   Wrapper,
 } from './styles';
 
-/**
- * The wallet as one object instead of three.
- *
- * The address used to sit in a dead pill with a red Disconnect button parked
- * next to it — the most destructive action in the app, permanently on display.
- * Now the pill *is* the control: it shows the balance, and everything you can do
- * to the wallet lives one click inside it.
- */
 const WalletMenu = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -117,8 +109,6 @@ const WalletMenu = () => {
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
-        {/* The avatar is the address itself, rendered as colour — the same idea
-            the contract uses to draw the art. */}
         <Avatar $address={address} aria-hidden="true" />
         <Balance>{balance ? `${formatBalance(balance, 3)} Ξ` : '—'}</Balance>
         <span>{formatAddress(address)}</span>

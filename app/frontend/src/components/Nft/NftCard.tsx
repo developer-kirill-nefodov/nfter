@@ -17,7 +17,6 @@ import {
 interface INftCard {
   nft: INft;
   onOpen: (nft: INft) => void;
-  /** Position in the grid — cards arrive one after another, not all at once. */
   index?: number;
 }
 
@@ -33,8 +32,6 @@ const NftCard = ({nft, onOpen, index = 0}: INftCard) => {
   );
 
   return (
-    // The whole card is the button: the art is what this project is about, and a
-    // gallery you cannot open is a dead end.
     <CardTrigger
       type="button"
       onClick={() => onOpen(nft)}
@@ -47,8 +44,6 @@ const NftCard = ({nft, onOpen, index = 0}: INftCard) => {
             src={nft.image}
             alt={nft.name}
             loading="lazy"
-            // IPFS gateways time out constantly; a dead image must not leave a
-            // blank hole where the token should be.
             onError={() => setBroken(true)}
           />
         ) : (

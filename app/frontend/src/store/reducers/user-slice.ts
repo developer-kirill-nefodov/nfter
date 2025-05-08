@@ -4,7 +4,6 @@ import {VISITOR, type IUser} from '../../types/user';
 
 export interface IUserState {
   user: IUser;
-  /** True until the app has asked the API who the current user is. */
   loading: boolean;
 }
 
@@ -25,8 +24,6 @@ export const userSlice = createSlice({
       state.user = VISITOR;
       state.loading = false;
     },
-    // The session lookup used to clear this flag only on success, so any API
-    // failure left the whole app stuck rendering nothing.
     setUserLoading: (state, {payload}: PayloadAction<boolean>) => {
       state.loading = payload;
     },

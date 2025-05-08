@@ -23,27 +23,12 @@ const TITLES: Record<string, string> = {
   withdraw: 'withdrawing',
 };
 
-/**
- * Shows a transaction for what it is: a state machine, not a spinner.
- *
- * A user who can see "waiting on your wallet" versus "broadcast, waiting on the
- * chain" — with the hash to check for themselves — never has to wonder whether
- * the app is stuck or Ethereum is.
- */
 const TxStatus = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
 
   const {kind, stage, hash, error, rejected, gasEstimate} = useStoreSelector((state) => state.tx);
 
-  /**
-   * The panel tidies up after itself.
-   *
-   * A confirmed transaction has nothing left to say — the reveal dialog is
-   * already showing what it produced. A rejection has even less: the user closed
-   * the wallet on purpose and does not need a receipt for that decision. Only a
-   * real failure stays, because that one has to be read.
-   */
   useEffect(() => {
     const linger = stage === 'confirmed' ? 5000 : rejected ? 2500 : 0;
 
@@ -84,8 +69,6 @@ const TxStatus = () => {
           </Steps>
         )}
 
-        {/* The estimate is shown before the wallet ever opens — the moment when
-            the user can still decide the transaction is not worth it. */}
         {gasEstimate && !failed && (
           <Subtitle>{t('tx.gas', {amount: formatBalance(gasEstimate, 6)})}</Subtitle>
         )}

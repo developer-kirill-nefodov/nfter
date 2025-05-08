@@ -14,8 +14,6 @@ const App = () => {
   useWalletEvents();
 
   useEffect(() => {
-    // Asks the API who we are. With no access token in memory, the refresh
-    // cookie is spent and the session survives a page reload.
     dispatch(bootstrapSession());
   }, [dispatch]);
 

@@ -19,14 +19,6 @@ const artifacts = new Contract(env.web3.artifacts, OWNABLE_ABI, provider) as unk
   owner(): Promise<string>;
 };
 
-/**
- * Who the founder is, according to the chain.
- *
- * Deliberately *not* a column in the users table. A flag in Postgres is a claim
- * anyone with database access can make, and no reviewer would believe it. The
- * founder is whoever owns the contracts — to forge the role you would have to
- * forge ownership, which is the one thing the chain will not let you do.
- */
 let treasury: {address: string; readAt: number} | null = null;
 const TREASURY_TTL_MS = 60_000;
 
@@ -58,9 +50,7 @@ export const isFounder = async (wallet: string | null): Promise<boolean> => {
   return owner !== null && owner.toLowerCase() === wallet.toLowerCase();
 };
 
-// ------------------------------------------------------------------ invite codes
-
-const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no I, O, 0, 1 — they get misread
+const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 const newCode = (): string => {
   const bytes = randomBytes(6);
@@ -68,13 +58,6 @@ const newCode = (): string => {
   return `EW3-${[...bytes].map((byte) => ALPHABET[byte % ALPHABET.length]).join('')}`;
 };
 
-/**
- * Every account gets a code, lazily, the first time anybody asks for it.
- *
- * A code rather than the raw address, for two reasons: it is short enough to say
- * out loud, and it exists before the user has a wallet — an invite should not
- * wait on MetaMask.
- */
 export const ensureReferralCode = async (userId: number): Promise<string | null> => {
   const user = await UserModel.findByPk(userId);
 
@@ -94,8 +77,6 @@ export const ensureReferralCode = async (userId: number): Promise<string | null>
 
       return code;
     } catch {
-      // Unique-index collision. Six characters from a 32-letter alphabet is a
-      // billion possibilities, so this is a formality rather than a plan.
       logger.debug({attempt}, 'referral code collided; retrying');
     }
   }
@@ -103,27 +84,16 @@ export const ensureReferralCode = async (userId: number): Promise<string | null>
   return null;
 };
 
-/** Resolves an invite code to the account that owns it. */
 export const findByCode = async (code: string) =>
   UserModel.findOne({where: {referral_code: code.trim().toUpperCase()}});
 
-// --------------------------------------------------------------------- earnings
-
 export interface IReferralStats {
   code: string | null;
-  /** The address the chain will pay — null until the referrer links a wallet. */
   address: string | null;
   pendingEth: string;
   lifetimeEth: string;
   invited: number;
-  /** Who invited *this* user, if anybody. */
   referredBy: string | null;
-  /**
-   * …and their wallet address, which is what the contracts actually need.
-   *
-   * Null when the inviter never linked one: an invite from someone with no wallet
-   * is a real invite in the app, but there is nobody for the chain to pay.
-   */
   referredByAddress: string | null;
 }
 
@@ -147,8 +117,6 @@ export const getReferralStats = async (userId: number): Promise<IReferralStats> 
   const inviter = user.referred_by ? await UserModel.findByPk(user.referred_by) : null;
 
   if (!user.wallet_address) {
-    // No wallet, no on-chain identity: the code works, but nothing can be paid
-    // to it yet. Saying so is better than showing a confident zero.
     return {
       code,
       address: null,
@@ -180,10 +148,6 @@ export interface IInviterEntry {
   earnedEth: string;
 }
 
-/**
- * The inviters' board, folded out of the registry's own events — so the numbers
- * can be recomputed by anyone from the chain, exactly like the other two boards.
- */
 export const getInviters = async (limit = 20): Promise<IInviterEntry[]> => {
   const [referred, credited] = await Promise.all([
     readEvents(env.web3.referrals, 'Referred'),

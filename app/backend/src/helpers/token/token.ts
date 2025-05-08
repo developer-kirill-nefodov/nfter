@@ -14,7 +14,6 @@ export interface IUserData {
   walletAddress: string | null;
 }
 
-/** A user's identity plus the session (device) the tokens were minted for. */
 export interface ISession extends IUserData {
   sid: string;
 }
@@ -40,11 +39,6 @@ const TTL_SEC: Record<ITokenType, number> = {
   refresh: env.jwt.refreshTtlSec,
 };
 
-/**
- * One Redis key per (user, session, token type). Keying by session id rather
- * than by email is what lets a user stay logged in on several devices at once —
- * and what lets logout revoke exactly one of them.
- */
 const sessionKey = (type: ITokenType, userId: number, sid: string) =>
   `session:${type}:${userId}:${sid}`;
 
@@ -73,11 +67,6 @@ export const createTokens = async (data: IUserData): Promise<ITokens> => {
   return {accessToken, refreshToken, sid};
 };
 
-/**
- * A token is valid only if it verifies cryptographically AND is still the token
- * we handed out for that session. The Redis half is what makes logout and
- * refresh-rotation actually revoke a token, instead of merely forgetting it.
- */
 export const getValidSession = async (
   token: string | undefined,
   type: ITokenType,
@@ -111,7 +100,6 @@ export const revokeSession = async (userId: number, sid: string): Promise<void> 
   await redis.del([sessionKey('access', userId, sid), sessionKey('refresh', userId, sid)]);
 };
 
-/** Used when a password changes: every device must be signed out. */
 export const revokeAllSessions = async (userId: number): Promise<void> => {
   const keys: string[] = [];
 

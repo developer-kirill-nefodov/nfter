@@ -9,7 +9,6 @@ export const notFoundHandler = (req: Request, _res: Response, next: NextFunction
   next(AppError.notFound(`Route ${req.method} ${req.originalUrl} does not exist`));
 };
 
-// Express 5 forwards rejected promises from async handlers here automatically.
 export const errorHandler = (
   err: unknown,
   _req: Request,
@@ -29,7 +28,6 @@ export const errorHandler = (
     return;
   }
 
-  // Anything below is unexpected: log the real cause, tell the client nothing about it.
   if (err instanceof SequelizeError) {
     logger.error({err}, 'database error');
   } else {

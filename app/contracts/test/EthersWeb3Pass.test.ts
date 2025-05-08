@@ -49,7 +49,6 @@ describe('EthersWeb3Pass', () => {
 
       await pass.connect(alice).claim();
 
-      // One draw per wallet is what stops anyone from grinding for a rarer seed.
       await expect(pass.connect(alice).claim()).to.be.revertedWithCustomError(
         pass,
         'AlreadyClaimed',
@@ -86,8 +85,6 @@ describe('EthersWeb3Pass', () => {
 
       await pass.connect(alice).transferFrom(alice.address, bob.address, 1);
 
-      // The art is a keepsake of the mint, not of the current owner: a pass that
-      // repainted itself on every trade would be worthless as one.
       expect(await pass.minterOf(1)).to.equal(alice.address);
       expect(await pass.tokenURI(1)).to.equal(before);
     });
@@ -118,7 +115,6 @@ describe('EthersWeb3Pass', () => {
       expect(svg.startsWith('<svg xmlns="http://www.w3.org/2000/svg"')).to.equal(true);
       expect(svg.endsWith('</svg>')).to.equal(true);
 
-      // Tags have to balance, or the image renders as nothing at all.
       const opened = (svg.match(/<(svg|rect|circle|path|defs|linearGradient|stop)\b/g) ?? []).length;
       expect(opened).to.be.greaterThan(5);
       expect(svg).to.include('hsl(');
@@ -131,9 +127,6 @@ describe('EthersWeb3Pass', () => {
       const svg = decodeSvg(decodeDataUri(await pass.tokenURI(1)).image);
       const shapes = svg.match(/<(circle|rect|path)\b/g) ?? [];
 
-      // Every cell is drawn twice — itself and its mirror — which is what makes
-      // the result read as a face rather than as noise. (The background rect is
-      // the one odd shape out.)
       expect((shapes.length - 1) % 2).to.equal(0);
     });
 
@@ -148,7 +141,6 @@ describe('EthersWeb3Pass', () => {
     it('grades a seed by its leading zero nibbles', async () => {
       const {pass} = await loadFixture(deploy);
 
-      // A seed whose first `zeros` nibbles are 0 and whose next one is not.
       const withLeadingZeros = (zeros: number) => 1n << BigInt(252 - zeros * 4);
 
       expect(await pass.rarityOf(withLeadingZeros(0))).to.equal('Common');
@@ -162,7 +154,6 @@ describe('EthersWeb3Pass', () => {
     it('supports the ERC721Enumerable interface the gallery relies on', async () => {
       const {pass, alice} = await loadFixture(deploy);
 
-      // 0x780e9d63 — the backend refuses to list a collection without it.
       expect(await pass.supportsInterface('0x780e9d63')).to.equal(true);
 
       await pass.connect(alice).claim();

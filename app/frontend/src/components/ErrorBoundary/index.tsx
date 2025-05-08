@@ -11,10 +11,6 @@ interface IState {
   error: Error | null;
 }
 
-/**
- * Without this, a single render throw — a malformed API payload reaching
- * `user.role.name`, say — white-screens the entire app with no way back.
- */
 class ErrorBoundary extends Component<IProps, IState> {
   state: IState = {error: null};
 
@@ -23,7 +19,6 @@ class ErrorBoundary extends Component<IProps, IState> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    // Where a real deployment would call Sentry.
     console.error('Unhandled render error', error, info.componentStack);
   }
 

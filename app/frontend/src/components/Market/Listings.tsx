@@ -12,7 +12,6 @@ import {SkeletonCard, SkeletonGrid} from '../Skeleton';
 
 import {Body, Empty, Grid, ListingCard, Name, PriceRow, Rarity, Seller} from './styles';
 
-/** Everything currently for sale, straight from the contract's own state. */
 const Listings = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();

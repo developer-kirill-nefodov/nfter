@@ -20,7 +20,5 @@ export const redis = createClient({
   password: env.redis.password || undefined,
 });
 
-// node-redis emits 'error' on every connection drop. Without a listener an
-// unhandled 'error' event takes the whole process down.
 redis.on('error', (err: unknown) => logger.error({err}, 'redis error'));
 redis.on('reconnecting', () => logger.warn('redis reconnecting'));

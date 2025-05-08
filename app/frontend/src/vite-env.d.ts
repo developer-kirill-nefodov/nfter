@@ -14,9 +14,6 @@ interface ImportMeta {
 
 declare global {
   interface Window {
-    // MetaMask injects a raw EIP-1193 provider. It is *not* an ethers
-    // BrowserProvider — BrowserProvider is the wrapper you construct around it,
-    // which is exactly what the old type declaration got backwards.
     ethereum?: Eip1193Provider & {
       on?: (event: string, handler: (...args: never[]) => void) => void;
       removeListener?: (event: string, handler: (...args: never[]) => void) => void;

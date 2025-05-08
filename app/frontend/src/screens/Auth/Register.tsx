@@ -18,10 +18,6 @@ import {
 import AuthLayout from './AuthLayout';
 import {FormActions, InviteNote} from './styles';
 
-/**
- * The sign-up screen the app always advertised in its header but never had —
- * the old Create.tsx was an empty div, and the backend had no register route.
- */
 const RegisterPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -29,8 +25,6 @@ const RegisterPage = () => {
   const loading = useStoreSelector((state) => state.user.loading);
   const [params] = useSearchParams();
 
-  // An invite link lands here with the code already in the URL — asking someone
-  // to copy it across by hand is how a referral programme loses its referrals.
   const invite = params.get('invite') ?? '';
 
   return (

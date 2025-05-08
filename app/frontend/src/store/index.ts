@@ -2,6 +2,7 @@ import {combineReducers, configureStore} from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
 import authReducer from './reducers/auth-slice';
+import chainReducer from './reducers/chain-slice';
 import nftReducer from './reducers/nft-slice';
 import marketReducer from './reducers/market-slice';
 import referralReducer from './reducers/referral-slice';
@@ -14,6 +15,7 @@ import rootSaga from './saga';
 
 export const rootReducer = combineReducers({
   auth: authReducer,
+  chain: chainReducer,
   user: userReducer,
   wallet: walletReducer,
   nft: nftReducer,

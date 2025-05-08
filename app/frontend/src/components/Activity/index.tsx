@@ -11,14 +11,6 @@ import {Dot, Empty, Item, Line, Marquee, Track, Value, Viewport} from './styles'
 
 const ICONS = {artifact: '🎨', pass: '🎟️', tip: '💛'} as const;
 
-/**
- * The pulse of the contracts, scrolling on its own.
- *
- * The collection page used to be a wall of your own tokens and nothing else — no
- * sign that anybody else existed. This is the rest of the world: who minted
- * what, who tipped, for how much. Everything comes out of the local index, so it
- * costs a SELECT rather than an RPC round trip.
- */
 const Activity = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -45,8 +37,6 @@ const Activity = () => {
     return t('activity.minted', {tier: item.tier});
   };
 
-  // The list is duplicated so the loop has something to scroll into; the second
-  // copy is hidden from screen readers, which should hear each event once.
   const rows = [...items, ...items];
 
   return (

@@ -36,10 +36,8 @@ describe('NftModal', () => {
 
     expect(screen.getByRole('img', {name: NFT.name})).toHaveAttribute('src', NFT.image);
 
-    // The card only has room for two; the dialog is where the rest live.
     expect(screen.getByText('Hue')).toBeInTheDocument();
     expect(screen.getByText('Rings')).toBeInTheDocument();
-    // Once as the badge, once as the trait value.
     expect(screen.getAllByText('Legendary')).toHaveLength(2);
   });
 
@@ -58,7 +56,6 @@ describe('NftModal', () => {
 
     await user.keyboard('{Escape}');
 
-    // A dialog that traps a keyboard user is worse than no dialog at all.
     expect(onClose).toHaveBeenCalled();
   });
 

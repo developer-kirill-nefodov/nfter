@@ -3,11 +3,15 @@ import {useTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
 
 import Button from '../../components/Button';
+import ContractsPanel from '../../components/Chain/ContractsPanel';
+import FeeSplitPanel from '../../components/Chain/FeeSplitPanel';
+import NetworkPanel from '../../components/Chain/NetworkPanel';
+import SupplyPanel from '../../components/Chain/SupplyPanel';
+import {PanelGrid} from '../../components/Chain/styles';
 import {fetchStatsRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle} from '../../styles';
 import {NavigateUrls} from '../../utils/navigate-urls';
-import {explorerAddress} from '../../web3/contracts';
 import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
 
 import {
@@ -28,14 +32,6 @@ import {
   Stats,
 } from './styles';
 
-/**
- * The public face of the project.
- *
- * Everything here is readable without a wallet and without an account: the
- * numbers come from the chain, the art comes from the contract. A landing page
- * that demands a connection before it will explain itself is a landing page
- * nobody reads.
- */
 const LandingPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -67,7 +63,6 @@ const LandingPage = () => {
           </Row>
         </HeroCopy>
 
-        {/* The hero art is a real minted pass, not a mockup. */}
         {stats?.showcase[0] && (
           <img src={stats.showcase[0].image} alt={stats.showcase[0].name} width={280} height={280} />
         )}
@@ -131,23 +126,21 @@ const LandingPage = () => {
         </Features>
       </Section>
 
-      {stats?.deployed && (
-        <Section>
-          <SectionTitle>{t('landing.contracts')}</SectionTitle>
-          <Row $gap="16px" $wrap>
-            <a href={explorerAddress(stats.passContract)} target="_blank" rel="noreferrer noopener">
-              EthersWeb3Pass — {formatAddress(stats.passContract)}
-            </a>
-            <a
-              href={explorerAddress(stats.tipJarContract)}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              TipJar — {formatAddress(stats.tipJarContract)}
-            </a>
-          </Row>
-        </Section>
-      )}
+      <Section>
+        <SectionTitle>{t('landing.underTheHood')}</SectionTitle>
+
+        <Stack $gap="24px">
+          <NetworkPanel />
+
+          <PanelGrid>
+            <SupplyPanel />
+            <FeeSplitPanel mode="sale" />
+          </PanelGrid>
+
+          <ContractsPanel />
+        </Stack>
+      </Section>
+
     </Stack>
   );
 };

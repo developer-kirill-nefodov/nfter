@@ -3,7 +3,6 @@ import type {IUser} from '../types/user';
 
 export interface IForgotResult {
   message: string;
-  /** Seconds the caller must wait before another link can be sent to that mailbox. */
   retryAfter: number;
 }
 

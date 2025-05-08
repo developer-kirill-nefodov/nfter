@@ -44,7 +44,6 @@ export const PodiumGrid = styled.div`
   }
 `;
 
-/** Silver, gold, bronze — the winner stands in the middle and stands taller. */
 export const PodiumBlock = styled.div<{$place: number; $you: boolean}>`
   display: flex;
   flex-direction: column;
@@ -86,7 +85,6 @@ export const Crown = styled.span`
   line-height: 1;
 `;
 
-/** The address as colour — the same trick the contract uses to draw the art. */
 export const Avatar = styled.span<{$address: string}>`
   width: 44px;
   height: 44px;
@@ -130,6 +128,12 @@ export const RowItem = styled.div<{$you: boolean}>`
   grid-template-columns: 2.5rem auto 1fr auto;
   padding: ${({theme}) => `${theme.space.md} ${theme.space.lg}`};
   background: ${({theme, $you}) => ($you ? theme.colors.surfaceRaised : theme.colors.surface)};
+
+  ${media.down('sm')} {
+    grid-template-columns: 2rem 1fr;
+    row-gap: ${({theme}) => theme.space.xs};
+    padding: ${({theme}) => theme.space.md};
+  }
   border-bottom: 1px solid ${({theme}) => theme.colors.border};
 
   &:last-child {
@@ -177,7 +181,7 @@ export const RowValue = styled.strong`
 `;
 
 export const Empty = styled.div`
-  padding: ${({theme}) => theme.space.xxl};
+  padding: ${({theme}) => theme.space.xl};
   text-align: center;
   color: ${({theme}) => theme.colors.textMuted};
   background: ${({theme}) => theme.colors.surface};
@@ -185,7 +189,6 @@ export const Empty = styled.div`
   border-radius: ${({theme}) => theme.radii.lg};
 `;
 
-/** A place nobody has taken yet — shown, not hidden. */
 export const EmptyRow = styled.div`
   display: grid;
   align-items: center;

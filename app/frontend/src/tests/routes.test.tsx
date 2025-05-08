@@ -46,8 +46,6 @@ describe('RequireRole', () => {
   it('holds the page layout while the session is still being resolved', () => {
     renderGate('authenticated', 'VISITOR', true);
 
-    // A skeleton, not a spinner: a spinner collapses the layout to nothing and
-    // then throws the real content in, which is the jump users complain about.
     expect(screen.getByRole('status')).toHaveAttribute('aria-busy', 'true');
   });
 
@@ -64,8 +62,6 @@ describe('RequireRole', () => {
   });
 
   it('lets an admin through a route marked for users', () => {
-    // The old gate compared role strings for equality, so a USER route locked
-    // out ADMIN. Access is a rank, not an exact match.
     renderGate('authenticated', 'ADMIN');
 
     expect(screen.getByText('secret')).toBeInTheDocument();

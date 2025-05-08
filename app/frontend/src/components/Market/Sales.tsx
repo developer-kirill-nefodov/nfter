@@ -7,7 +7,6 @@ import {formatAddress} from '../../web3/wallet';
 
 import {Empty, SaleRow} from './styles';
 
-/** Sales, read from the contract's log. Nothing here is taken on trust. */
 const Sales = () => {
   const {t} = useTranslation();
   const book = useStoreSelector((state) => state.market.book);

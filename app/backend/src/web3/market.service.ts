@@ -67,14 +67,6 @@ const metadataOf = async (collection: string, tokenId: string) => {
 const CACHE_KEY = `market:${env.web3.chainId}:${env.web3.marketplace.toLowerCase()}`;
 const CACHE_TTL_SEC = 30;
 
-/**
- * The live order book, rebuilt from the event log.
- *
- * A Listed event is a promise, not a fact: the token may have sold, been taken
- * off sale, or been transferred out from under the listing since. So every
- * candidate is confirmed against the contract's own state before it is shown —
- * an order book that offers something unbuyable is worse than an empty one.
- */
 const readMarket = async (): Promise<IMarket> => {
   const [listed, sold] = await Promise.all([
     readEvents(env.web3.marketplace, 'Listed'),
@@ -95,7 +87,6 @@ const readMarket = async (): Promise<IMarket> => {
       [...candidates.values()].map(async ({collection, tokenId}) => {
         const [seller, price] = await market.listingOf(collection, tokenId);
 
-        // Price zero means the listing is gone — sold, cancelled, or never real.
         if (price === 0n) {
           return null;
         }

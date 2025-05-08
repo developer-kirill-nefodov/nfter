@@ -14,23 +14,9 @@ export const tipIndexerQueue = new Queue(QUEUE_NAME, {
   defaultJobOptions: {removeOnComplete: 20, removeOnFail: 50},
 });
 
-/**
- * Keeps the tip feed warm in the background.
- *
- * Without this, the first visitor after the cache expires pays for the log query
- * — a slow, rate-limited call — and stares at a spinner while an RPC node thinks.
- * A repeatable job means the cache is refilled before anyone asks, and a request
- * is only ever answered from Redis.
- *
- * The schedule lives in BullMQ rather than in a setInterval so that it survives a
- * restart and does not multiply when the API is scaled to more than one process.
- */
 export const tipIndexerWorker = new Worker(
   QUEUE_NAME,
   async () => {
-    // Pull whatever is new on chain into the local index, then rebuild the two
-    // caches that read from it. Order matters: refreshing first would just cache
-    // the old answer again.
     await syncChainEvents();
     await refreshTipFeed();
     await getPublicStats({refresh: true});
@@ -39,8 +25,6 @@ export const tipIndexerWorker = new Worker(
 );
 
 tipIndexerWorker.on('failed', (_job, err) => {
-  // An RPC hiccup is not fatal: the cached feed stays servable and the next tick
-  // tries again.
   logger.warn({err}, 'tip indexer run failed');
 });
 

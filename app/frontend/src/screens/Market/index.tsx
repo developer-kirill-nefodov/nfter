@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Button from '../../components/Button';
+import FeeSplitPanel from '../../components/Chain/FeeSplitPanel';
 import ListDialog from '../../components/Market/ListDialog';
 import Listings from '../../components/Market/Listings';
 import Sales from '../../components/Market/Sales';
@@ -15,19 +16,10 @@ import {
 } from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle, Title} from '../../styles';
-import {explorerAddress} from '../../web3/contracts';
-import {formatAddress, formatBalance} from '../../web3/wallet';
+import {formatBalance} from '../../web3/wallet';
 
 import {Earnings} from './styles';
 
-/**
- * The market.
- *
- * A seller keeps their token while it is listed — the contract only holds an
- * approval to move it — and nobody is paid during a sale: proceeds are credited
- * and withdrawn afterwards. Both of those are visible here: your token stays in
- * your gallery, and your earnings sit in a bar you can empty when you like.
- */
 const MarketPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -77,8 +69,6 @@ const MarketPage = () => {
         </Row>
       </Row>
 
-      {/* Money the market owes you. It is not pushed at you during a sale — that
-          is what makes a hostile seller unable to break a purchase. */}
       {earned && (
         <Earnings>
           <Stack $gap="4px">
@@ -103,14 +93,7 @@ const MarketPage = () => {
         <Sales />
       </Stack>
 
-      {book && (
-        <Subtitle>
-          {t('market.contract')}{' '}
-          <a href={explorerAddress(book.contract)} target="_blank" rel="noreferrer noopener">
-            {formatAddress(book.contract)}
-          </a>
-        </Subtitle>
-      )}
+      <FeeSplitPanel mode="sale" />
 
       {listing && <ListDialog onClose={() => setListing(false)} />}
     </Stack>

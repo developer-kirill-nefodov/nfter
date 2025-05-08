@@ -11,8 +11,6 @@ import type {IRequestAuth} from '../../middlewares/guard/authorized';
 export const refreshTokenController = async (req: IRequestAuth, res: Response) => {
   const {sid, ...data} = req.session;
 
-  // Rotation: the old session id dies with the request that used it, so a
-  // refresh token can be spent exactly once.
   await revokeSession(data.id, sid);
 
   const tokens = await createTokens(data);

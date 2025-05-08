@@ -148,7 +148,8 @@
           "title": "Its own chain indexer",
           "body": "Public RPC nodes refuse historical logs. A BullMQ worker follows the head in windows they do allow and keeps the history in Postgres, so the feeds cost a SELECT."
         }
-      }
+      },
+      "underTheHood": "Under the hood"
     },
     "nav": {
       "dashboard": "Dashboard"
@@ -185,7 +186,7 @@
     "rating": {
       "nav": "Rating",
       "title": "Rating",
-      "subtitle": "Two boards, both folded out of the chain’s own event log — so anyone can recompute either one and get the same numbers.",
+      "subtitle": "Three boards — donations, collectors and inviters — each folded out of the chain's own event log, so anyone can recompute them and get the same numbers.",
       "tabs": {
         "donors": "Donations",
         "collectors": "Collectors",
@@ -266,6 +267,28 @@
       "owedToReferrers": "Owed to referrers (not yours)",
       "withdrawHint": "Withdraw from the owner wallet — each contract pays out only to the address that owns it.",
       "notFounder": "This page belongs to the founder. The server checks it against the contracts’ owner, so there is nothing to see here."
+    },
+    "chain": {
+      "title": "Network",
+      "live": "Live",
+      "offline": "RPC unreachable",
+      "network": "Network",
+      "chainId": "Chain ID",
+      "block": "Head block",
+      "gas": "Gas price",
+      "indexerLag": "Indexer lag",
+      "blocks": "{{count}} block behind",
+      "blocks_other": "{{count}} blocks behind",
+      "contracts": "Contracts",
+      "behind": "{{count}} block behind",
+      "behind_other": "{{count}} blocks behind",
+      "notIndexed": "not indexed yet",
+      "supply": "Artifact supply",
+      "saleSplit": "Where a sale goes",
+      "mintSplit": "Where a mint goes",
+      "seller": "Seller",
+      "treasury": "Treasury",
+      "referrer": "Referrer"
     }
   },
   "DE": {
@@ -417,7 +440,8 @@
           "title": "Eigener Chain-Indexer",
           "body": "Öffentliche RPC-Knoten verweigern historische Logs. Ein BullMQ-Worker folgt dem Head in erlaubten Fenstern und hält die Historie in Postgres."
         }
-      }
+      },
+      "underTheHood": "Unter der Haube"
     },
     "nav": {
       "dashboard": "Dashboard"
@@ -454,7 +478,7 @@
     "rating": {
       "nav": "Rangliste",
       "title": "Rangliste",
-      "subtitle": "Zwei Ranglisten, beide aus dem Event-Log der Chain berechnet — jede lässt sich unabhängig nachrechnen.",
+      "subtitle": "Drei Tafeln — Spenden, Sammler und Werber — jede aus dem Ereignis-Log der Kette gefaltet, sodass jeder sie nachrechnen und dieselben Zahlen erhalten kann.",
       "tabs": {
         "donors": "Spenden",
         "collectors": "Sammler",
@@ -535,6 +559,28 @@
       "owedToReferrers": "Für Werber reserviert (nicht deins)",
       "withdrawHint": "Auszahlung aus der Eigentümer-Wallet — jeder Vertrag zahlt nur an die Adresse, der er gehört.",
       "notFounder": "Diese Seite gehört dem Gründer. Der Server prüft das gegen den Eigentümer der Verträge — hier gibt es nichts zu sehen."
+    },
+    "chain": {
+      "title": "Netzwerk",
+      "live": "Live",
+      "offline": "RPC nicht erreichbar",
+      "network": "Netzwerk",
+      "chainId": "Chain-ID",
+      "block": "Aktueller Block",
+      "gas": "Gaspreis",
+      "indexerLag": "Indexer-Rückstand",
+      "blocks": "{{count}} Block zurück",
+      "blocks_other": "{{count}} Blöcke zurück",
+      "contracts": "Verträge",
+      "behind": "{{count}} Block zurück",
+      "behind_other": "{{count}} Blöcke zurück",
+      "notIndexed": "noch nicht indexiert",
+      "supply": "Artefakt-Bestand",
+      "saleSplit": "Wohin ein Verkauf geht",
+      "mintSplit": "Wohin ein Mint geht",
+      "seller": "Verkäufer",
+      "treasury": "Kasse",
+      "referrer": "Werber"
     }
   },
   "CN": {
@@ -686,7 +732,8 @@
           "title": "自建链上索引器",
           "body": "公共 RPC 拒绝提供历史日志。BullMQ 工作进程按允许的窗口跟随链头，把历史存进 Postgres，于是查询只是一条 SELECT。"
         }
-      }
+      },
+      "underTheHood": "技术细节"
     },
     "nav": {
       "dashboard": "面板"
@@ -723,7 +770,7 @@
     "rating": {
       "nav": "排行榜",
       "title": "排行榜",
-      "subtitle": "两个榜单，都由链上事件日志推导得出——任何人都能自行重算，结果一致。",
+      "subtitle": "三张榜单 —— 捐赠、收藏者与邀请人 —— 全部由链上事件日志折算而来，任何人都能自行重算并得到相同的数字。",
       "tabs": {
         "donors": "打赏",
         "collectors": "收藏家",
@@ -804,6 +851,28 @@
       "owedToReferrers": "应付给推荐人（不属于你）",
       "withdrawHint": "请用所有者钱包提取 —— 每个合约只会付款给拥有它的地址。",
       "notFounder": "本页属于创始人。服务器会对照合约的所有者进行校验，这里没有可看的内容。"
+    },
+    "chain": {
+      "title": "网络",
+      "live": "实时",
+      "offline": "RPC 不可达",
+      "network": "网络",
+      "chainId": "链 ID",
+      "block": "最新区块",
+      "gas": "Gas 价格",
+      "indexerLag": "索引延迟",
+      "blocks": "落后 {{count}} 个区块",
+      "blocks_other": "落后 {{count}} 个区块",
+      "contracts": "合约",
+      "behind": "落后 {{count}} 个区块",
+      "behind_other": "落后 {{count}} 个区块",
+      "notIndexed": "尚未索引",
+      "supply": "艺术品供应",
+      "saleSplit": "一笔成交的去向",
+      "mintSplit": "一次铸造的去向",
+      "seller": "卖家",
+      "treasury": "金库",
+      "referrer": "推荐人"
     }
   },
   "UA": {
@@ -955,7 +1024,8 @@
           "title": "Власний індексер мережі",
           "body": "Публічні RPC не віддають історичні логи. BullMQ-воркер іде за головою ланцюга дозволеними вікнами й тримає історію в Postgres."
         }
-      }
+      },
+      "underTheHood": "Під капотом"
     },
     "nav": {
       "dashboard": "Панель"
@@ -992,7 +1062,7 @@
     "rating": {
       "nav": "Рейтинг",
       "title": "Рейтинг",
-      "subtitle": "Дві таблиці, обидві згорнуті з лога подій мережі — кожен може перерахувати їх сам і отримати ті самі числа.",
+      "subtitle": "Три таблиці — донати, колекціонери та запрошувачі — кожна згорнута з лога подій мережі, тож будь-хто може перерахувати їх і отримати ті самі числа.",
       "tabs": {
         "donors": "Донати",
         "collectors": "Колекціонери",
@@ -1073,6 +1143,28 @@
       "owedToReferrers": "Належить рефералам (не вам)",
       "withdrawHint": "Виводьте з гаманця-власника — кожен контракт платить лише тій адресі, якій належить.",
       "notFounder": "Ця сторінка належить засновнику. Сервер звіряє це з власником контрактів, тож тут нічого дивитися."
+    },
+    "chain": {
+      "title": "Мережа",
+      "live": "Наживо",
+      "offline": "RPC недоступний",
+      "network": "Мережа",
+      "chainId": "ID мережі",
+      "block": "Останній блок",
+      "gas": "Ціна газу",
+      "indexerLag": "Відставання індексера",
+      "blocks": "на {{count}} блок позаду",
+      "blocks_other": "на {{count}} блоків позаду",
+      "contracts": "Контракти",
+      "behind": "на {{count}} блок позаду",
+      "behind_other": "на {{count}} блоків позаду",
+      "notIndexed": "ще не проіндексовано",
+      "supply": "Запас артефактів",
+      "saleSplit": "Куди йде продаж",
+      "mintSplit": "Куди йде мінт",
+      "seller": "Продавець",
+      "treasury": "Казна",
+      "referrer": "Реферал"
     }
   }
 }

@@ -20,6 +20,7 @@ export const Panel = styled.aside<{$tone: ITone}>`
   bottom: ${({theme}) => theme.space.lg};
   z-index: ${({theme}) => theme.zIndices.toast};
   width: min(360px, calc(100vw - 32px));
+  max-width: 100%;
   padding: ${({theme}) => theme.space.md};
   background: ${({theme}) => theme.colors.surface};
   border: 1px solid;

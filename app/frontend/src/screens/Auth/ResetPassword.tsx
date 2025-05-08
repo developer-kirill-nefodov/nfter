@@ -22,20 +22,14 @@ const ResetPasswordPage = () => {
 
   const status = useStoreSelector((state) => state.auth.resetStatus);
 
-  // Leaving this behind would bounce the next visitor out of the form before
-  // they could type in it.
   useEffect(() => () => void dispatch(clearAuthFlow()), [dispatch]);
 
   const token = params.get('token');
 
-  // The token arrives in the emailed link; without it there is nothing to reset.
   if (!token) {
     return <Navigate to={NavigateUrls.auth.forgotPassword} replace />;
   }
 
-  // The password is changed and every session is revoked, so the only thing left
-  // to do is sign in with it. Send them there rather than leaving them on a form
-  // whose job is done.
   if (status === 'success') {
     return <Navigate to={NavigateUrls.auth.login} replace />;
   }
@@ -53,7 +47,6 @@ const ResetPasswordPage = () => {
           <InputText key={field.name} {...field} disabled={status === 'pending'} />
         ))}
 
-        {/* A rejected link leaves the typed passwords sitting on screen. */}
         <ResetOnSuccess when={status === 'error'} />
 
         <FormActions $justify="flex-end">

@@ -20,23 +20,11 @@ const InputText = ({name, label, type, placeholder, autoComplete, disabled}: IIn
   const [editing, setEditing] = useState(false);
   const [revealed, setRevealed] = useState(false);
 
-  // Submitting with Enter never blurs the field, so without this the error would
-  // stay hidden on the exact keystroke the user asked for a verdict.
   useEffect(() => setEditing(false), [submitCount]);
 
-  /**
-   * A half-typed email is not a mistake — it is an email in progress. Shouting
-   * at the user on every keystroke ("Enter a valid email address" while they are
-   * still on the third character) is what made this form feel hostile.
-   *
-   * So the error hides the moment they start typing and comes back when they
-   * leave the field, or when they submit — which is when the answer is final.
-   */
   const invalid = Boolean(meta.touched && meta.error) && !editing;
   const errorId = `${name}-error`;
 
-  // A password you cannot read is a password you retype three times. The toggle
-  // is a real button, so it is reachable by keyboard and announced as one.
   const isPassword = type === 'password';
 
   return (
@@ -52,7 +40,6 @@ const InputText = ({name, label, type, placeholder, autoComplete, disabled}: IIn
           autoComplete={autoComplete}
           disabled={disabled}
           $invalid={invalid}
-          // Screen readers announce the message only if the input points at it.
           aria-invalid={invalid}
           aria-describedby={invalid ? errorId : undefined}
           onChange={(event) => {

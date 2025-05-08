@@ -37,7 +37,6 @@ describe('EthersWeb3Artifacts', () => {
     return {artifacts, referrals, owner, alice, bob, carol};
   };
 
-  /** Nobody invited them. */
   const NOBODY = ethers.ZeroAddress;
 
   describe('buying', () => {
@@ -51,8 +50,6 @@ describe('EthersWeb3Artifacts', () => {
       const metadata = decode(await artifacts.tokenURI(1));
       const tier = metadata.attributes.find((a) => a.trait_type === 'Tier');
 
-      // The tier is chosen and paid for, not rolled: a buyer gets exactly what
-      // they asked for, which is the difference between a shop and a slot machine.
       expect(tier?.value).to.equal('Epic');
     });
 
@@ -74,8 +71,6 @@ describe('EthersWeb3Artifacts', () => {
         artifacts.connect(alice).mint(RARE, NOBODY, {value: PRICE[COMMON]}),
       ).to.be.revertedWithCustomError(artifacts, 'WrongPrice');
 
-      // Overpaying reverts too: refunding the difference would mean calling back
-      // into an arbitrary address mid-mint, which is how reentrancy starts.
       await expect(
         artifacts.connect(alice).mint(RARE, NOBODY, {value: PRICE[EPIC]}),
       ).to.be.revertedWithCustomError(artifacts, 'WrongPrice');
@@ -119,7 +114,6 @@ describe('EthersWeb3Artifacts', () => {
     it('refuses to oversell a tier', async () => {
       const {artifacts, alice} = await loadFixture(deploy);
 
-      // Legendary is capped at 10 — the scarcity is real, not a marketing line.
       for (let i = 0; i < 10; i += 1) {
         await artifacts.connect(alice).mint(LEGENDARY, NOBODY, {value: PRICE[LEGENDARY]});
       }
@@ -130,7 +124,6 @@ describe('EthersWeb3Artifacts', () => {
         artifacts.connect(alice).mint(LEGENDARY, NOBODY, {value: PRICE[LEGENDARY]}),
       ).to.be.revertedWithCustomError(artifacts, 'SoldOut');
 
-      // …and selling out one tier does not touch the others.
       await expect(artifacts.connect(alice).mint(EPIC, NOBODY, {value: PRICE[EPIC]})).to.not.be.reverted;
     });
   });
@@ -170,8 +163,6 @@ describe('EthersWeb3Artifacts', () => {
       expect(svg.startsWith('<svg')).to.equal(true);
       expect(svg.endsWith('</svg>')).to.equal(true);
 
-      // The only URL allowed is the SVG namespace itself — anything else would
-      // be an asset fetched from a server, which is exactly what this avoids.
       const urls = (svg.match(/https?:\/\/[^"']+/g) ?? []).filter(
         (url) => url !== 'http://www.w3.org/2000/svg',
       );
@@ -193,8 +184,6 @@ describe('EthersWeb3Artifacts', () => {
     it('can be handed to its real owner', async () => {
       const {artifacts, owner, alice} = await loadFixture(deploy);
 
-      // A throwaway deployer must be able to hand the contract over — otherwise
-      // the key that happened to deploy it owns the revenue forever.
       await expect(artifacts.transferOwnership(alice.address))
         .to.emit(artifacts, 'OwnerChanged')
         .withArgs(owner.address, alice.address);

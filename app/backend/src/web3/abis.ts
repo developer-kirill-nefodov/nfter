@@ -1,12 +1,3 @@
-/**
- * Contract fragments live here, apart from the services that use them.
- *
- * The indexer needs every contract's event signatures, and each service needs
- * the indexer to read those events back — so a service that also owned its ABI
- * closed a circle, and whichever module lost the race saw `undefined` where the
- * fragments should have been. Constants have no dependencies; a file of them
- * cannot take part in a cycle.
- */
 export const TIP_JAR_ABI = [
   'function tip(string message) payable',
   'function owner() view returns (address)',
@@ -49,3 +40,13 @@ export const REFERRALS_ABI = [
 ];
 
 export const OWNABLE_ABI = ['function owner() view returns (address)'];
+
+export const ARTIFACTS_READ_ABI = [
+  'function priceOf(uint8 tier) view returns (uint256)',
+  'function mintedOf(uint8 tier) view returns (uint256)',
+  'function remaining(uint8 tier) view returns (uint256)',
+  'function totalMinted() view returns (uint256)',
+  'function REFERRAL_BPS() view returns (uint256)',
+];
+
+export const PASS_READ_ABI = ['function totalSupply() view returns (uint256)'];

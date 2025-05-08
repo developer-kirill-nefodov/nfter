@@ -6,8 +6,6 @@ module.exports = {
       unique: true,
     });
 
-    // A wallet-first account has no email and no password, so both credentials
-    // become optional; the row is identified by its id alone.
     await queryInterface.changeColumn('users', 'email', {
       type: Sequelize.STRING(255),
       allowNull: true,

@@ -5,7 +5,6 @@ const rise = keyframes`
   to   { opacity: 1; transform: none; }
 `;
 
-/** Short and small: a page that slides half a screen is a page you wait for. */
 export const Fade = styled.div`
   animation: 260ms cubic-bezier(0.2, 0.8, 0.3, 1) ${rise};
 

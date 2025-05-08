@@ -1,21 +1,19 @@
 import styled from 'styled-components';
-import {NavLink as RouterNavLink} from 'react-router-dom';
+import {Link, NavLink as RouterNavLink} from 'react-router-dom';
 
 import {focusRing} from '../../styles';
 import {media} from '../../theme';
 
-/** Grid rows instead of an empty div: this is what keeps the footer at the bottom. */
 export const Shell = styled.div`
   display: grid;
   grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
+  min-height: 100dvh;
 `;
 
 export const Header = styled.header`
   position: sticky;
   top: 0;
   z-index: ${({theme}) => theme.zIndices.header};
-  /* Translucent, so the page slides under it instead of butting against it. */
   background: color-mix(in srgb, ${({theme}) => theme.colors.background} 82%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid ${({theme}) => theme.colors.border};
@@ -30,6 +28,11 @@ export const Inner = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({theme}) => `${theme.space.sm} ${theme.space.lg}`};
+
+  ${media.down('sm')} {
+    gap: ${({theme}) => theme.space.sm};
+    padding: ${({theme}) => `${theme.space.sm} ${theme.space.md}`};
+  }
 `;
 
 export const Zone = styled.div`
@@ -59,7 +62,6 @@ export const NavItem = styled(RouterNavLink)`
     background: ${({theme}) => theme.colors.surface};
   }
 
-  /* Where am I? The old header never said. */
   &.active {
     color: ${({theme}) => theme.colors.text};
     background: ${({theme}) => theme.colors.surfaceRaised};
@@ -97,11 +99,24 @@ export const MobileNav = styled.nav`
   flex-direction: column;
   gap: ${({theme}) => theme.space.xs};
   padding: ${({theme}) => theme.space.md};
+  background: ${({theme}) => theme.colors.background};
   border-top: 1px solid ${({theme}) => theme.colors.border};
+  max-height: calc(100dvh - 64px);
+  overflow-y: auto;
 
   ${media.up('md')} {
     display: none;
   }
+`;
+
+export const MobileTools = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({theme}) => theme.space.sm};
+  margin-top: ${({theme}) => theme.space.sm};
+  padding-top: ${({theme}) => theme.space.sm};
+  border-top: 1px solid ${({theme}) => theme.colors.border};
 `;
 
 export const Main = styled.main`
@@ -109,6 +124,10 @@ export const Main = styled.main`
   max-width: 1200px;
   margin: 0 auto;
   padding: ${({theme}) => theme.space.xl} ${({theme}) => theme.space.lg};
+
+  ${media.down('sm')} {
+    padding: ${({theme}) => theme.space.lg} ${({theme}) => theme.space.md};
+  }
 `;
 
 export const Footer = styled.footer`
@@ -116,6 +135,7 @@ export const Footer = styled.footer`
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  text-align: center;
   gap: ${({theme}) => theme.space.sm};
   padding: ${({theme}) => `${theme.space.lg}`};
   border-top: 1px solid ${({theme}) => theme.colors.border};
@@ -130,4 +150,23 @@ export const Footer = styled.footer`
 export const Logo = styled.img`
   height: 32px;
   display: block;
+`;
+
+export const Brand = styled.span`
+  color: ${({theme}) => theme.colors.text};
+  font-size: ${({theme}) => theme.fontSizes.md};
+  font-weight: 800;
+  letter-spacing: -0.01em;
+
+  ${media.down('sm')} {
+    display: none;
+  }
+`;
+
+export const BrandLink = styled(Link)`
+  display: flex;
+  align-items: center;
+  gap: ${({theme}) => theme.space.sm};
+  text-decoration: none;
+  ${focusRing};
 `;

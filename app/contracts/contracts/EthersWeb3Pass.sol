@@ -6,28 +6,12 @@ import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/
 import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
-/**
- * @title EthersWeb3Pass
- * @notice A free, one-per-wallet membership pass whose artwork is generated
- *         inside the contract and returned straight from `tokenURI`.
- *
- * @dev There is no IPFS here, and no metadata server. The image is a data: URI
- *      built on demand from a seed derived at mint time, so the art cannot rot,
- *      cannot be rugged, and needs nothing but an RPC node to render. That also
- *      means the collection is complete the moment it is deployed.
- *
- *      The seed is fixed at mint and stored, rather than derived from the
- *      current owner: a pass that repainted itself every time it was traded
- *      would not be much of a keepsake.
- */
 contract EthersWeb3Pass is ERC721Enumerable {
     using Strings for uint256;
 
-    /// @notice The address that minted a given token, and the seed of its art.
     mapping(uint256 tokenId => uint256 seed) public seedOf;
     mapping(uint256 tokenId => address minter) public minterOf;
 
-    /// @notice One pass per wallet, ever.
     mapping(address wallet => bool hasClaimed) public claimed;
 
     uint256 private _nextTokenId = 1;
@@ -39,12 +23,6 @@ contract EthersWeb3Pass is ERC721Enumerable {
 
     constructor() ERC721("EthersWeb3 Pass", "EW3P") {}
 
-    /**
-     * @notice Mint your pass. Free, and only once per address.
-     * @dev The seed mixes the minter with the token id and the block, so two
-     *      wallets never land on the same artwork and a single wallet cannot
-     *      grind for a rarer one — it gets exactly one draw.
-     */
     function claim() external returns (uint256 tokenId) {
         if (claimed[msg.sender]) revert AlreadyClaimed();
 
@@ -68,8 +46,6 @@ contract EthersWeb3Pass is ERC721Enumerable {
         return _nextTokenId - 1;
     }
 
-    // ---------------------------------------------------------------- metadata
-
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         if (_ownerOf(tokenId) == address(0)) revert NonexistentToken();
 
@@ -89,14 +65,6 @@ contract EthersWeb3Pass is ERC721Enumerable {
         return string.concat("data:application/json;base64,", Base64.encode(bytes(json)));
     }
 
-    // ------------------------------------------------------------------- traits
-
-    /**
-     * @dev Rarity is the number of leading zero nibbles in the seed — the same
-     *      "how many zeros does the hash start with" idea proof-of-work uses. It
-     *      costs nothing to compute and cannot be gamed, because the wallet gets
-     *      exactly one seed.
-     */
     function rarityOf(uint256 seed) public pure returns (string memory) {
         uint256 zeros = 0;
 
@@ -124,19 +92,10 @@ contract EthersWeb3Pass is ERC721Enumerable {
             );
     }
 
-    // -------------------------------------------------------------------- art
-
     uint256 private constant GRID = 6;
     uint256 private constant CELL = 60;
-    uint256 private constant SIZE = GRID * CELL; // 360 x 360
+    uint256 private constant SIZE = GRID * CELL;
 
-    /**
-     * @dev The grid is drawn left-half-only and mirrored, which is what makes an
-     *      identicon read as a face rather than as noise. Every decision — hue,
-     *      which cells are filled, which shape sits in them — is a slice of the
-     *      seed, so the same address always produces the same image and no two
-     *      addresses produce the same one.
-     */
     function _svg(uint256 seed) private pure returns (string memory) {
         uint256 hue = seed % 360;
 
@@ -146,14 +105,13 @@ contract EthersWeb3Pass is ERC721Enumerable {
             for (uint256 col = 0; col < GRID / 2; ++col) {
                 uint256 bits = (seed >> ((row * (GRID / 2) + col) * 6)) % 64;
 
-                if (bits % 4 == 0) continue; // leave a quarter of the cells empty
+                if (bits % 4 == 0) continue;
 
                 string memory fill = _color(hue, bits);
 
                 shapes = string.concat(
                     shapes,
                     _cell(col * CELL, row * CELL, bits, fill),
-                    // the mirrored twin
                     _cell((GRID - 1 - col) * CELL, row * CELL, bits, fill)
                 );
             }
@@ -219,7 +177,6 @@ contract EthersWeb3Pass is ERC721Enumerable {
                 );
         }
 
-        // A quarter-disc: four of them meeting at a corner read as a flower.
         return
             string.concat(
                 '<path d="M',
@@ -245,8 +202,6 @@ contract EthersWeb3Pass is ERC721Enumerable {
     }
 
     function _color(uint256 hue, uint256 bits) private pure returns (string memory) {
-        // Three related hues plus one complementary accent: enough variety to
-        // stay interesting, close enough together to never look accidental.
         uint256[4] memory offsets = [uint256(0), 30, 330, 180];
         uint256 pick = (bits >> 2) % 4;
 

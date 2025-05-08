@@ -26,7 +26,6 @@ export interface ITipFeed {
   totalTipsEth: string;
   tipCount: number;
   tips: ITip[];
-  /** False until the jar exists at the configured address on this chain. */
   deployed: boolean;
 }
 
@@ -51,14 +50,6 @@ const CACHE_KEY = `tips:${env.web3.chainId}:${env.web3.tipJar.toLowerCase()}`;
 const CACHE_TTL_SEC = 30;
 const FEED_SIZE = 20;
 
-/**
- * Tips come out of the local index, not out of an RPC call.
- *
- * A public node will not serve historical logs — it caps `eth_getLogs` at a few
- * dozen blocks and wants money for anything older. The indexer follows the head
- * in windows it *is* allowed to read and keeps the history here, so the feed
- * costs a SELECT and works no matter how far back the first tip was.
- */
 const allTips = async (): Promise<ITip[]> => {
   const events = await readEvents(env.web3.tipJar, 'Tipped');
 
@@ -117,8 +108,6 @@ export const getTipFeed = async ({refresh = false} = {}): Promise<ITipFeed> => {
     }
   }
 
-  // A jar that is not deployed yet is a configuration state, not an outage: the
-  // page says "no tips yet" instead of the whole API answering 500.
   let feed: ITipFeed;
 
   try {
@@ -141,12 +130,6 @@ export const refreshTipFeed = async (): Promise<ITipFeed> => {
   return feed;
 };
 
-/**
- * The leaderboard is folded out of the same events the feed reads — no extra
- * storage, and anyone can recompute it from the chain and arrive at the same
- * answer. That verifiability is the whole argument for routing tips through a
- * contract instead of sending ETH wallet-to-wallet.
- */
 export const getLeaderboard = async (limit = 20): Promise<ILeaderboardEntry[]> => {
   const tips = await allTips();
 

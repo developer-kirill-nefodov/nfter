@@ -1,10 +1,5 @@
 import {vi} from 'vitest';
 
-/**
- * An in-memory stand-in for the two Redis commands the session and SIWE layers
- * actually use. TTLs are recorded but not expired — no test depends on wall
- * clock, and a fake timer would only make them slower and flakier.
- */
 export const createRedisMock = () => {
   const store = new Map<string, string>();
 
@@ -14,7 +9,6 @@ export const createRedisMock = () => {
       store.set(key, value);
       return 'OK';
     }),
-    /** Only the NX flag matters to the code under test: "set it if it is not there". */
     set: vi.fn(async (key: string, value: string, options?: {NX?: boolean}) => {
       if (options?.NX && store.has(key)) {
         return null;

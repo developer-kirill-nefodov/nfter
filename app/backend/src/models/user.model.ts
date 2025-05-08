@@ -49,7 +49,6 @@ const UserModel = db.define<IUserModel>(
       attributes: {exclude: ['password']},
     },
     scopes: {
-      // Opt in explicitly wherever the hash is genuinely needed (login, reset).
       withPassword: {attributes: {include: ['password']}},
     },
   },

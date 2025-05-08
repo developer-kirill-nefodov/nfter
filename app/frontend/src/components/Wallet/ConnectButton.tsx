@@ -11,11 +11,6 @@ import {toast} from '../Toastify/toast';
 
 import {AddressPill} from './styles';
 
-/**
- * A wallet is something an account *has*, not a way to become one — so a visitor
- * is sent to sign in first, and every wallet route on the server demands an
- * authenticated caller regardless of what this component decides to render.
- */
 const ConnectButton = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -37,8 +32,6 @@ const ConnectButton = () => {
         >
           {t('wallet.install')}
         </Button>
-        {/* Installing a wallet does not reload this tab, so give the user a way
-            to say "it's there now" without hunting for the refresh button. */}
         <Button
           variant="ghost"
           onClick={() => {

@@ -7,18 +7,11 @@ import {isFounder} from '../../web3/referral.service';
 
 const VISITOR = {role: {name: 'VISITOR', permissions: {}}} as const;
 
-/**
- * The SPA calls this on every boot to find out who it is talking to. A visitor
- * is a normal answer here, not an error — only an access token that is dead
- * while the refresh token is still alive gets a 401, which is the client's cue
- * to refresh and retry.
- */
 export const meController = async (req: Request, res: Response) => {
   const accessToken = req.headers.authorization?.split(' ')[1];
   const session = await getValidSession(accessToken, 'access');
 
   if (session) {
-    // The session id is an internal detail; the client has no use for it.
     const {sid: _sid, ...user} = session;
 
     res.status(200).json({...user, isFounder: await isFounder(user.walletAddress)});

@@ -1,6 +1,7 @@
 import styled, {keyframes} from 'styled-components';
 
 import {focusRing} from '../../styles';
+import {media} from '../../theme';
 
 const RARITY: Record<string, string> = {
   common: '#9aa4b8',
@@ -105,6 +106,12 @@ export const SaleRow = styled.a`
   gap: ${({theme}) => theme.space.md};
   grid-template-columns: 1fr auto;
   padding: ${({theme}) => `${theme.space.md} ${theme.space.lg}`};
+
+  ${media.down('sm')} {
+    grid-template-columns: 1fr;
+    row-gap: ${({theme}) => theme.space.xs};
+    padding: ${({theme}) => theme.space.md};
+  }
   text-decoration: none;
   background: ${({theme}) => theme.colors.surface};
   border: 1px solid ${({theme}) => theme.colors.border};
@@ -149,7 +156,6 @@ export const PriceInput = styled.input`
   ${focusRing};
 `;
 
-/** Choosing which of your tokens to sell. */
 export const Picker = styled.div`
   display: grid;
   gap: ${({theme}) => theme.space.sm};

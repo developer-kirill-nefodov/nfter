@@ -7,7 +7,6 @@ import type {
 } from '../types/stats';
 
 export const statsApi = {
-  /** Public: the landing page must explain itself before anyone connects. */
   public: async (refresh = false): Promise<IPublicStats> => {
     const {data} = await api.get<IPublicStats>('/stats/public', {
       params: refresh ? {refresh: 'true'} : undefined,

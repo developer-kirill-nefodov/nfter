@@ -1,6 +1,7 @@
 import {all, call} from 'redux-saga/effects';
 
 import {authSaga} from './auth.saga';
+import {chainSaga} from './chain.saga';
 import {nftSaga} from './nft.saga';
 import {marketSaga} from './market.saga';
 import {referralSaga} from './referral.saga';
@@ -17,5 +18,6 @@ export default function* rootSaga() {
     call(statsSaga),
     call(marketSaga),
     call(referralSaga),
+    call(chainSaga),
   ]);
 }

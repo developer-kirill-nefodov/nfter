@@ -29,15 +29,6 @@ const sign = async (message: SiweMessage) => {
   return {message: prepared, signature: await wallet.signMessage(prepared)};
 };
 
-/**
- * Byte-for-byte what app/frontend/src/web3/siwe.ts emits.
- *
- * The browser cannot use the `siwe` package — it depends on apg-js, which needs
- * Node's Buffer — so the client formats the EIP-4361 message itself. This test
- * is the contract between the two: if the client's template ever drifts from
- * what the server's parser accepts, wallet sign-in breaks in production and
- * nowhere else. It fails here instead.
- */
 const clientSideMessage = (address: string, nonce: string, issuedAt: string) =>
   [
     `localhost:3000 wants you to sign in with your Ethereum account:`,
@@ -103,8 +94,6 @@ describe('Sign-In with Ethereum', () => {
 
     await verifySiweMessage(message, signature);
 
-    // The signature stays cryptographically valid forever, so single-use nonces
-    // are the only thing standing between a captured message and a replay.
     await expect(verifySiweMessage(message, signature)).rejects.toThrow(/expired/i);
   });
 

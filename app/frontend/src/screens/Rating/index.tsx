@@ -4,6 +4,9 @@ import {useTranslation} from 'react-i18next';
 import Board, {type IBoardRow} from '../../components/Rating/Board';
 import {Tab, Tabs} from '../../components/Rating/styles';
 import Button from '../../components/Button';
+import ContractsPanel from '../../components/Chain/ContractsPanel';
+import NetworkPanel from '../../components/Chain/NetworkPanel';
+import {PanelGrid} from '../../components/Chain/styles';
 import Modal from '../../components/Modal';
 import TipForm from '../../components/Tip/TipForm';
 import {
@@ -16,14 +19,6 @@ import {Row, Stack, Subtitle, Title} from '../../styles';
 
 type IBoardKey = 'donors' | 'collectors' | 'inviters';
 
-/**
- * Three boards, one page.
- *
- * All three are folded out of the chain's own event log — donations from TipJar,
- * collectors from the two mint contracts, inviters from the referral registry —
- * so anybody can recompute any of them and get the same numbers. A leaderboard
- * nobody has to take on trust is the reason those events exist.
- */
 const RatingPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -98,8 +93,6 @@ const RatingPage = () => {
           ))}
         </Tabs>
 
-        {/* The form used to sit on the page, taking a screenful whether or not
-            anyone wanted it. It is one click away instead. */}
         <Button onClick={() => setDonating(true)}>{t('tip.open')}</Button>
       </Row>
 
@@ -111,6 +104,11 @@ const RatingPage = () => {
           emptyText={t(emptyText)}
         />
       </Stack>
+
+      <PanelGrid>
+        <NetworkPanel />
+        <ContractsPanel />
+      </PanelGrid>
 
       {donating && (
         <Modal open onClose={() => setDonating(false)} label={t('tip.title')}>

@@ -1,5 +1,7 @@
 import styled, {keyframes} from 'styled-components';
 
+import {media} from '../../theme';
+
 const ROW = 56;
 const VISIBLE = 5;
 
@@ -14,11 +16,6 @@ export const Viewport = styled.div`
   gap: ${({theme}) => theme.space.sm};
 `;
 
-/**
- * A window onto the feed. The track inside is twice as tall as the list and
- * scrolls exactly half its height, so the loop is seamless: the copy arrives
- * where the original left.
- */
 export const Track = styled.div<{$count: number}>`
   position: relative;
   height: ${VISIBLE * ROW}px;
@@ -27,7 +24,6 @@ export const Track = styled.div<{$count: number}>`
   border-radius: ${({theme}) => theme.radii.lg};
   background: ${({theme}) => theme.colors.surface};
 
-  /* Faded top and bottom, so rows arrive and leave instead of being chopped. */
   mask-image: linear-gradient(
     to bottom,
     transparent,
@@ -42,12 +38,10 @@ export const Marquee = styled.div`
   flex-direction: column;
   animation: 28s linear infinite ${scroll};
 
-  /* Read it, don't chase it. */
   ${Track}:hover & {
     animation-play-state: paused;
   }
 
-  /* A page that moves on its own is a page some people cannot use. */
   @media (prefers-reduced-motion: reduce) {
     animation: none;
   }
@@ -60,6 +54,11 @@ export const Item = styled.a`
   grid-template-columns: 2rem 1fr auto;
   height: ${ROW}px;
   padding: 0 ${({theme}) => theme.space.lg};
+
+  ${media.down('sm')} {
+    gap: ${({theme}) => theme.space.sm};
+    padding: 0 ${({theme}) => theme.space.md};
+  }
   text-decoration: none;
   border-bottom: 1px solid ${({theme}) => theme.colors.border};
   transition: background ${({theme}) => theme.transitions.fast};

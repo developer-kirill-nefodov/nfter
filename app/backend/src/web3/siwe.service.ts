@@ -7,7 +7,6 @@ import {AppError} from '../errors/app-error';
 
 const nonceKey = (nonce: string) => `siwe:nonce:${nonce}`;
 
-/** The domain the browser will put in the SIWE message — it must match ours. */
 const expectedDomain = new URL(env.frontendUrl).host;
 
 export const issueNonce = async (): Promise<string> => {
@@ -18,14 +17,6 @@ export const issueNonce = async (): Promise<string> => {
   return nonce;
 };
 
-/**
- * Verifies an EIP-4361 message and its signature, then burns the nonce.
- *
- * The nonce lives in Redis and is deleted the first time it is redeemed, which
- * is what stops a captured signature from being replayed: the signature stays
- * cryptographically valid forever, so single-use is the only thing making the
- * login safe.
- */
 export const verifySiweMessage = async (
   message: string,
   signature: string,
@@ -46,8 +37,6 @@ export const verifySiweMessage = async (
     throw AppError.badRequest(`Wrong network — expected chain ${env.web3.chainId}`);
   }
 
-  // Burn the nonce before checking the signature: an attacker who replays a
-  // valid message must not be able to keep the nonce alive by sending a bad one.
   const consumed = await redis.del(nonceKey(siwe.nonce));
 
   if (consumed === 0) {

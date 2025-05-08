@@ -8,8 +8,6 @@ import PageTransition from './PageTransition';
 import RequireRole, {type IRouteAccess} from './RequireRole';
 import {PageSkeleton} from './styles';
 
-// Route-level code splitting: a visitor on the login screen never downloads the
-// gallery, and the gallery chunk is where ethers lives.
 const LandingPage = lazy(() => import('../screens/Landing'));
 const HomePage = lazy(() => import('../screens/Home'));
 const RatingPage = lazy(() => import('../screens/Rating'));
@@ -31,8 +29,6 @@ interface IAppRoute {
 }
 
 const appRoutes: IAppRoute[] = [
-  // "/" is the landing page: readable by anyone, no wallet and no account. The
-  // dashboard lives behind it, where a session actually means something.
   {path: NavigateUrls.home, element: <LandingPage />, access: 'public'},
   {
     path: NavigateUrls.dashboard,
@@ -81,13 +77,6 @@ const appRoutes: IAppRoute[] = [
   },
 ];
 
-/**
- * The shape of a page, before the page exists.
- *
- * A centred spinner collapses the layout to nothing and then throws the real
- * content in — which is exactly the jump you see when flipping between routes.
- * Holding the space costs one component and removes the jump entirely.
- */
 const Fallback = () => (
   <PageSkeleton>
     <Skeleton $height="36px" $width="220px" />
@@ -116,7 +105,6 @@ const AppRoutes = () => (
         />
       ))}
 
-      {/* The catch-all the app never had: an unknown URL used to render nothing. */}
       <Route
         path="*"
         element={

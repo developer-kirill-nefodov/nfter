@@ -10,12 +10,10 @@ export class WalletError extends Error {
   }
 }
 
-/** EIP-1193 error codes we can actually do something useful about. */
 const USER_REJECTED = 4001;
-const REQUEST_PENDING = -32002; // a prompt is already open, or the wallet is locked
+const REQUEST_PENDING = -32002;
 const CHAIN_NOT_ADDED = 4902;
 
-/** MetaMask nests the real code under `error.info.error` when it comes via RPC. */
 const codeOf = (error: unknown): number | undefined => {
   if (typeof error !== 'object' || error === null) {
     return undefined;
@@ -28,11 +26,6 @@ const codeOf = (error: unknown): number | undefined => {
 
 const isUserRejection = (error: unknown): boolean => codeOf(error) === USER_REJECTED;
 
-/**
- * A wallet that is locked, or already showing a prompt behind the browser
- * window, answers with -32002 rather than doing anything. Reported raw, that
- * reads as a crash; it is really an instruction to the user.
- */
 export class WalletBusyError extends Error {
   constructor() {
     super('Your wallet already has a request open — unlock it and confirm there.');
@@ -42,12 +35,6 @@ export class WalletBusyError extends Error {
 
 export const hasWallet = (): boolean => typeof window.ethereum !== 'undefined';
 
-/**
- * ethers is ~900 kB — a third of everything we ship — and it is worth nothing to
- * a visitor who never touches a wallet. Importing it lazily, at the moment the
- * user actually clicks Connect, keeps it out of the initial download entirely.
- * Type-only imports above are erased at compile time and cost nothing.
- */
 const getProvider = async (): Promise<BrowserProvider> => {
   if (!window.ethereum) {
     throw new WalletError('No Ethereum wallet found. Install MetaMask to continue.');
@@ -55,8 +42,6 @@ const getProvider = async (): Promise<BrowserProvider> => {
 
   const {BrowserProvider} = await import('ethers');
 
-  // A fresh instance per call: a cached one would still be holding the chain id
-  // the user has since switched away from.
   return new BrowserProvider(window.ethereum);
 };
 
@@ -70,7 +55,6 @@ export const connectWallet = async (): Promise<IWalletConnection> => {
   const provider = await getProvider();
 
   try {
-    // getSigner() is what triggers eth_requestAccounts, i.e. the MetaMask prompt.
     const signer = await provider.getSigner();
     const network = await provider.getNetwork();
 
@@ -100,20 +84,12 @@ const SEPOLIA_PARAMS = {
   blockExplorerUrls: ['https://sepolia.etherscan.io'],
 };
 
-/**
- * Switching returns a fresh signer: the old one is bound to the provider state
- * from before the switch, and signing with it can fail or sign for the wrong
- * chain. Reconnecting afterwards is cheap — the account is already authorised,
- * so it raises no second prompt.
- */
 export const switchChain = async (chainId: number = CHAIN_ID): Promise<IWalletConnection> => {
   const provider = await getProvider();
 
   try {
     await provider.send('wallet_switchEthereumChain', [{chainId: `0x${chainId.toString(16)}`}]);
   } catch (error) {
-    // 4902: the wallet has never heard of this chain. Offer to add it rather
-    // than telling the user to go and configure a testnet by hand.
     if (codeOf(error) === CHAIN_NOT_ADDED && chainId === CHAIN_ID) {
       try {
         await provider.send('wallet_addEthereumChain', [SEPOLIA_PARAMS]);
@@ -150,15 +126,6 @@ export const signMessage = async (signer: JsonRpcSigner, message: string): Promi
   }
 };
 
-/**
- * Asks the wallet to forget that this site was ever allowed to see the account.
- *
- * Without it, "disconnect" is a lie the app tells itself: the address is gone
- * from our database, but MetaMask still lists the site under connected accounts
- * and hands it back silently on the next `eth_requestAccounts`. Not every wallet
- * implements the method, and there is nothing to do about the ones that do not —
- * so a failure here is logged into the void rather than shown to the user.
- */
 export const revokeWalletAccess = async (): Promise<void> => {
   if (!window.ethereum) {
     return;
@@ -169,7 +136,7 @@ export const revokeWalletAccess = async (): Promise<void> => {
 
     await provider.send('wallet_revokePermissions', [{eth_accounts: {}}]);
   } catch {
-    // Older MetaMask, or a wallet that has no such method. Nothing to recover.
+    return;
   }
 };
 
@@ -178,10 +145,6 @@ export const formatAddress = (address: string): string =>
 
 const WEI_PER_ETH = 10n ** 18n;
 
-/**
- * Wei → ETH without pulling in ethers' formatUnits: this runs in the header on
- * every render, and it is not worth 900 kB of bundle to divide by 1e18.
- */
 export const formatBalance = (wei: string, decimals = 4): string => {
   const value = BigInt(wei);
   const whole = value / WEI_PER_ETH;

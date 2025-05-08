@@ -20,7 +20,7 @@ function* fetchReferralsSaga() {
     const stats: IReferralStats = yield call(referralApi.me);
     yield put(setReferralStats(stats));
   } catch {
-    // A signed-out visitor has no invite stats; that is not an error worth a toast.
+    yield put(setReferralStats(null));
   }
 }
 
@@ -38,8 +38,6 @@ function* fetchTreasurySaga() {
     const treasury: ITreasury = yield call(referralApi.treasury);
     yield put(setTreasury(treasury));
   } catch {
-    // 403 for everyone but the founder — and the founder is whoever owns the
-    // contracts, which the server verifies against the chain.
     yield put(setTreasury(null));
   }
 }

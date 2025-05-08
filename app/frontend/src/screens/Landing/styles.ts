@@ -152,7 +152,6 @@ const shimmer = keyframes`
   to   { background-position: 400px 0; }
 `;
 
-/** A skeleton, not a spinner: the page keeps its shape while the chain answers. */
 export const ShowcaseSkeleton = styled.div`
   aspect-ratio: 1;
   border-radius: ${({theme}) => theme.radii.lg};

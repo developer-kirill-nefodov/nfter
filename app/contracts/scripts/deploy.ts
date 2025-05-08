@@ -1,14 +1,6 @@
 import {writeFileSync} from 'fs';
 import {ethers, network} from 'hardhat';
 
-/**
- * Deploys both contracts and writes down the block they landed in.
- *
- * That block number matters: the backend reads the tip feed with `queryFilter`,
- * and public RPC nodes cap how far back a log query may reach. Starting from the
- * deployment block instead of from genesis is the difference between a feed that
- * loads and one that times out.
- */
 async function main() {
   const [deployer] = await ethers.getSigners();
 

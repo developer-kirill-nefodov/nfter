@@ -8,21 +8,6 @@ import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 
 import {Referrals} from "./Referrals.sol";
 
-/**
- * @title EthersWeb3Artifacts
- * @notice A paid, collectable ERC-721. Unlimited per wallet, four tiers, and —
- *         like the pass — the artwork is generated inside the contract.
- *
- * @dev The tier is *chosen and paid for*, not rolled. A random tier would make
- *      this a slot machine: the buyer would send ETH not knowing what they get,
- *      and the only way to make that fair on chain is a commit-reveal dance that
- *      buys nobody anything here. Choosing the tier keeps the trade honest —
- *      you pay for what you asked for — and scarcity comes from a hard supply
- *      cap per tier instead of from luck.
- *
- *      The seed still randomises the *art* within the tier, so no two artifacts
- *      look alike.
- */
 contract EthersWeb3Artifacts is ERC721Enumerable {
     using Strings for uint256;
 
@@ -44,20 +29,13 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
 
     address public owner;
 
-    /// @notice Where invitations and their rewards are recorded. Immutable: a
-    ///         registry the owner could swap out later is a registry nobody can
-    ///         rely on for a stream of earnings.
     Referrals public immutable referrals;
 
-    /// @notice The referrer's share of a mint, in basis points. Paid by the
-    ///         treasury out of its own revenue — the buyer's price does not move.
-    uint256 public constant REFERRAL_BPS = 1_000; // 10%
+    uint256 public constant REFERRAL_BPS = 1_000;
     uint256 private constant BPS = 10_000;
 
     uint256 private _nextTokenId = 1;
 
-    /// @dev Prices and caps are immutable: a mint is a purchase, and moving the
-    ///      goalposts afterwards would make every earlier one a worse deal.
     uint256[4] public PRICES = [0.001 ether, 0.003 ether, 0.01 ether, 0.03 ether];
     uint256[4] public SUPPLY_CAPS = [1000, 250, 50, 10];
 
@@ -89,8 +67,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         referrals = Referrals(referralsRegistry);
     }
 
-    // ------------------------------------------------------------------ minting
-
     function priceOf(Tier tier) public view returns (uint256) {
         return PRICES[uint8(tier)];
     }
@@ -99,20 +75,12 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         return SUPPLY_CAPS[uint8(tier)] - mintedOf[tier];
     }
 
-    /**
-     * @notice Buy an artifact of the tier you choose.
-     * @dev Exact change only. Refunding the difference would mean sending ETH
-     *      back to an arbitrary caller mid-mint, which is precisely the shape of
-     *      a reentrancy hole; demanding the exact price removes the callback.
-     */
     function mint(Tier tier, address referrer) external payable returns (uint256 tokenId) {
         uint256 price = priceOf(tier);
 
         if (msg.value != price) revert WrongPrice(price, msg.value);
         if (remaining(tier) == 0) revert SoldOut(uint8(tier));
 
-        // The invite is remembered on the first purchase the buyer makes, so it
-        // costs them no extra transaction and no extra gas of their own.
         referrals.record(msg.sender, referrer);
 
         _payReferrer(price);
@@ -138,11 +106,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         return _nextTokenId - 1;
     }
 
-    /**
-     * @dev The treasury's own cut of the sale, forwarded to whoever brought this
-     *      buyer in. The price the buyer paid is untouched: a referral is the
-     *      treasury paying for a customer, not a surcharge on the customer.
-     */
     function _payReferrer(uint256 price) private {
         if (referrals.referrerOf(msg.sender) == address(0)) {
             return;
@@ -153,16 +116,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         referrals.credit{value: cut}(msg.sender);
     }
 
-    // --------------------------------------------------------------- withdrawal
-
-    /**
-     * @notice Hand the contract — and the right to its proceeds — to someone else.
-     * @dev The first version fixed the owner in the constructor with no way to
-     *      change it, which meant the deploying key owned the revenue forever.
-     *      A throwaway deployer should be able to hand the contract to its real
-     *      owner; a contract that cannot be handed over is a contract nobody
-     *      should deploy on someone else's behalf.
-     */
     function transferOwnership(address newOwner) external {
         if (msg.sender != owner) revert NotOwner();
         if (newOwner == address(0)) revert ZeroAddress();
@@ -171,7 +124,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         owner = newOwner;
     }
 
-    /// @dev Pull, not push: the proceeds sit here until the owner comes for them.
     function withdraw() external {
         if (msg.sender != owner) revert NotOwner();
 
@@ -183,8 +135,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
 
         emit Withdrawn(owner, amount);
     }
-
-    // ---------------------------------------------------------------- metadata
 
     function tokenURI(uint256 tokenId) public view override returns (string memory) {
         if (_ownerOf(tokenId) == address(0)) revert NonexistentToken();
@@ -216,17 +166,9 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         return "Common";
     }
 
-    // --------------------------------------------------------------------- art
-
     uint256 private constant SIZE = 360;
     uint256 private constant CENTER = 180;
 
-    /**
-     * @dev Concentric rings of orbiting nodes — a higher tier buys more rings,
-     *      more nodes and a wider palette, so the tier is legible at a glance
-     *      rather than hidden in the metadata. Legendary spins: an SMIL rotation
-     *      that costs no gas to store and renders anywhere an SVG does.
-     */
     function _svg(Artifact memory artifact) private pure returns (string memory) {
         uint256 hue = artifact.seed % 360;
         uint256 rings = 3 + uint256(uint8(artifact.tier)) * 2;
@@ -276,8 +218,6 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         string memory dots = "";
 
         for (uint256 node = 0; node < nodes; ++node) {
-            // Points on a circle without trigonometry: step around a square and
-            // let the SVG rotation do the rest. Cheap, and it tiles evenly.
             uint256 angleStep = 360 / nodes;
             uint256 size = 4 + (bits % 5);
 

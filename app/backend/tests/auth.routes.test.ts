@@ -90,8 +90,6 @@ describe('auth routes', () => {
       .post('/api/auth/login')
       .send({email: 'nobody@ethers-web3.dev', password: PASSWORD});
 
-    // Any difference here — status, body, even wording — turns the login form
-    // into an account-enumeration oracle.
     expect(wrongPassword.status).toBe(401);
     expect(unknownEmail.status).toBe(401);
     expect(wrongPassword.body).toEqual(unknownEmail.body);
@@ -137,8 +135,6 @@ describe('auth routes', () => {
       .set('Cookie', login.headers['set-cookie'])
       .expect(200);
 
-    // The old code deleted the wrong Redis keys here, so the token kept working
-    // long after the user thought they had signed out.
     const after = await request(app).get('/api/auth/me').set('Authorization', `Bearer ${token}`);
 
     expect(after.body.role.name).toBe('VISITOR');
@@ -169,8 +165,6 @@ describe('auth routes', () => {
   });
 
   it('refuses a wallet nonce to a caller who is not signed in', async () => {
-    // A wallet is something an account has, not a way to become one — so every
-    // wallet route, the nonce included, demands a session first.
     await request(app).get('/api/auth/nonce').expect(403);
     await request(app).post('/api/auth/wallet-link').send({}).expect(403);
     await request(app).post('/api/auth/wallet-unlink').expect(403);
@@ -203,8 +197,6 @@ describe('auth routes', () => {
       .set('Authorization', `Bearer ${login.body.token}`);
 
     expect(res.status).toBe(200);
-    // The old access token still says the wallet is attached, so the route has
-    // to mint a new session rather than just updating the row.
     expect(res.body.user.walletAddress).toBeNull();
     expect(users[0]!.wallet_address).toBeNull();
   });

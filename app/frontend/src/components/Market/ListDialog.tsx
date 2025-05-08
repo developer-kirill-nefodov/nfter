@@ -11,7 +11,6 @@ import {Field, Pick, Picker, PriceInput, Quote} from './styles';
 
 const FEE_BPS = 250n;
 
-/** Wei has 18 decimals and floating point cannot hold them. Parse the string. */
 const toWei = (eth: string): bigint => {
   const [whole = '0', fraction = ''] = eth.split('.');
 
@@ -20,12 +19,6 @@ const toWei = (eth: string): bigint => {
 
 const format = (wei: bigint) => (Number(wei) / 1e18).toFixed(4);
 
-/**
- * Pick one of your tokens, name a price.
- *
- * The cut is shown before anything is signed — a seller should know what lands
- * in their pocket while they can still change the number, not afterwards.
- */
 const ListDialog = ({onClose}: {onClose: () => void}) => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -83,7 +76,6 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
               />
             </Field>
 
-            {/* The market takes 2.5%, and says so before you sign. */}
             <Quote>
               <div>
                 <span>{t('market.fee')}</span>

@@ -28,7 +28,7 @@ export const Backdrop = styled.div`
 export const Dialog = styled.div`
   position: relative;
   width: min(640px, 100%);
-  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
   overflow-y: auto;
   padding: ${({theme}) => theme.space.lg};
   background: ${({theme}) => theme.colors.surface};

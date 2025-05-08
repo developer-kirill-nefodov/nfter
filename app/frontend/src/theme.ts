@@ -1,8 +1,3 @@
-/**
- * The design tokens. The old theme had four colours and five breakpoints, so
- * every component reached for a hardcoded hex instead — these exist so that
- * stops happening.
- */
 export const theme = {
   breakpoints: {
     xs: 0,
@@ -26,7 +21,6 @@ export const theme = {
     error: '#f87171',
     onPrimary: '#ffffff',
 
-    /** One place for the rarity palette — cards, badges and borders all read it. */
     rarity: {
       common: '#9aa4b8',
       rare: '#38bdf8',

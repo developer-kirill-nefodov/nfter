@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Navigate} from 'react-router-dom';
 
+import ContractsPanel from '../../components/Chain/ContractsPanel';
 import {fetchTreasuryRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
@@ -11,14 +12,6 @@ import {formatAddress} from '../../web3/wallet';
 
 import {Line, Total} from './styles';
 
-/**
- * The treasury — for whoever owns the contracts, and nobody else.
- *
- * The gate is the server's, checked against the chain: hiding this route would
- * not hide the endpoint, and an endpoint that trusts the client is not a check.
- * This component only decides what to draw once the server has already decided
- * what to answer.
- */
 const TreasuryPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
@@ -80,14 +73,14 @@ const TreasuryPage = () => {
                 <strong>{Number(treasury.marketplace.proceedsEth).toFixed(4)} Ξ</strong>
               </Line>
 
-              {/* Held for referrers, not for the treasury — shown for honesty and
-                  deliberately left out of the total. */}
               <Line $muted>
                 <span>{t('treasury.owedToReferrers')}</span>
                 <strong>{Number(treasury.referrals.balanceEth).toFixed(4)} Ξ</strong>
               </Line>
             </Stack>
           </Card>
+
+          <ContractsPanel />
 
           <Row $gap="12px" $wrap>
             <Subtitle>{t('treasury.withdrawHint')}</Subtitle>

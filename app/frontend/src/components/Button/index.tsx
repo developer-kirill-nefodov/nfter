@@ -8,10 +8,6 @@ import {ButtonContent, RippleSpan, StyledButton, type IButtonVariant} from './st
 interface IButton {
   children: ReactNode;
   onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  /**
-   * Explicit and defaulted to "button". Omitting it makes the browser default to
-   * "submit", which silently submits any form the button happens to sit in.
-   */
   type?: 'button' | 'submit';
   variant?: IButtonVariant;
   disabled?: boolean;

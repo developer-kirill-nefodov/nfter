@@ -43,13 +43,10 @@ function* claimSaga() {
   }
 
   yield put(setClaimed(true));
-  // The gallery is cached server-side; ask for a fresh read now that the pass
-  // actually exists on chain.
   yield put(fetchNftsRequest({refresh: true}));
   yield put(refreshBalanceRequest());
 
   if (result.token) {
-    // Show the thing they just got. A toast saying "minted" is not a reward.
     yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
   }
 
@@ -69,10 +66,6 @@ function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
 }
 
 function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
-  // Whoever invited this account, resolved by the server from the code they typed
-  // at sign-up. The contract records it on the first purchase and ignores it ever
-  // after — so passing it every time costs nothing and is simpler than tracking
-  // whether it has already been used.
   const referrer: string = yield select(
     (state: RootState) => state.referral.stats?.referredByAddress ?? NO_REFERRER,
   );
@@ -95,8 +88,6 @@ function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
       (state: RootState) => state.user.user.walletAddress,
     );
 
-    // Show it in the window straight away — the server's view is cached and does
-    // not know about this token yet.
     yield put(
       showcaseMinted({
         tokenId: result.token.tokenId,
@@ -110,7 +101,6 @@ function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
     yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
   }
 
-  // …and reconcile with the chain once the indexer has caught up.
   yield put(fetchStatsRequest({refresh: true}));
 
   toast('Your artifact is minted.', 'success');
@@ -121,7 +111,7 @@ function* fetchTiersSaga() {
     const tiers: Record<ITier, ITierInfo> = yield call(readTiers);
     yield put(setTiers(tiers));
   } catch {
-    // Without a wallet there is no signer to ask; the caps still show as "—".
+    yield put(setTiers(null));
   }
 }
 
@@ -130,8 +120,7 @@ function* checkClaimSaga({payload}: ReturnType<typeof checkClaimRequest>) {
     const claimed: boolean = yield call(hasClaimed, payload);
     yield put(setClaimed(claimed));
   } catch {
-    // Not knowing yet is fine — the claim itself would revert anyway, with a
-    // real message, so there is nothing worth interrupting the user for.
+    yield put(setClaimed(false));
   }
 }
 
@@ -157,7 +146,7 @@ function* refreshBalanceSaga() {
       yield put(setBalance(balance));
     }
   } catch {
-    // A balance we cannot read is shown as "—", which is honest enough.
+    yield put(setBalance('0'));
   }
 }
 

@@ -35,9 +35,6 @@ module.exports = {
       updated_at: {type: Sequelize.DATE, allowNull: false},
     });
 
-    // (tx_hash, log_index) identifies a log uniquely on a chain. Making it unique
-    // is what lets the indexer re-scan a range — after a restart, or across a
-    // reorg — without ever double-counting a tip.
     await queryInterface.addIndex('chain_events', ['tx_hash', 'log_index'], {
       name: 'chain_events_log_uniq',
       unique: true,

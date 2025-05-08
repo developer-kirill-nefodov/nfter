@@ -53,8 +53,6 @@ describe('field validation timing', () => {
     await user.tab();
     expect(await screen.findByRole('alert')).toBeInTheDocument();
 
-    // Still invalid at this instant ("not-an-email@") — and that is fine: they
-    // are mid-repair, and shouting at them again would be the original bug.
     await user.type(email, '@');
 
     expect(screen.queryByRole('alert')).not.toBeInTheDocument();

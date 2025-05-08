@@ -44,7 +44,6 @@ export const Aside = styled.aside`
   flex-direction: column;
   gap: ${({theme}) => theme.space.md};
 
-  /* On a phone the form is what you came for; the pitch is not worth a scroll. */
   ${media.down('sm')} {
     display: none;
   }
@@ -141,7 +140,6 @@ export const Slot = styled.div`
   justify-content: center;
 `;
 
-/** A quiet way in for a reviewer who has no intention of inventing a password. */
 export const Demo = styled.button`
   align-self: flex-start;
   padding: 0;

@@ -1,12 +1,6 @@
 import type {AxiosError} from 'axios';
 import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig} from 'axios';
 
-/**
- * The access token lives in memory, never in localStorage: anything an injected
- * script can read, it can exfiltrate. The refresh token is an httpOnly cookie
- * the browser attaches on its own — which is why `withCredentials` is not
- * optional here.
- */
 let accessToken: string | null = null;
 
 export const setAccessToken = (token: string | null) => {
@@ -30,7 +24,6 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 
 type IRetriableConfig = AxiosRequestConfig & {_retry?: boolean};
 
-/** A refresh already in flight — concurrent 401s wait on it instead of racing. */
 let refreshing: Promise<string | null> | null = null;
 
 const refresh = async (): Promise<string | null> => {
@@ -54,9 +47,6 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const config = error.config as IRetriableConfig | undefined;
 
-    // 401 means the access token expired but the session is alive: refresh once
-    // and replay. 403 means the session itself is gone — retrying would only
-    // produce another 403.
     if (error.response?.status === 401 && config && !config._retry) {
       config._retry = true;
 
@@ -75,11 +65,6 @@ api.interceptors.response.use(
   },
 );
 
-/**
- * Axios reports a network failure with `response === undefined`. Reading
- * `e.response.data` without checking — as every saga used to — throws a
- * TypeError *inside* the catch block, which killed the saga watcher outright.
- */
 export const errorMessage = (error: unknown, fallback = 'Something went wrong'): string => {
   if (!axios.isAxiosError(error)) {
     return fallback;

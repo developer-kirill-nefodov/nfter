@@ -12,10 +12,6 @@ export interface IUser {
   email: string | null;
   walletAddress: string | null;
   role: IRole;
-  /**
-   * Derived from the chain, never stored: the founder is whoever owns the
-   * contracts. The server checks it; this is only what it reported.
-   */
   isFounder?: boolean;
 }
 

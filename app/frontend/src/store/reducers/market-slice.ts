@@ -6,7 +6,6 @@ export interface IMarketState {
   book: IMarket | null;
   loading: boolean;
   error: string | null;
-  /** What this wallet has earned from sales and not yet withdrawn, in wei. */
   proceeds: string | null;
 }
 

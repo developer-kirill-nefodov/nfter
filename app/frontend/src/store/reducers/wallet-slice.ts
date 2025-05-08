@@ -7,7 +7,6 @@ export interface IWalletState {
   chainId: number | null;
   status: IWalletStatus;
   error: string | null;
-  /** ETH balance in wei, or null until the chain has been asked. */
   balance: string | null;
 }
 
@@ -36,8 +35,6 @@ export const walletSlice = createSlice({
       state.status = 'connected';
       state.error = null;
     },
-    // MetaMask fires chainChanged whether or not we asked for it, so the chain
-    // is tracked separately from the connection itself.
     setChainId: (state, {payload}: PayloadAction<number>) => {
       state.chainId = payload;
     },

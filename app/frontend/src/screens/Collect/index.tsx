@@ -3,6 +3,10 @@ import {useTranslation} from 'react-i18next';
 
 import Activity from '../../components/Activity';
 import Button from '../../components/Button';
+import FeeSplitPanel from '../../components/Chain/FeeSplitPanel';
+import {useChainStatus} from '../../hooks/useChainStatus';
+import SupplyPanel from '../../components/Chain/SupplyPanel';
+import {PanelGrid} from '../../components/Chain/styles';
 import Modal from '../../components/Modal';
 import NftModal from '../../components/Nft/NftModal';
 import {SkeletonCard, SkeletonGrid} from '../../components/Skeleton';
@@ -30,19 +34,13 @@ import {
   Yours,
 } from './styles';
 
-/**
- * The shop, and the room it stands in.
- *
- * The page used to be four price cards and a lot of nothing. What was missing is
- * everything that makes a shop feel alive: what other people have bought, what
- * is happening right now, and somewhere to go once you have bought yours.
- */
 const CollectPage = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
 
   const user = useStoreSelector((state) => state.user.user);
   const {tiers} = useStoreSelector((state) => state.nft);
+  const {status} = useChainStatus();
   const {stats, loading, highlight} = useStoreSelector((state) => state.stats);
   const stage = useStoreSelector((state) => state.tx.stage);
 
@@ -55,28 +53,29 @@ const CollectPage = () => {
     dispatch(fetchStatsRequest());
   }, [dispatch]);
 
-  // The badge is a "look here", not a permanent label — it fades out of the way
-  // once the buyer has had a moment to see it.
   useEffect(() => {
     if (!highlight) {
       return;
     }
 
-    // The reveal dialog covers the page right after a mint, so a marker that
-    // expires in a few seconds is one the buyer never sees. It waits them out.
     const timer = setTimeout(() => dispatch(clearHighlight()), 60000);
 
     return () => clearTimeout(timer);
   }, [dispatch, highlight]);
 
   const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
-  const remaining = tiers?.[selected]?.remaining;
+
+  const remainingOf = (tier: ITier): number | undefined => {
+    const onChain = status?.tiers.find((item) => item.tier === tier);
+
+    return tiers?.[tier]?.remaining ?? (onChain ? onChain.cap - onChain.minted : undefined);
+  };
+
+  const remaining = remainingOf(selected);
   const soldOut = remaining === 0;
 
   const showcase = stats?.artifactShowcase ?? [];
 
-  // Rendered twice: the animation travels half the track and lands on the same
-  // card, so the loop has no seam. Six seconds per card keeps it readable.
   const rail = showcase.length > 0 ? [...showcase, ...showcase] : [];
   const duration = Math.max(18, showcase.length * 6);
 
@@ -89,8 +88,8 @@ const CollectPage = () => {
 
       <TierGrid>
         {TIERS.map((tier, index) => {
-          const info = tiers?.[tier.id];
-          const out = info?.remaining === 0;
+          const left = remainingOf(tier.id);
+          const out = left === 0;
 
           return (
             <TierCard
@@ -109,9 +108,9 @@ const CollectPage = () => {
                 <Sold>{t('collect.soldOut')}</Sold>
               ) : (
                 <Remaining>
-                  {info
-                    ? t('collect.remaining', {left: info.remaining, cap: tier.cap})
-                    : `— / ${tier.cap}`}
+                  {left === undefined
+                    ? `— / ${tier.cap}`
+                    : t('collect.remaining', {left, cap: tier.cap})}
                 </Remaining>
               )}
             </TierCard>
@@ -156,8 +155,6 @@ const CollectPage = () => {
       <Stack $gap="16px">
         <Title as="h2">{t('collect.recent')}</Title>
 
-        {/* Not a mock-up: these are the artifacts other people have actually
-            bought, drawn by the contract, clickable like any other card. */}
         {loading && showcase.length === 0 ? (
           <SkeletonGrid>
             {Array.from({length: 4}, (_, index) => (
@@ -205,6 +202,11 @@ const CollectPage = () => {
           </Showcase>
         )}
       </Stack>
+
+      <PanelGrid>
+        <SupplyPanel />
+        <FeeSplitPanel mode="mint" />
+      </PanelGrid>
 
       <Stack $gap="16px">
         <Title as="h2">{t('activity.title')}</Title>
