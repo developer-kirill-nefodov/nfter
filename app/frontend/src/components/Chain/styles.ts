@@ -224,3 +224,29 @@ export const PanelGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   align-items: start;
 `;
+
+export const Notes = styled.div`
+  display: grid;
+  gap: ${({theme}) => theme.space.md};
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+`;
+
+export const Note = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({theme}) => theme.space.xs};
+  padding: ${({theme}) => theme.space.md};
+  background: ${({theme}) => theme.colors.surfaceRaised};
+  border-radius: ${({theme}) => theme.radii.md};
+`;
+
+export const NoteTitle = styled.strong`
+  color: ${({theme}) => theme.colors.text};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+`;
+
+export const NoteBody = styled.span`
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.xs};
+  line-height: 1.6;
+`;

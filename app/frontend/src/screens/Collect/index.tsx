@@ -5,6 +5,7 @@ import Activity from '../../components/Activity';
 import Button from '../../components/Button';
 import FeeSplitPanel from '../../components/Chain/FeeSplitPanel';
 import {useChainStatus} from '../../hooks/useChainStatus';
+import Mechanics from '../../components/Chain/Mechanics';
 import SupplyPanel from '../../components/Chain/SupplyPanel';
 import {PanelGrid} from '../../components/Chain/styles';
 import Modal from '../../components/Modal';
@@ -207,6 +208,11 @@ const CollectPage = () => {
         <SupplyPanel />
         <FeeSplitPanel mode="mint" />
       </PanelGrid>
+
+      <Mechanics
+        title="collect.mechanics"
+        items={['collect.onchain', 'collect.cap', 'collect.seed']}
+      />
 
       <Stack $gap="16px">
         <Title as="h2">{t('activity.title')}</Title>

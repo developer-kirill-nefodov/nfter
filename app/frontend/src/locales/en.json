@@ -172,7 +172,20 @@
     "recent": "Recently bought",
     "mintedSoFar": "{{count}} artifacts minted so far",
     "noneYet": "Nobody has bought an artifact yet. The first one is yours to take.",
-    "yours": "Yours"
+    "yours": "Yours",
+    "mechanics": "How an artifact is made",
+    "onchain": {
+      "title": "The art is the contract",
+      "body": "tokenURI builds an SVG from the token’s seed and returns it as a base64 data: URI. There is no image server to go down and no IPFS pin to lapse."
+    },
+    "cap": {
+      "title": "The cap is enforced on chain",
+      "body": "Each tier has a hard supply written into the contract. When the last one is minted, no owner key can print another."
+    },
+    "seed": {
+      "title": "Your address is the seed",
+      "body": "The seed comes from keccak256 of the minter, the block and the token id — so two artifacts are never the same, and nobody chooses which you get."
+    }
   },
   "nftModal": {
     "revealTitle": "It’s yours",
@@ -231,7 +244,26 @@
     "youGet": "You receive",
     "listIt": "List it",
     "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
-    "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
+    "nothingToSell": "You have nothing to sell yet. Mint an artifact first.",
+    "book": "Order book",
+    "listed": "Listed",
+    "floor": "Floor",
+    "sold": "Sold",
+    "volume": "Volume",
+    "feesPaid": "Fees paid",
+    "mechanics": "How the market works",
+    "escrow": {
+      "title": "It never holds your token",
+      "body": "Listing grants the contract permission to move one token. The NFT stays in your wallet until somebody buys it, and you can cancel at any moment."
+    },
+    "pull": {
+      "title": "Nobody is paid during a sale",
+      "body": "Proceeds are credited to a balance and withdrawn later. A seller who reverts on payment cannot block a stranger’s purchase."
+    },
+    "cei": {
+      "title": "The listing dies first",
+      "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
+    }
   },
   "invite": {
     "nav": "Invite",

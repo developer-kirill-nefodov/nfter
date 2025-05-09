@@ -173,7 +173,20 @@
       "recent": "Recently bought",
       "mintedSoFar": "{{count}} artifacts minted so far",
       "noneYet": "Nobody has bought an artifact yet. The first one is yours to take.",
-      "yours": "Yours"
+      "yours": "Yours",
+      "mechanics": "How an artifact is made",
+      "onchain": {
+        "title": "The art is the contract",
+        "body": "tokenURI builds an SVG from the token’s seed and returns it as a base64 data: URI. There is no image server to go down and no IPFS pin to lapse."
+      },
+      "cap": {
+        "title": "The cap is enforced on chain",
+        "body": "Each tier has a hard supply written into the contract. When the last one is minted, no owner key can print another."
+      },
+      "seed": {
+        "title": "Your address is the seed",
+        "body": "The seed comes from keccak256 of the minter, the block and the token id — so two artifacts are never the same, and nobody chooses which you get."
+      }
     },
     "nftModal": {
       "revealTitle": "It’s yours",
@@ -232,7 +245,26 @@
       "youGet": "You receive",
       "listIt": "List it",
       "approvalHint": "The first listing also asks your wallet to let the market move that collection. Your token stays with you until it sells.",
-      "nothingToSell": "You have nothing to sell yet. Mint an artifact first."
+      "nothingToSell": "You have nothing to sell yet. Mint an artifact first.",
+      "book": "Order book",
+      "listed": "Listed",
+      "floor": "Floor",
+      "sold": "Sold",
+      "volume": "Volume",
+      "feesPaid": "Fees paid",
+      "mechanics": "How the market works",
+      "escrow": {
+        "title": "It never holds your token",
+        "body": "Listing grants the contract permission to move one token. The NFT stays in your wallet until somebody buys it, and you can cancel at any moment."
+      },
+      "pull": {
+        "title": "Nobody is paid during a sale",
+        "body": "Proceeds are credited to a balance and withdrawn later. A seller who reverts on payment cannot block a stranger’s purchase."
+      },
+      "cei": {
+        "title": "The listing dies first",
+        "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
+      }
     },
     "invite": {
       "nav": "Invite",
@@ -465,7 +497,20 @@
       "recent": "Zuletzt gekauft",
       "mintedSoFar": "Bisher {{count}} Artefakte geprägt",
       "noneYet": "Noch hat niemand ein Artefakt gekauft. Das erste könnte deins sein.",
-      "yours": "Deins"
+      "yours": "Deins",
+      "mechanics": "Wie ein Artefakt entsteht",
+      "onchain": {
+        "title": "Die Kunst ist der Vertrag",
+        "body": "tokenURI baut ein SVG aus dem Seed des Tokens und gibt es als base64-data:-URI zurück. Kein Bildserver, der ausfallen, kein IPFS-Pin, der verfallen kann."
+      },
+      "cap": {
+        "title": "Die Obergrenze steht auf der Kette",
+        "body": "Jede Stufe hat eine feste Menge im Vertrag. Ist die letzte gemintet, kann auch kein Owner-Key mehr eine nachdrucken."
+      },
+      "seed": {
+        "title": "Deine Adresse ist der Seed",
+        "body": "Der Seed stammt aus keccak256 von Minter, Block und Token-ID — zwei Artefakte sind nie gleich, und niemand sucht aus, welches du bekommst."
+      }
     },
     "nftModal": {
       "revealTitle": "Gehört dir",
@@ -524,7 +569,26 @@
       "youGet": "Du erhältst",
       "listIt": "Anbieten",
       "approvalHint": "Beim ersten Angebot fragt deine Wallet nach der Erlaubnis für diese Sammlung. Dein Token bleibt bei dir, bis es verkauft ist.",
-      "nothingToSell": "Du hast noch nichts zu verkaufen. Präge zuerst ein Artefakt."
+      "nothingToSell": "Du hast noch nichts zu verkaufen. Präge zuerst ein Artefakt.",
+      "book": "Orderbuch",
+      "listed": "Gelistet",
+      "floor": "Bodenpreis",
+      "sold": "Verkauft",
+      "volume": "Volumen",
+      "feesPaid": "Gezahlte Gebühren",
+      "mechanics": "So funktioniert der Markt",
+      "escrow": {
+        "title": "Er hält dein Token nie",
+        "body": "Ein Listing erteilt dem Vertrag nur die Erlaubnis, ein Token zu bewegen. Das NFT bleibt in deiner Wallet, bis jemand kauft — und du kannst jederzeit abbrechen."
+      },
+      "pull": {
+        "title": "Während des Verkaufs wird niemand ausgezahlt",
+        "body": "Erlöse werden gutgeschrieben und später abgehoben. Ein Verkäufer, der die Zahlung zurückweist, kann den Kauf eines Fremden nicht blockieren."
+      },
+      "cei": {
+        "title": "Zuerst stirbt das Listing",
+        "body": "Der Vertrag löscht das Listing, bevor er das Token bewegt — ein wiedereintretender Aufruf findet nichts mehr zu kaufen."
+      }
     },
     "invite": {
       "nav": "Einladen",
@@ -757,7 +821,20 @@
       "recent": "最近购买",
       "mintedSoFar": "目前已铸造 {{count}} 个神器",
       "noneYet": "还没有人买过神器。第一个可以是你的。",
-      "yours": "你的"
+      "yours": "你的",
+      "mechanics": "一件艺术品如何诞生",
+      "onchain": {
+        "title": "艺术品就是合约本身",
+        "body": "tokenURI 依据代币的种子生成 SVG，并以 base64 的 data: URI 返回。没有会宕机的图床，也没有会过期的 IPFS pin。"
+      },
+      "cap": {
+        "title": "上限由链上强制执行",
+        "body": "每个等级的供应量写死在合约里。铸完最后一枚，连所有者私钥也无法再增发。"
+      },
+      "seed": {
+        "title": "你的地址就是种子",
+        "body": "种子取自铸造者、区块与代币 ID 的 keccak256 —— 两件艺术品永不相同，也没人能挑选你会得到哪一件。"
+      }
     },
     "nftModal": {
       "revealTitle": "它属于你了",
@@ -816,7 +893,26 @@
       "youGet": "你将获得",
       "listIt": "挂单",
       "approvalHint": "首次挂单时，钱包会请求授权市场转移该系列。在售出之前，代币始终属于你。",
-      "nothingToSell": "你还没有可出售的东西，先铸造一个神器吧。"
+      "nothingToSell": "你还没有可出售的东西，先铸造一个神器吧。",
+      "book": "挂单簿",
+      "listed": "在售",
+      "floor": "地板价",
+      "sold": "已成交",
+      "volume": "成交额",
+      "feesPaid": "已付手续费",
+      "mechanics": "市场如何运作",
+      "escrow": {
+        "title": "它从不托管你的代币",
+        "body": "挂单只是授予合约移动某个代币的权限。NFT 仍在你的钱包里，直到有人买走，你随时可以取消。"
+      },
+      "pull": {
+        "title": "成交时不向任何人付款",
+        "body": "收益记入余额，稍后自行提取。卖家即便在收款时回滚，也无法阻断他人的购买。"
+      },
+      "cei": {
+        "title": "先删除挂单",
+        "body": "合约在转移代币之前先删除挂单，于是重入调用再也找不到可买的东西。"
+      }
     },
     "invite": {
       "nav": "邀请",
@@ -1049,7 +1145,20 @@
       "recent": "Нещодавно куплені",
       "mintedSoFar": "Викарбувано артефактів: {{count}}",
       "noneYet": "Ще ніхто не купив артефакт. Перший — ваш.",
-      "yours": "Ваш"
+      "yours": "Ваш",
+      "mechanics": "Як народжується артефакт",
+      "onchain": {
+        "title": "Мистецтво — це сам контракт",
+        "body": "tokenURI будує SVG із сіда токена й повертає його як base64 data: URI. Немає сервера картинок, який упаде, і немає IPFS-піна, який протермінується."
+      },
+      "cap": {
+        "title": "Ліміт стежиться в мережі",
+        "body": "Для кожного рівня тираж записаний у контракті. Коли зʼявиться останній, навіть ключ власника не надрукує ще один."
+      },
+      "seed": {
+        "title": "Ваша адреса — це сід",
+        "body": "Сід — це keccak256 від мінтера, блоку та id токена, тож два артефакти ніколи не збігаються і ніхто не обирає, який дістанеться вам."
+      }
     },
     "nftModal": {
       "revealTitle": "Він ваш",
@@ -1108,7 +1217,26 @@
       "youGet": "Ви отримаєте",
       "listIt": "Виставити",
       "approvalHint": "Перше виставлення також попросить гаманець дозволити ринку переміщати цю колекцію. Токен лишається у вас до продажу.",
-      "nothingToSell": "Вам поки нічого продавати. Спершу викарбуйте артефакт."
+      "nothingToSell": "Вам поки нічого продавати. Спершу викарбуйте артефакт.",
+      "book": "Книга заявок",
+      "listed": "У продажу",
+      "floor": "Мінімальна ціна",
+      "sold": "Продано",
+      "volume": "Обсяг",
+      "feesPaid": "Сплачені комісії",
+      "mechanics": "Як працює маркет",
+      "escrow": {
+        "title": "Він ніколи не тримає ваш токен",
+        "body": "Виставлення лише дає контракту дозвіл перемістити один токен. NFT залишається у вашому гаманці, доки хтось не купить, і ви можете скасувати будь-коли."
+      },
+      "pull": {
+        "title": "Під час продажу нікому не платять",
+        "body": "Виторг зараховується на баланс і виводиться потім. Продавець, який відхиляє платіж, не може заблокувати чужу покупку."
+      },
+      "cei": {
+        "title": "Спершу зникає заявка",
+        "body": "Контракт видаляє заявку перед переказом токена, тож повторний виклик уже не знаходить, що купувати."
+      }
     },
     "invite": {
       "nav": "Запросити",

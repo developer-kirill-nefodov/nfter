@@ -2,7 +2,11 @@ import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Button from '../../components/Button';
+import ContractsPanel from '../../components/Chain/ContractsPanel';
 import FeeSplitPanel from '../../components/Chain/FeeSplitPanel';
+import MarketStats from '../../components/Chain/MarketStats';
+import Mechanics from '../../components/Chain/Mechanics';
+import {PanelGrid} from '../../components/Chain/styles';
 import ListDialog from '../../components/Market/ListDialog';
 import Listings from '../../components/Market/Listings';
 import Sales from '../../components/Market/Sales';
@@ -93,7 +97,17 @@ const MarketPage = () => {
         <Sales />
       </Stack>
 
-      <FeeSplitPanel mode="sale" />
+      <MarketStats />
+
+      <PanelGrid>
+        <FeeSplitPanel mode="sale" />
+        <ContractsPanel />
+      </PanelGrid>
+
+      <Mechanics
+        title="market.mechanics"
+        items={['market.escrow', 'market.pull', 'market.cei']}
+      />
 
       {listing && <ListDialog onClose={() => setListing(false)} />}
     </Stack>

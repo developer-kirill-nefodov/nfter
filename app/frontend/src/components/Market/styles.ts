@@ -92,7 +92,7 @@ export const Seller = styled.span`
 `;
 
 export const Empty = styled.div`
-  padding: ${({theme}) => theme.space.xxl};
+  padding: ${({theme}) => theme.space.xl};
   text-align: center;
   color: ${({theme}) => theme.colors.textMuted};
   background: ${({theme}) => theme.colors.surface};
