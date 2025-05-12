@@ -2,6 +2,7 @@ import {useTranslation} from 'react-i18next';
 import {useTheme} from 'styled-components';
 
 import {useChainStatus} from '../../hooks/useChainStatus';
+import {splitOf} from '../../utils/economics';
 
 import {
   Legend,
@@ -13,8 +14,6 @@ import {
   SplitPart,
 } from './styles';
 
-const BPS = 10_000;
-
 interface IFeeSplitPanel {
   mode: 'sale' | 'mint';
 }
@@ -24,20 +23,14 @@ const FeeSplitPanel = ({mode}: IFeeSplitPanel) => {
   const theme = useTheme();
   const {status} = useChainStatus();
 
-  const feeBps = status?.feeBps ?? 250;
-  const referralBps = status?.referralBps ?? 1_000;
-
-  const feePercent = mode === 'sale' ? (feeBps / BPS) * 100 : 100;
-  const referralPercent = (feePercent * referralBps) / BPS;
-  const treasuryPercent = feePercent - referralPercent;
-  const sellerPercent = 100 - feePercent;
+  const split = splitOf(mode, status?.feeBps ?? 250, status?.referralBps ?? 1_000);
 
   const parts = [
     ...(mode === 'sale'
-      ? [{key: 'seller', percent: sellerPercent, color: theme.colors.success}]
+      ? [{key: 'seller', percent: split.seller, color: theme.colors.success}]
       : []),
-    {key: 'treasury', percent: treasuryPercent, color: theme.colors.primary},
-    {key: 'referrer', percent: referralPercent, color: theme.colors.accent},
+    {key: 'treasury', percent: split.treasury, color: theme.colors.primary},
+    {key: 'referrer', percent: split.referrer, color: theme.colors.accent},
   ];
 
   return (

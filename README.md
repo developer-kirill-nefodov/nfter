@@ -24,6 +24,12 @@ never taking custody: it holds an approval to move your token, not the token its
 nobody during a sale. Proceeds are credited and withdrawn, which is what makes a hostile seller
 unable to re-enter or to revert a stranger's purchase.
 
+**Every page shows its own plumbing.** The head block, the gas price, how far behind the indexer
+is, each contract's address and cursor, how much of every tier is left, and exactly how a mint or
+a sale splits between seller, treasury and referrer — all read from `/api/stats/chain`, all
+recomputable by anyone with an RPC URL. A screen that claims to be on chain should be able to
+prove it without being asked.
+
 **Invite someone, earn a share of the fee.** `Referrals` is a registry: the first time an invited
 account buys on chain, it records who invited them — once, permanently, and never for themselves.
 From then on every mint and every sale by that account credits the inviter 10% of *our* commission.

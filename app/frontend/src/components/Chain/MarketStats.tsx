@@ -1,6 +1,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {useStoreSelector} from '../../store/hooks';
+import {bookStats} from '../../utils/economics';
 
 import {Metric, MetricLabel, MetricValue, Metrics, Panel, PanelHead, PanelTitle} from './styles';
 
@@ -8,17 +9,7 @@ const MarketStats = () => {
   const {t} = useTranslation();
   const book = useStoreSelector((state) => state.market.book);
 
-  const listings = book?.listings ?? [];
-  const sales = book?.sales ?? [];
-
-  const floor = listings.reduce<number | null>((lowest, item) => {
-    const price = Number(item.priceEth);
-
-    return lowest === null || price < lowest ? price : lowest;
-  }, null);
-
-  const volume = sales.reduce((total, sale) => total + Number(sale.priceEth), 0);
-  const fees = sales.reduce((total, sale) => total + Number(sale.feeEth), 0);
+  const {listed, floor, sold, volume, fees} = bookStats(book?.listings ?? [], book?.sales ?? []);
 
   return (
     <Panel>
@@ -29,7 +20,7 @@ const MarketStats = () => {
       <Metrics>
         <Metric>
           <MetricLabel>{t('market.listed')}</MetricLabel>
-          <MetricValue>{listings.length}</MetricValue>
+          <MetricValue>{listed}</MetricValue>
         </Metric>
 
         <Metric>
@@ -39,7 +30,7 @@ const MarketStats = () => {
 
         <Metric>
           <MetricLabel>{t('market.sold')}</MetricLabel>
-          <MetricValue>{sales.length}</MetricValue>
+          <MetricValue>{sold}</MetricValue>
         </Metric>
 
         <Metric>

@@ -2,6 +2,8 @@ import {useEffect} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import NetworkPanel from '../../components/Chain/NetworkPanel';
+import SupplyPanel from '../../components/Chain/SupplyPanel';
+import {PanelGrid} from '../../components/Chain/styles';
 import ClaimPass from '../../components/Nft/ClaimPass';
 import NftGallery from '../../components/Nft/NftGallery';
 import ConnectButton from '../../components/Wallet/ConnectButton';
@@ -73,7 +75,10 @@ const HomePage = () => {
         </Row>
       </Card>
 
-      <NetworkPanel />
+      <PanelGrid>
+        <NetworkPanel />
+        <SupplyPanel />
+      </PanelGrid>
 
       <ClaimPass />
 
