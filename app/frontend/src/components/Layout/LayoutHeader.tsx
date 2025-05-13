@@ -70,7 +70,7 @@ const LayoutHeader = () => {
           ) : (
             <>
               {!isMobile && <Languages compact />}
-              {!isVisitor && <WalletMenu />}
+              {!isVisitor && (!isMobile || Boolean(user.walletAddress)) && <WalletMenu />}
 
               {isVisitor ? (
                 <Link to={NavigateUrls.auth.login}>

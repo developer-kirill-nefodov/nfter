@@ -4,6 +4,7 @@ import {useTranslation} from 'react-i18next';
 import {checkClaimRequest, claimPassRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle, Title} from '../../styles';
+import {PASS_ADDRESS} from '../../web3/contracts';
 import Button from '../Button';
 
 import {ClaimCard} from './styles';
@@ -14,7 +15,13 @@ const ClaimPass = () => {
 
   const wallet = useStoreSelector((state) => state.user.user.walletAddress);
   const claimed = useStoreSelector((state) => state.nft.claimed);
+  const holdings = useStoreSelector((state) => state.nft.holdings);
   const stage = useStoreSelector((state) => state.tx.stage);
+
+  const holdsPass = (holdings?.collections ?? []).some(
+    (collection) =>
+      collection.contract.toLowerCase() === PASS_ADDRESS.toLowerCase() && collection.balance > 0,
+  );
 
   useEffect(() => {
     if (wallet) {
@@ -22,7 +29,7 @@ const ClaimPass = () => {
     }
   }, [dispatch, wallet]);
 
-  if (!wallet || claimed === true) {
+  if (!wallet || claimed === true || holdsPass) {
     return null;
   }
 

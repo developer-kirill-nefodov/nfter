@@ -61,20 +61,21 @@ const NftGallery = () => {
 
   return (
     <Stack $gap="32px">
-      <Row $justify="flex-end">
-        <Refresh
-          spinning={loading}
-          onClick={() => dispatch(fetchNftsRequest({refresh: true}))}
-        />
-      </Row>
-
       {owned.map((collection) => (
         <Stack key={collection.contract} $gap="16px">
-          <Row $justify="space-between" $wrap>
+          <Row $justify="space-between" $wrap $gap="12px">
             <Title as="h3">{collection.name}</Title>
-            <Subtitle>
-              {t('nft.owned', {count: collection.balance, symbol: collection.symbol})}
-            </Subtitle>
+
+            <Row $gap="12px">
+              <Subtitle>
+                {t('nft.owned', {count: collection.balance, symbol: collection.symbol})}
+              </Subtitle>
+
+              <Refresh
+                spinning={loading}
+                onClick={() => dispatch(fetchNftsRequest({refresh: true}))}
+              />
+            </Row>
           </Row>
 
           <Grid>
