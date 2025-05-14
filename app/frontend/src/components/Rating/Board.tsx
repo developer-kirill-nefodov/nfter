@@ -32,10 +32,6 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
     );
   }
 
-  if (rows.length === 0) {
-    return <Empty>{emptyText}</Empty>;
-  }
-
   const rest = rows.slice(3);
 
   const places = Math.min(MAX_PLACES, Math.max(MIN_PLACES, rows.length));
@@ -45,7 +41,11 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
 
   return (
     <>
-      <Podium entries={rows.slice(0, 3)} you={you} />
+      {rows.length === 0 ? (
+        <Empty>{emptyText}</Empty>
+      ) : (
+        <Podium entries={rows.slice(0, 3)} you={you} />
+      )}
 
       {(rest.length > 0 || vacant.length > 0) && (
         <Table>
@@ -58,11 +58,7 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
                 <Avatar $address={row.address} aria-hidden="true" style={{width: 32, height: 32}} />
 
                 <RowMain>
-                  <a
-                    href={explorerAddress(row.address)}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                  >
+                  <a href={explorerAddress(row.address)} target="_blank" rel="noreferrer noopener">
                     {formatAddress(row.address)}
                     {isYou && ` ${t('tip.you')}`}
                   </a>
