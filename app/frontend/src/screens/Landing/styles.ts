@@ -66,6 +66,12 @@ export const Stats = styled.section`
   background: ${({theme}) => theme.colors.surface};
   border: 1px solid ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
+
+  ${media.down('sm')} {
+    grid-template-columns: repeat(2, 1fr);
+    gap: ${({theme}) => theme.space.lg};
+    padding: ${({theme}) => theme.space.md};
+  }
 `;
 
 export const Stat = styled.div`

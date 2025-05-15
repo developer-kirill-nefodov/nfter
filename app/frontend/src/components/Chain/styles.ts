@@ -66,6 +66,10 @@ export const Metrics = styled.dl`
   gap: ${({theme}) => theme.space.md};
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
   margin: 0;
+
+  ${media.down('sm')} {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 export const Metric = styled.div`
@@ -120,11 +124,16 @@ export const RowItem = styled.li`
 `;
 
 export const RowName = styled.span`
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: ${({theme}) => theme.colors.text};
   font-weight: 600;
 `;
 
 export const RowAddress = styled.a`
+  white-space: nowrap;
   color: ${({theme}) => theme.colors.accent};
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: ${({theme}) => theme.fontSizes.xs};
@@ -221,8 +230,12 @@ export const LegendItem = styled.li<{$color: string}>`
 export const PanelGrid = styled.div`
   display: grid;
   gap: ${({theme}) => theme.space.lg};
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   align-items: start;
+
+  ${media.down('sm')} {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const Notes = styled.div`
