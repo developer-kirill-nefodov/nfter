@@ -173,10 +173,12 @@ starts there rather than at genesis, because a public node will not read logs an
 make test     # backend · frontend · contracts
 ```
 
-The suite covers what would actually hurt if it broke: that a logged-out token is refused, that
-a refresh token cannot be spent twice, that a SIWE signature cannot be replayed or reused across
-domains, that a wrong password and an unknown email are answered identically, and that a network
-failure does not white-screen the app.
+171 tests: 79 on the contracts, 48 on the API, 44 in the browser. They cover what would actually
+hurt if it broke — that a logged-out token is refused, that a refresh token cannot be spent twice,
+that a SIWE signature cannot be replayed or reused across domains, that a wrong password and an
+unknown email are answered identically, that a referrer is credited out of the fee and never out
+of the buyer's price, that a stale invite cannot revert someone else's purchase, and that a
+network failure does not white-screen the app.
 
 ---
 
