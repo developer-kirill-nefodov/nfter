@@ -69,10 +69,10 @@ export const Grid = styled.div`
   height: 168px;
 `;
 
-export const Cell = styled.span<{$on: boolean}>`
+export const Cell = styled.span<{$color: string | null}>`
   border-radius: ${({theme}) => theme.radii.sm};
-  background: ${({theme, $on}) => ($on ? theme.colors.primary : theme.colors.border)};
-  opacity: ${({$on}) => ($on ? 1 : 0.35)};
+  background: ${({theme, $color}) => $color ?? theme.colors.border};
+  opacity: ${({$color}) => ($color ? 1 : 0.3)};
   transition:
     background ${({theme}) => theme.transitions.base},
     opacity ${({theme}) => theme.transitions.base};
