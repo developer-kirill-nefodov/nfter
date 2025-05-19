@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 import {Link} from 'react-router-dom';
 
 import LogoMark from '../../assets/svg/nfter-logo.svg';
+import {useHasWallet} from '../../hooks/useHasWallet';
 import {useMediaQuery} from '../../hooks/useMediaQuery';
 import {logoutRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
@@ -31,6 +32,7 @@ const LayoutHeader = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
   const isMobile = useMediaQuery({type: 'max', size: 'md'});
+  const {installed} = useHasWallet();
 
   const {user, loading} = useStoreSelector((state) => state.user);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,7 +72,7 @@ const LayoutHeader = () => {
           ) : (
             <>
               {!isMobile && <Languages compact />}
-              {!isVisitor && (!isMobile || Boolean(user.walletAddress)) && <WalletMenu />}
+              {!isVisitor && (!isMobile || installed) && <WalletMenu />}
 
               {isVisitor ? (
                 <Link to={NavigateUrls.auth.login}>
