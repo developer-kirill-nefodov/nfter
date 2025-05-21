@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useEffect, useState, type CSSProperties} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Activity from '../../components/Activity';
@@ -16,7 +16,7 @@ import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
 import {clearHighlight} from '../../store/reducers/stats-slice';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
-import {Card, Row, Stack, Subtitle, Title} from '../../styles';
+import {Row, Stack, Subtitle, Title} from '../../styles';
 import type {INft} from '../../types/nft';
 import {ARTIFACTS_ADDRESS, TIERS, type ITier} from '../../web3/contracts';
 import {formatAddress} from '../../web3/wallet';
@@ -27,6 +27,7 @@ import {
   Remaining,
   Showcase,
   ShowcaseCard,
+  GhostCard,
   ShowcaseTrack,
   Sold,
   TierCard,
@@ -163,12 +164,20 @@ const CollectPage = () => {
             ))}
           </SkeletonGrid>
         ) : showcase.length === 0 ? (
-          <Card>
+          <Stack $gap="12px">
+            <Showcase>
+              <ShowcaseTrack style={{animation: 'none'} as CSSProperties}>
+                {Array.from({length: 6}, (_, index) => (
+                  <GhostCard key={index} />
+                ))}
+              </ShowcaseTrack>
+            </Showcase>
+
             <Subtitle>{t('collect.noneYet')}</Subtitle>
-          </Card>
+          </Stack>
         ) : (
           <Showcase>
-            <ShowcaseTrack $duration={duration}>
+            <ShowcaseTrack style={{'--rail-duration': `${String(duration)}s`} as CSSProperties}>
               {rail.map((item, index) => (
                 <ShowcaseCard
                   key={`${item.tokenId}-${index}`}

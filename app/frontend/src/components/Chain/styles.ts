@@ -12,6 +12,7 @@ export const Panel = styled.section`
   display: flex;
   flex-direction: column;
   gap: ${({theme}) => theme.space.md};
+  height: 100%;
   padding: ${({theme}) => theme.space.lg};
   background: ${({theme}) => theme.colors.surface};
   border: 1px solid ${({theme}) => theme.colors.border};
@@ -65,6 +66,8 @@ export const Metrics = styled.dl`
   display: grid;
   gap: ${({theme}) => theme.space.md};
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  align-content: start;
+  flex: 1;
   margin: 0;
 
   ${media.down('sm')} {
@@ -97,7 +100,9 @@ export const MetricValue = styled.dd`
 export const Rows = styled.ul`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: ${({theme}) => theme.space.sm};
+  flex: 1;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -152,6 +157,8 @@ export const Tag = styled.span<{$warn?: boolean}>`
 export const Bars = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  flex: 1;
   gap: ${({theme}) => theme.space.md};
 `;
 
@@ -188,6 +195,14 @@ export const BarFill = styled.div<{$percent: number; $color: string}>`
   border-radius: inherit;
   background: ${({$color}) => $color};
   transition: width ${({theme}) => theme.transitions.base};
+`;
+
+export const Body = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: ${({theme}) => theme.space.md};
+  flex: 1;
 `;
 
 export const Split = styled.div`
@@ -231,7 +246,7 @@ export const PanelGrid = styled.div`
   display: grid;
   gap: ${({theme}) => theme.space.lg};
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  align-items: start;
+  align-items: stretch;
 
   ${media.down('sm')} {
     grid-template-columns: 1fr;

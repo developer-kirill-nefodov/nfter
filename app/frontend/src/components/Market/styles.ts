@@ -92,12 +92,55 @@ export const Seller = styled.span`
 `;
 
 export const Empty = styled.div`
-  padding: ${({theme}) => theme.space.xl};
-  text-align: center;
+  padding: ${({theme}) => theme.space.md} 0 0;
   color: ${({theme}) => theme.colors.textMuted};
-  background: ${({theme}) => theme.colors.surface};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+`;
+
+const breathe = keyframes`
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.75; }
+`;
+
+export const GhostGrid = styled.div`
+  display: grid;
+  gap: ${({theme}) => theme.space.md};
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+`;
+
+export const GhostCard = styled.div`
+  height: 260px;
   border: 1px dashed ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
+  background: ${({theme}) => theme.colors.surface};
+  animation: 2.6s ease-in-out infinite ${breathe};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+`;
+
+export const GhostRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({theme}) => theme.space.md};
+  height: 56px;
+  padding: 0 ${({theme}) => theme.space.lg};
+  border: 1px dashed ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.md};
+  background: ${({theme}) => theme.colors.surface};
+  animation: 2.6s ease-in-out infinite ${breathe};
+
+  span {
+    height: 10px;
+    border-radius: ${({theme}) => theme.radii.pill};
+    background: ${({theme}) => theme.colors.surfaceRaised};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const SaleRow = styled.a`

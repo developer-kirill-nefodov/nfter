@@ -15,7 +15,7 @@ const riseIn = keyframes`
 export const Backdrop = styled.div`
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: ${({theme}) => theme.zIndices.modal};
   display: grid;
   place-items: center;
   padding: ${({theme}) => theme.space.md};

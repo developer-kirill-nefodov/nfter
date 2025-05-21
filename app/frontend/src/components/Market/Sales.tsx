@@ -5,14 +5,25 @@ import {Stack} from '../../styles';
 import {explorerTx} from '../../web3/contracts';
 import {formatAddress} from '../../web3/wallet';
 
-import {Empty, SaleRow} from './styles';
+import {Empty, GhostRow, SaleRow} from './styles';
 
 const Sales = () => {
   const {t} = useTranslation();
   const book = useStoreSelector((state) => state.market.book);
 
   if (!book || book.sales.length === 0) {
-    return <Empty>{t('market.noSales')}</Empty>;
+    return (
+      <Stack $gap="8px">
+        {Array.from({length: 3}, (_, index) => (
+          <GhostRow key={index} aria-hidden="true">
+            <span style={{width: `${String(40 + index * 12)}%`}} />
+            <span style={{width: '56px'}} />
+          </GhostRow>
+        ))}
+
+        <Empty>{t('market.noSales')}</Empty>
+      </Stack>
+    );
   }
 
   return (

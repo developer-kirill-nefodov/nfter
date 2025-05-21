@@ -18,7 +18,7 @@ export const Panel = styled.aside<{$tone: ITone}>`
   position: fixed;
   right: ${({theme}) => theme.space.lg};
   bottom: ${({theme}) => theme.space.lg};
-  z-index: ${({theme}) => theme.zIndices.toast};
+  z-index: ${({theme}) => theme.zIndices.tx};
   width: min(360px, calc(100vw - 32px));
   max-width: 100%;
   padding: ${({theme}) => theme.space.md};

@@ -62,7 +62,9 @@ export const theme = {
   zIndices: {
     dropdown: 10,
     header: 20,
-    toast: 40,
+    modal: 100,
+    tx: 200,
+    toast: 300,
   },
 } as const;
 

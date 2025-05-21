@@ -3,7 +3,15 @@ import {useTranslation} from 'react-i18next';
 import {explorerAddress} from '../../web3/contracts';
 import {formatAddress} from '../../web3/wallet';
 
-import {Avatar, Crown, PodiumBlock, PodiumGrid, PodiumName, PodiumValue} from './styles';
+import {
+  Avatar,
+  Crown,
+  EmptyPodium,
+  PodiumBlock,
+  PodiumGrid,
+  PodiumName,
+  PodiumValue,
+} from './styles';
 
 export interface IPodiumEntry {
   address: string;
@@ -16,16 +24,22 @@ const CROWNS = ['🥇', '🥈', '🥉'];
 const Podium = ({entries, you}: {entries: IPodiumEntry[]; you: string | null}) => {
   const {t} = useTranslation();
 
-  if (entries.length === 0) {
-    return null;
-  }
-
-  const order = [1, 0, 2].filter((index) => entries[index]);
+  const order = [1, 0, 2];
 
   return (
     <PodiumGrid>
       {order.map((index) => {
-        const entry = entries[index]!;
+        const entry = entries[index];
+
+        if (!entry) {
+          return (
+            <EmptyPodium key={`vacant-${String(index)}`} $place={index}>
+              <Crown>{CROWNS[index]}</Crown>
+              <span>{t('rating.vacant')}</span>
+            </EmptyPodium>
+          );
+        }
+
         const isYou = you?.toLowerCase() === entry.address.toLowerCase();
 
         return (

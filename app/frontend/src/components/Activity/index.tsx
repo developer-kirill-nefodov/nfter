@@ -1,4 +1,4 @@
-import {useEffect} from 'react';
+import {useEffect, type CSSProperties} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {fetchActivityRequest} from '../../store/actions';
@@ -7,7 +7,18 @@ import {Subtitle} from '../../styles';
 import {explorerTx} from '../../web3/contracts';
 import {formatAddress} from '../../web3/wallet';
 
-import {Dot, Empty, Item, Line, Marquee, Track, Value, Viewport} from './styles';
+import {
+  Dot,
+  Ghost,
+  GhostBar,
+  GhostDot,
+  Item,
+  Line,
+  Marquee,
+  Track,
+  Value,
+  Viewport,
+} from './styles';
 
 const ICONS = {artifact: '🎨', pass: '🎟️', tip: '💛'} as const;
 
@@ -22,7 +33,21 @@ const Activity = () => {
   }, [dispatch]);
 
   if (items.length === 0) {
-    return <Empty>{t('activity.empty')}</Empty>;
+    return (
+      <Viewport>
+        <Track>
+          {Array.from({length: 5}, (_, index) => (
+            <Ghost key={index}>
+              <GhostDot />
+              <GhostBar $width={`${String(45 + ((index * 13) % 35))}%`} />
+              <GhostBar $width="48px" />
+            </Ghost>
+          ))}
+        </Track>
+
+        <Subtitle>{t('activity.empty')}</Subtitle>
+      </Viewport>
+    );
   }
 
   const describe = (item: (typeof items)[number]) => {
@@ -41,8 +66,8 @@ const Activity = () => {
 
   return (
     <Viewport>
-      <Track $count={items.length}>
-        <Marquee>
+      <Track>
+        <Marquee style={{'--rail-duration': `${String(Math.max(20, items.length * 4))}s`} as CSSProperties}>
           {rows.map((item, index) => (
             <Item
               key={`${item.txHash}-${index}`}

@@ -127,11 +127,11 @@ const slide = keyframes`
   to   { transform: translateX(-50%); }
 `;
 
-export const ShowcaseTrack = styled.div<{$duration: number}>`
+export const ShowcaseTrack = styled.div`
   display: flex;
   gap: ${({theme}) => theme.space.md};
   width: max-content;
-  animation: ${({$duration}) => $duration}s linear infinite ${slide};
+  animation: var(--rail-duration, 32s) linear infinite ${slide};
 
   ${Showcase}:hover &,
   ${Showcase}:focus-within & {
@@ -141,6 +141,19 @@ export const ShowcaseTrack = styled.div<{$duration: number}>`
   @media (prefers-reduced-motion: reduce) {
     animation: none;
     flex-wrap: wrap;
+  }
+`;
+
+export const GhostCard = styled.div`
+  flex: 0 0 200px;
+  height: 240px;
+  border: 1px dashed ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.lg};
+  background: ${({theme}) => theme.colors.surface};
+  animation: 2.4s ease-in-out infinite ${pulse};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
   }
 `;
 

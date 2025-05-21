@@ -147,6 +147,22 @@ export const RowItem = styled.div<{$you: boolean}>`
     `};
 `;
 
+export const EmptyPodium = styled.div<{$place: number}>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${({theme}) => theme.space.sm};
+  min-height: ${({$place}) => ($place === 0 ? '210px' : '180px')};
+  padding: ${({theme}) => theme.space.lg};
+  background: ${({theme}) => theme.colors.surface};
+  border: 1px dashed ${({theme}) => theme.colors.border};
+  border-radius: ${({theme}) => theme.radii.lg};
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+  opacity: 0.6;
+`;
+
 export const Rank = styled.span`
   color: ${({theme}) => theme.colors.textMuted};
   font-variant-numeric: tabular-nums;

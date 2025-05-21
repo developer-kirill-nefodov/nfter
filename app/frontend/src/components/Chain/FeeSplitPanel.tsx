@@ -5,6 +5,7 @@ import {useChainStatus} from '../../hooks/useChainStatus';
 import {splitOf} from '../../utils/economics';
 
 import {
+  Body,
   Legend,
   LegendItem,
   Panel,
@@ -39,19 +40,21 @@ const FeeSplitPanel = ({mode}: IFeeSplitPanel) => {
         <PanelTitle>{t(mode === 'sale' ? 'chain.saleSplit' : 'chain.mintSplit')}</PanelTitle>
       </PanelHead>
 
-      <Split>
-        {parts.map((part) => (
-          <SplitPart key={part.key} $percent={part.percent} $color={part.color} />
-        ))}
-      </Split>
+      <Body>
+        <Split>
+          {parts.map((part) => (
+            <SplitPart key={part.key} $percent={part.percent} $color={part.color} />
+          ))}
+        </Split>
 
-      <Legend>
-        {parts.map((part) => (
-          <LegendItem key={part.key} $color={part.color}>
-            {t(`chain.${part.key}`)} · {part.percent.toFixed(2)}%
-          </LegendItem>
-        ))}
-      </Legend>
+        <Legend>
+          {parts.map((part) => (
+            <LegendItem key={part.key} $color={part.color}>
+              {t(`chain.${part.key}`)} · {part.percent.toFixed(2)}%
+            </LegendItem>
+          ))}
+        </Legend>
+      </Body>
     </Panel>
   );
 };

@@ -7,6 +7,7 @@ import Spinner from '../Spinner';
 import Podium, {type IPodiumEntry} from './Podium';
 import {Avatar, Empty, EmptyRow, Rank, RowItem, RowMain, RowValue, Table} from './styles';
 
+const PODIUM = 3;
 const MIN_PLACES = 10;
 const MAX_PLACES = 20;
 
@@ -35,8 +36,9 @@ const Board = ({rows, you, loading = false, emptyText}: IBoard) => {
   const rest = rows.slice(3);
 
   const places = Math.min(MAX_PLACES, Math.max(MIN_PLACES, rows.length));
-  const vacant = Array.from({length: Math.max(0, places - rows.length)}, (_, index) => ({
-    rank: rows.length + index + 1,
+  const taken = Math.max(rows.length, PODIUM);
+  const vacant = Array.from({length: Math.max(0, places - taken)}, (_, index) => ({
+    rank: taken + index + 1,
   }));
 
   return (

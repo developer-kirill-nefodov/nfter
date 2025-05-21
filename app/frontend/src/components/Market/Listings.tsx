@@ -10,7 +10,18 @@ import Button from '../Button';
 import NftModal from '../Nft/NftModal';
 import {SkeletonCard, SkeletonGrid} from '../Skeleton';
 
-import {Body, Empty, Grid, ListingCard, Name, PriceRow, Rarity, Seller} from './styles';
+import {
+  Body,
+  Empty,
+  GhostCard,
+  GhostGrid,
+  Grid,
+  ListingCard,
+  Name,
+  PriceRow,
+  Rarity,
+  Seller,
+} from './styles';
 
 const Listings = () => {
   const {t} = useTranslation();
@@ -39,7 +50,17 @@ const Listings = () => {
   }
 
   if (!book || book.listings.length === 0) {
-    return <Empty>{t('market.empty')}</Empty>;
+    return (
+      <>
+        <GhostGrid aria-hidden="true">
+          {Array.from({length: 4}, (_, index) => (
+            <GhostCard key={index} />
+          ))}
+        </GhostGrid>
+
+        <Empty>{t('market.empty')}</Empty>
+      </>
+    );
   }
 
   return (

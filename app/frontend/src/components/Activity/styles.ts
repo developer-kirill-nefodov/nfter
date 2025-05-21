@@ -16,7 +16,7 @@ export const Viewport = styled.div`
   gap: ${({theme}) => theme.space.sm};
 `;
 
-export const Track = styled.div<{$count: number}>`
+export const Track = styled.div`
   position: relative;
   height: ${VISIBLE * ROW}px;
   overflow: hidden;
@@ -36,7 +36,7 @@ export const Track = styled.div<{$count: number}>`
 export const Marquee = styled.div`
   display: flex;
   flex-direction: column;
-  animation: 28s linear infinite ${scroll};
+  animation: var(--rail-duration, 28s) linear infinite ${scroll};
 
   ${Track}:hover & {
     animation-play-state: paused;
@@ -109,6 +109,41 @@ export const Value = styled.strong<{$kind: string}>`
   color: ${({theme, $kind}) => ($kind === 'tip' ? theme.colors.warning : theme.colors.success)};
   font-size: ${({theme}) => theme.fontSizes.sm};
   font-variant-numeric: tabular-nums;
+`;
+
+const shimmer = keyframes`
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.7; }
+`;
+
+export const Ghost = styled.div`
+  display: grid;
+  align-items: center;
+  gap: ${({theme}) => theme.space.md};
+  grid-template-columns: 2rem 1fr auto;
+  height: ${ROW}px;
+  padding: 0 ${({theme}) => theme.space.lg};
+  border-bottom: 1px dashed ${({theme}) => theme.colors.border};
+  animation: 2.4s ease-in-out infinite ${shimmer};
+
+  ${media.down('sm')} {
+    gap: ${({theme}) => theme.space.sm};
+    padding: 0 ${({theme}) => theme.space.md};
+  }
+`;
+
+export const GhostDot = styled.span`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px dashed ${({theme}) => theme.colors.border};
+`;
+
+export const GhostBar = styled.span<{$width: string}>`
+  width: ${({$width}) => $width};
+  height: 10px;
+  border-radius: ${({theme}) => theme.radii.pill};
+  background: ${({theme}) => theme.colors.surfaceRaised};
 `;
 
 export const Empty = styled.div`
