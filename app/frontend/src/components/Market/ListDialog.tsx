@@ -7,7 +7,7 @@ import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
 import Modal from '../Modal';
 
-import {Field, Pick, Picker, PriceInput, Quote} from './styles';
+import {Field, ListedTag, Pick, Picker, PriceInput, Quote} from './styles';
 
 const FEE_BPS = 250n;
 
@@ -26,8 +26,20 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
   const holdings = useStoreSelector((state) => state.nft.holdings);
   const stage = useStoreSelector((state) => state.tx.stage);
 
+  const book = useStoreSelector((state) => state.market.book);
+
+  const listed = new Set(
+    (book?.listings ?? []).map(
+      (listing) => `${listing.collection.toLowerCase()}-${listing.tokenId}`,
+    ),
+  );
+
   const owned = (holdings?.collections ?? []).flatMap((collection) =>
-    collection.items.map((nft) => ({...nft, collection: collection.contract})),
+    collection.items.map((nft) => ({
+      ...nft,
+      collection: collection.contract,
+      listed: listed.has(`${collection.contract.toLowerCase()}-${nft.tokenId}`),
+    })),
   );
 
   const [selected, setSelected] = useState(0);
@@ -37,7 +49,7 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
 
   const wei = /^\d*\.?\d{0,18}$/.test(price) ? toWei(price || '0') : 0n;
   const fee = (wei * FEE_BPS) / 10_000n;
-  const token = owned[selected];
+  const token = owned[selected]?.listed ? undefined : owned[selected];
 
   return (
     <Modal open onClose={onClose} label={t('market.sell')}>
@@ -55,11 +67,14 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
                   <Pick
                     key={`${nft.collection}-${nft.tokenId}`}
                     type="button"
+                    disabled={nft.listed}
                     $active={index === selected}
                     aria-pressed={index === selected}
                     onClick={() => setSelected(index)}
                   >
+                    {nft.listed && <ListedTag>{t('market.alreadyListed')}</ListedTag>}
                     <img src={nft.image} alt={nft.name} />
+                    <small>{nft.name}</small>
                   </Pick>
                 ))}
               </Picker>

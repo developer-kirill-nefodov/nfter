@@ -187,6 +187,17 @@ export const Field = styled.div`
   }
 `;
 
+export const ListedTag = styled.span`
+  position: absolute;
+  top: ${({theme}) => theme.space.xs};
+  left: ${({theme}) => theme.space.xs};
+  padding: 2px 6px;
+  border-radius: ${({theme}) => theme.radii.pill};
+  background: ${({theme}) => theme.colors.surfaceRaised};
+  color: ${({theme}) => theme.colors.warning};
+  font-size: ${({theme}) => theme.fontSizes.xs};
+`;
+
 export const PriceInput = styled.input`
   font: inherit;
   font-size: ${({theme}) => theme.fontSizes.lg};
@@ -208,14 +219,32 @@ export const Picker = styled.div`
 `;
 
 export const Pick = styled.button<{$active: boolean}>`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: ${({theme}) => theme.space.xs};
   overflow: hidden;
   cursor: pointer;
-  padding: 0;
+  padding: 0 0 ${({theme}) => theme.space.xs};
   background: none;
   border: 2px solid
     ${({theme, $active}) => ($active ? theme.colors.primary : theme.colors.border)};
   border-radius: ${({theme}) => theme.radii.md};
   ${focusRing};
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+  }
+
+  small {
+    padding: 0 ${({theme}) => theme.space.xs};
+    color: ${({theme}) => theme.colors.textMuted};
+    font-size: ${({theme}) => theme.fontSizes.xs};
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   img {
     display: block;

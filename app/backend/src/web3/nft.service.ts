@@ -110,20 +110,39 @@ const fetchMetadata = async (tokenId: string, tokenUri: string): Promise<INft> =
 };
 
 const ERC721_ENUMERABLE_INTERFACE = '0x780e9d63';
+const RPC_ATTEMPTS = 3;
+const RPC_BACKOFF_MS = 250;
 
-const enumerable = new Map<string, Promise<boolean>>();
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const assertEnumerable = async (address: string): Promise<void> => {
-  if (!enumerable.has(address)) {
-    enumerable.set(
-      address,
-      contractAt(address)
-        .supportsInterface(ERC721_ENUMERABLE_INTERFACE)
-        .catch(() => false),
-    );
+const withRetry = async <T>(label: string, call: () => Promise<T>): Promise<T> => {
+  let last: unknown;
+
+  for (let attempt = 1; attempt <= RPC_ATTEMPTS; attempt += 1) {
+    try {
+      return await call();
+    } catch (err) {
+      last = err;
+      logger.warn({err, label, attempt}, 'rpc call failed; retrying');
+      await wait(RPC_BACKOFF_MS * attempt);
+    }
   }
 
-  if (!(await enumerable.get(address))) {
+  throw last;
+};
+
+const enumerable = new Set<string>();
+
+const assertEnumerable = async (address: string): Promise<void> => {
+  if (enumerable.has(address)) {
+    return;
+  }
+
+  const supported = await withRetry(`supportsInterface:${address}`, () =>
+    contractAt(address).supportsInterface(ERC721_ENUMERABLE_INTERFACE),
+  );
+
+  if (!supported) {
     logger.error({contract: address}, 'contract does not implement ERC721Enumerable');
 
     throw AppError.badRequest(
@@ -131,6 +150,8 @@ const assertEnumerable = async (address: string): Promise<void> => {
         'so its tokens cannot be listed by owner.',
     );
   }
+
+  enumerable.add(address);
 };
 
 const readCollection = async (address: string, owner: string): Promise<INftCollection> => {
@@ -139,22 +160,27 @@ const readCollection = async (address: string, owner: string): Promise<INftColle
   const contract = contractAt(address);
 
   const [name, symbol, rawBalance] = await Promise.all([
-    contract.name(),
-    contract.symbol(),
-    contract.balanceOf(owner),
+    withRetry(`name:${address}`, () => contract.name()),
+    withRetry(`symbol:${address}`, () => contract.symbol()),
+    withRetry(`balanceOf:${address}`, () => contract.balanceOf(owner)),
   ]);
 
   const balance = Number(rawBalance);
 
   const tokenIds = await Promise.all(
     Array.from({length: balance}, (_, index) =>
-      contract.tokenOfOwnerByIndex(owner, index).then(String),
+      withRetry(`tokenOfOwnerByIndex:${address}:${String(index)}`, () =>
+        contract.tokenOfOwnerByIndex(owner, index),
+      ).then(String),
     ),
   );
 
   const items = await Promise.all(
     tokenIds.map(async (tokenId) => {
-      const tokenUri = await contract.tokenURI(tokenId);
+      const tokenUri = await withRetry(`tokenURI:${address}:${tokenId}`, () =>
+        contract.tokenURI(tokenId),
+      );
+
       return fetchMetadata(tokenId, tokenUri);
     }),
   );
@@ -184,11 +210,27 @@ export const getNftsByOwner = async (
     }
   }
 
-  const collections = await Promise.all(
+  const results = await Promise.allSettled(
     COLLECTIONS.map((address) => readCollection(address, owner)),
   );
 
-  await redis.setEx(cacheKey, LIFETIME_NFT_CACHE_SEC, JSON.stringify(collections));
+  const collections = results
+    .filter((result) => result.status === 'fulfilled')
+    .map((result) => result.value);
+
+  const failed = results.filter((result) => result.status === 'rejected');
+
+  for (const result of failed) {
+    logger.error({err: result.reason as unknown, owner}, 'collection unreadable');
+  }
+
+  if (collections.length === 0) {
+    throw AppError.badGateway('The chain is not answering right now. Try again in a moment.');
+  }
+
+  if (failed.length === 0) {
+    await redis.setEx(cacheKey, LIFETIME_NFT_CACHE_SEC, JSON.stringify(collections));
+  }
 
   return collections;
 };

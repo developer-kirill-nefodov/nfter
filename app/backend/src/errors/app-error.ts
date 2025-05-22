@@ -33,4 +33,8 @@ export class AppError extends Error {
   static tooManyRequests(message = 'Too many requests') {
     return new AppError(429, message);
   }
+
+  static badGateway(message = 'Upstream unavailable') {
+    return new AppError(502, message);
+  }
 }

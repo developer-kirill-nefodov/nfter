@@ -263,7 +263,8 @@
     "cei": {
       "title": "The listing dies first",
       "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
-    }
+    },
+    "alreadyListed": "Listed"
   },
   "invite": {
     "nav": "Invite",

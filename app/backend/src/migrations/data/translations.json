@@ -264,7 +264,8 @@
       "cei": {
         "title": "The listing dies first",
         "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
-      }
+      },
+      "alreadyListed": "Listed"
     },
     "invite": {
       "nav": "Invite",
@@ -588,7 +589,8 @@
       "cei": {
         "title": "Zuerst stirbt das Listing",
         "body": "Der Vertrag löscht das Listing, bevor er das Token bewegt — ein wiedereintretender Aufruf findet nichts mehr zu kaufen."
-      }
+      },
+      "alreadyListed": "Gelistet"
     },
     "invite": {
       "nav": "Einladen",
@@ -912,7 +914,8 @@
       "cei": {
         "title": "先删除挂单",
         "body": "合约在转移代币之前先删除挂单，于是重入调用再也找不到可买的东西。"
-      }
+      },
+      "alreadyListed": "已挂单"
     },
     "invite": {
       "nav": "邀请",
@@ -1236,7 +1239,8 @@
       "cei": {
         "title": "Спершу зникає заявка",
         "body": "Контракт видаляє заявку перед переказом токена, тож повторний виклик уже не знаходить, що купувати."
-      }
+      },
+      "alreadyListed": "У продажу"
     },
     "invite": {
       "nav": "Запросити",
