@@ -151,7 +151,8 @@
     "underTheHood": "Under the hood"
   },
   "nav": {
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "backToTop": "Back to top"
   },
   "collect": {
     "nav": "Collect",

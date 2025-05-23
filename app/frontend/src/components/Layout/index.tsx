@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react';
 
+import ScrollTop from '../ScrollTop';
 import Toastify from '../Toastify';
 
 import LayoutFooter from './LayoutFooter';
@@ -15,6 +16,8 @@ const Layout = ({children}: ILayout) => (
     <LayoutHeader />
     <Main id="main">{children}</Main>
     <LayoutFooter />
+
+    <ScrollTop />
     <Toastify />
   </Shell>
 );

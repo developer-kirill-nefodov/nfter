@@ -30,6 +30,8 @@ export const Dialog = styled.div`
   width: min(640px, 100%);
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
   padding: ${({theme}) => theme.space.lg};
   background: ${({theme}) => theme.colors.surface};
   border: 1px solid ${({theme}) => theme.colors.border};

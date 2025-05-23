@@ -13,6 +13,7 @@ export const Shell = styled.div`
 export const Header = styled.header`
   position: sticky;
   top: 0;
+  isolation: isolate;
   z-index: ${({theme}) => theme.zIndices.header};
   background: color-mix(in srgb, ${({theme}) => theme.colors.background} 82%, transparent);
   backdrop-filter: blur(12px);
@@ -103,6 +104,7 @@ export const MobileNav = styled.nav`
   border-top: 1px solid ${({theme}) => theme.colors.border};
   max-height: calc(100dvh - 64px);
   overflow-y: auto;
+  overscroll-behavior: contain;
 
   ${media.up('md')} {
     display: none;

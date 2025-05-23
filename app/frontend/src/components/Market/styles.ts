@@ -215,7 +215,14 @@ export const Picker = styled.div`
   gap: ${({theme}) => theme.space.sm};
   grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
   max-height: 260px;
+  padding-right: ${({theme}) => theme.space.xs};
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-snap-type: y proximity;
+
+  > * {
+    scroll-snap-align: start;
+  }
 `;
 
 export const Pick = styled.button<{$active: boolean}>`

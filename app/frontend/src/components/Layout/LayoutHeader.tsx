@@ -9,6 +9,7 @@ import {logoutRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {NavigateUrls} from '../../utils/navigate-urls';
 import Button from '../Button';
+import ScrollProgress from '../ScrollProgress';
 import Spinner from '../Spinner';
 import WalletMenu from '../Wallet/WalletMenu';
 
@@ -98,6 +99,8 @@ const LayoutHeader = () => {
           )}
         </Actions>
       </Inner>
+
+      <ScrollProgress />
 
       {isMobile && menuOpen && (
         <MobileNav aria-label="Main">

@@ -16,6 +16,35 @@ export const AppGlobalStyles = createGlobalStyle`
 
   html {
     overflow-x: hidden;
+    scroll-behavior: smooth;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: ${({theme}) => `${theme.colors.border} transparent`};
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: ${({theme}) => theme.radii.pill};
+    background-clip: content-box;
+    background-color: ${({theme}) => theme.colors.border};
+    transition: background-color ${({theme}) => theme.transitions.fast};
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: ${({theme}) => theme.colors.primary};
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
   }
 
   img, svg, video, canvas {
@@ -43,6 +72,10 @@ export const AppGlobalStyles = createGlobalStyle`
   }
 
   @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
     *, *::before, *::after {
       animation-duration: 0.01ms !important;
       transition-duration: 0.01ms !important;

@@ -152,7 +152,8 @@
       "underTheHood": "Under the hood"
     },
     "nav": {
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "backToTop": "Back to top"
     },
     "collect": {
       "nav": "Collect",
@@ -477,7 +478,8 @@
       "underTheHood": "Unter der Haube"
     },
     "nav": {
-      "dashboard": "Dashboard"
+      "dashboard": "Dashboard",
+      "backToTop": "Nach oben"
     },
     "collect": {
       "nav": "Sammeln",
@@ -802,7 +804,8 @@
       "underTheHood": "技术细节"
     },
     "nav": {
-      "dashboard": "面板"
+      "dashboard": "面板",
+      "backToTop": "回到顶部"
     },
     "collect": {
       "nav": "收藏",
@@ -1127,7 +1130,8 @@
       "underTheHood": "Під капотом"
     },
     "nav": {
-      "dashboard": "Панель"
+      "dashboard": "Панель",
+      "backToTop": "Нагору"
     },
     "collect": {
       "nav": "Колекція",
