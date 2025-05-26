@@ -97,9 +97,28 @@ export const Empty = styled.div`
   font-size: ${({theme}) => theme.fontSizes.sm};
 `;
 
-const breathe = keyframes`
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.75; }
+export const EmptyBlock = styled.div`
+  position: relative;
+  display: grid;
+  gap: ${({theme}) => theme.space.md};
+`;
+
+export const EmptyNote = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: ${({theme}) => theme.space.md};
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+
+  span {
+    padding: ${({theme}) => `${theme.space.sm} ${theme.space.md}`};
+    background: ${({theme}) => theme.colors.surfaceRaised};
+    border: 1px solid ${({theme}) => theme.colors.border};
+    border-radius: ${({theme}) => theme.radii.pill};
+  }
 `;
 
 export const GhostGrid = styled.div`
@@ -109,15 +128,11 @@ export const GhostGrid = styled.div`
 `;
 
 export const GhostCard = styled.div`
-  height: 260px;
+  height: 200px;
   border: 1px dashed ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
   background: ${({theme}) => theme.colors.surface};
-  animation: 2.6s ease-in-out infinite ${breathe};
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
+  opacity: 0.5;
 `;
 
 export const GhostRow = styled.div`
@@ -130,16 +145,12 @@ export const GhostRow = styled.div`
   border: 1px dashed ${({theme}) => theme.colors.border};
   border-radius: ${({theme}) => theme.radii.md};
   background: ${({theme}) => theme.colors.surface};
-  animation: 2.6s ease-in-out infinite ${breathe};
+  opacity: 0.5;
 
   span {
     height: 10px;
     border-radius: ${({theme}) => theme.radii.pill};
     background: ${({theme}) => theme.colors.surfaceRaised};
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
   }
 `;
 

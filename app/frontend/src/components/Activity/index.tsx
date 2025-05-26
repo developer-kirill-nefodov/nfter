@@ -12,6 +12,8 @@ import {
   Ghost,
   GhostBar,
   GhostDot,
+  GhostNote,
+  GhostStack,
   Item,
   Line,
   Marquee,
@@ -35,17 +37,21 @@ const Activity = () => {
   if (items.length === 0) {
     return (
       <Viewport>
-        <Track>
-          {Array.from({length: 5}, (_, index) => (
-            <Ghost key={index}>
-              <GhostDot />
-              <GhostBar $width={`${String(45 + ((index * 13) % 35))}%`} />
-              <GhostBar $width="48px" />
-            </Ghost>
-          ))}
-        </Track>
+        <GhostStack>
+          <Track aria-hidden="true">
+            {Array.from({length: 5}, (_, index) => (
+              <Ghost key={index}>
+                <GhostDot />
+                <GhostBar $width={`${String(45 + ((index * 13) % 35))}%`} />
+                <GhostBar $width="48px" />
+              </Ghost>
+            ))}
+          </Track>
 
-        <Subtitle>{t('activity.empty')}</Subtitle>
+          <GhostNote>
+            <span>{t('activity.empty')}</span>
+          </GhostNote>
+        </GhostStack>
       </Viewport>
     );
   }

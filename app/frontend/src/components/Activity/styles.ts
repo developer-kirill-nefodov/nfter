@@ -111,9 +111,26 @@ export const Value = styled.strong<{$kind: string}>`
   font-variant-numeric: tabular-nums;
 `;
 
-const shimmer = keyframes`
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 0.7; }
+export const GhostStack = styled.div`
+  position: relative;
+`;
+
+export const GhostNote = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: ${({theme}) => theme.space.md};
+  color: ${({theme}) => theme.colors.textMuted};
+  font-size: ${({theme}) => theme.fontSizes.sm};
+
+  span {
+    padding: ${({theme}) => `${theme.space.sm} ${theme.space.md}`};
+    background: ${({theme}) => theme.colors.surfaceRaised};
+    border: 1px solid ${({theme}) => theme.colors.border};
+    border-radius: ${({theme}) => theme.radii.pill};
+  }
 `;
 
 export const Ghost = styled.div`
@@ -124,7 +141,7 @@ export const Ghost = styled.div`
   height: ${ROW}px;
   padding: 0 ${({theme}) => theme.space.lg};
   border-bottom: 1px dashed ${({theme}) => theme.colors.border};
-  animation: 2.4s ease-in-out infinite ${shimmer};
+  opacity: 0.5;
 
   ${media.down('sm')} {
     gap: ${({theme}) => theme.space.sm};

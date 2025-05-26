@@ -4,7 +4,6 @@ import {errorMessage} from '../../api/client';
 import {marketApi} from '../../api/market';
 import {toast} from '../../components/Toastify/toast';
 import type {IMarket} from '../../types/market';
-import {NO_REFERRER} from '../../web3/contracts';
 import {
   buyListing,
   cancelListing,
@@ -25,6 +24,7 @@ import {
 } from '../actions';
 import {setMarket, setMarketError, setMarketLoading, setProceeds} from '../reducers/market-slice';
 
+import {resolveReferrer} from './referrer';
 import {runTransaction} from './run-transaction';
 
 function* fetchMarketSaga({payload}: ReturnType<typeof fetchMarketRequest>) {
@@ -66,9 +66,7 @@ function* listTokenSaga({payload}: ReturnType<typeof listTokenRequest>) {
 }
 
 function* buyListingSaga({payload}: ReturnType<typeof buyListingRequest>) {
-  const referrer: string = yield select(
-    (state: RootState) => state.referral.stats?.referredByAddress ?? NO_REFERRER,
-  );
+  const referrer: string = yield call(resolveReferrer);
 
   const hash: string | null = yield call(runTransaction<string>, 'buy', (handlers) =>
     buyListing(payload.collection, payload.tokenId, BigInt(payload.priceWei), handlers, referrer),

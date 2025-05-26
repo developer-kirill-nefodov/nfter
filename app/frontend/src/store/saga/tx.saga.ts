@@ -1,5 +1,6 @@
 import {call, put, select, takeLatest} from 'redux-saga/effects';
 
+import {resolveReferrer} from './referrer';
 import {runTransaction} from './run-transaction';
 
 import type {RootState} from '../';
@@ -18,7 +19,7 @@ import {
   type IMintResult,
   type ITierInfo,
 } from '../../web3/transactions';
-import {NO_REFERRER, type ITier} from '../../web3/contracts';
+import type {ITier} from '../../web3/contracts';
 import {
   checkClaimRequest,
   claimPassRequest,
@@ -66,9 +67,7 @@ function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
 }
 
 function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
-  const referrer: string = yield select(
-    (state: RootState) => state.referral.stats?.referredByAddress ?? NO_REFERRER,
-  );
+  const referrer: string = yield call(resolveReferrer);
 
   const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'mint', (handlers) =>
     mintArtifact(payload, handlers, referrer),

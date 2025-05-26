@@ -7,6 +7,7 @@ import type {IUser} from '../../types/user';
 import {revokeWalletAccess} from '../../web3/wallet';
 import {
   bootstrapSession,
+  fetchReferralsRequest,
   forgotPasswordRequest,
   loginRequest,
   logoutRequest,
@@ -22,6 +23,7 @@ function* bootstrapSaga() {
   try {
     const user: IUser = yield call(authApi.me);
     yield put(setUser(user));
+    yield put(fetchReferralsRequest());
   } catch {
     yield put(setVisitor());
   }
@@ -33,6 +35,7 @@ function* loginSaga({payload}: ReturnType<typeof loginRequest>) {
   try {
     const user: IUser = yield call(authApi.login, payload);
     yield put(setUser(user));
+    yield put(fetchReferralsRequest());
     toast('Signed in.', 'success');
   } catch (error) {
     yield put(setVisitor());
@@ -46,6 +49,7 @@ function* registerSaga({payload}: ReturnType<typeof registerRequest>) {
   try {
     const user: IUser = yield call(authApi.register, payload);
     yield put(setUser(user));
+    yield put(fetchReferralsRequest());
     toast('Welcome aboard.', 'success');
   } catch (error) {
     yield put(setVisitor());

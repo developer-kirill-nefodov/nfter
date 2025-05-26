@@ -13,6 +13,8 @@ import {SkeletonCard, SkeletonGrid} from '../Skeleton';
 import {
   Body,
   Empty,
+  EmptyBlock,
+  EmptyNote,
   GhostCard,
   GhostGrid,
   Grid,
@@ -51,15 +53,17 @@ const Listings = () => {
 
   if (!book || book.listings.length === 0) {
     return (
-      <>
+      <EmptyBlock>
         <GhostGrid aria-hidden="true">
           {Array.from({length: 4}, (_, index) => (
             <GhostCard key={index} />
           ))}
         </GhostGrid>
 
-        <Empty>{t('market.empty')}</Empty>
-      </>
+        <EmptyNote>
+          <span>{t('market.empty')}</span>
+        </EmptyNote>
+      </EmptyBlock>
     );
   }
 
