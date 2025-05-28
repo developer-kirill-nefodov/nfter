@@ -1,6 +1,7 @@
 import {useTranslation} from 'react-i18next';
 
 import {useChainStatus} from '../../hooks/useChainStatus';
+import {useStoreSelector} from '../../store/hooks';
 import {CHAIN_NAME} from '../../web3/wallet';
 
 import {Live, Metric, MetricLabel, MetricValue, Metrics, Panel, PanelHead, PanelTitle} from './styles';
@@ -8,6 +9,7 @@ import {Live, Metric, MetricLabel, MetricValue, Metrics, Panel, PanelHead, Panel
 const NetworkPanel = () => {
   const {t} = useTranslation();
   const {status} = useChainStatus();
+  const live = useStoreSelector((state) => state.chain.live);
 
   const lag = status ? Math.max(...status.contracts.map((item) => item.lag), 0) : 0;
 
@@ -15,8 +17,8 @@ const NetworkPanel = () => {
     <Panel>
       <PanelHead>
         <PanelTitle>{t('chain.title')}</PanelTitle>
-        <Live $online={Boolean(status?.online)}>
-          {t(status?.online ? 'chain.live' : 'chain.offline')}
+        <Live $online={live === 'live' && Boolean(status?.online)}>
+          {t(`chain.${live === 'live' && status?.online ? 'live' : live === 'connecting' ? 'connecting' : 'offline'}`)}
         </Live>
       </PanelHead>
 

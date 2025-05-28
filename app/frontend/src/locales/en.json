@@ -321,6 +321,7 @@
     "mintSplit": "Where a mint goes",
     "seller": "Seller",
     "treasury": "Treasury",
-    "referrer": "Referrer"
+    "referrer": "Referrer",
+    "connecting": "Reconnecting…"
   }
 }

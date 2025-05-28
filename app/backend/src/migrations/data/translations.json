@@ -322,7 +322,8 @@
       "mintSplit": "Where a mint goes",
       "seller": "Seller",
       "treasury": "Treasury",
-      "referrer": "Referrer"
+      "referrer": "Referrer",
+      "connecting": "Reconnecting…"
     }
   },
   "DE": {
@@ -648,7 +649,8 @@
       "mintSplit": "Wohin ein Mint geht",
       "seller": "Verkäufer",
       "treasury": "Kasse",
-      "referrer": "Werber"
+      "referrer": "Werber",
+      "connecting": "Neu verbinden…"
     }
   },
   "CN": {
@@ -974,7 +976,8 @@
       "mintSplit": "一次铸造的去向",
       "seller": "卖家",
       "treasury": "金库",
-      "referrer": "推荐人"
+      "referrer": "推荐人",
+      "connecting": "正在重连…"
     }
   },
   "UA": {
@@ -1300,7 +1303,8 @@
       "mintSplit": "Куди йде мінт",
       "seller": "Продавець",
       "treasury": "Казна",
-      "referrer": "Реферал"
+      "referrer": "Реферал",
+      "connecting": "Перепідключення…"
     }
   }
 }

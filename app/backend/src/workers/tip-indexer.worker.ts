@@ -1,6 +1,7 @@
 import {Queue, Worker} from 'bullmq';
 
 import {logger} from '../lib/logger';
+import {publishLive} from '../live/channel';
 import {syncChainEvents} from '../web3/indexer.service';
 import {getPublicStats} from '../web3/stats.service';
 import {refreshTipFeed} from '../web3/tip.service';
@@ -17,9 +18,14 @@ export const tipIndexerQueue = new Queue(QUEUE_NAME, {
 export const tipIndexerWorker = new Worker(
   QUEUE_NAME,
   async () => {
-    await syncChainEvents();
+    const written = await syncChainEvents();
+
     await refreshTipFeed();
     await getPublicStats({refresh: true});
+
+    if (written > 0) {
+      await publishLive({type: 'chain', written, head: 0});
+    }
   },
   {connection: queueConnection, concurrency: 1},
 );

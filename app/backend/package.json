@@ -23,6 +23,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@types/ws": "^8.18.1",
     "argon2": "0.41.1",
     "bullmq": "5.41.7",
     "cookie-parser": "1.4.7",
@@ -42,7 +43,8 @@
     "pino-http": "10.4.0",
     "redis": "4.7.0",
     "sequelize": "6.37.5",
-    "siwe": "3.0.0"
+    "siwe": "3.0.0",
+    "ws": "^8.21.0"
   },
   "devDependencies": {
     "@types/cookie-parser": "1.4.8",

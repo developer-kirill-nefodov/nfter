@@ -1,5 +1,6 @@
 import type {ReactNode} from 'react';
 
+import {useLiveFeed} from '../../hooks/useLiveFeed';
 import ScrollTop from '../ScrollTop';
 import Toastify from '../Toastify';
 
@@ -11,15 +12,19 @@ interface ILayout {
   children: ReactNode;
 }
 
-const Layout = ({children}: ILayout) => (
-  <Shell>
-    <LayoutHeader />
-    <Main id="main">{children}</Main>
-    <LayoutFooter />
+const Layout = ({children}: ILayout) => {
+  useLiveFeed();
 
-    <ScrollTop />
-    <Toastify />
-  </Shell>
-);
+  return (
+    <Shell>
+      <LayoutHeader />
+      <Main id="main">{children}</Main>
+      <LayoutFooter />
+
+      <ScrollTop />
+      <Toastify />
+    </Shell>
+  );
+};
 
 export default Layout;
