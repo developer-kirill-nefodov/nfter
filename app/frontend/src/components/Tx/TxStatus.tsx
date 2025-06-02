@@ -11,7 +11,7 @@ import Spinner from '../Spinner';
 
 import {Panel, Step, Steps} from './styles';
 
-const STAGES = ['estimating', 'signing', 'pending', 'confirmed'] as const;
+const STAGES = ['approving', 'estimating', 'signing', 'pending', 'confirmed'] as const;
 
 const TITLES: Record<string, string> = {
   claim: 'claiming',
@@ -45,7 +45,8 @@ const TxStatus = () => {
     return null;
   }
 
-  const currentIndex = STAGES.indexOf(stage as (typeof STAGES)[number]);
+  const steps = STAGES.filter((step) => step !== 'approving' || kind === 'list');
+  const currentIndex = steps.indexOf(stage as (typeof steps)[number]);
   const failed = stage === 'failed';
   const done = stage === 'confirmed';
 
@@ -61,7 +62,7 @@ const TxStatus = () => {
           <Subtitle>{error}</Subtitle>
         ) : (
           <Steps>
-            {STAGES.map((step, index) => (
+            {steps.map((step, index) => (
               <Step key={step} $state={index < currentIndex ? 'done' : index === currentIndex ? 'active' : 'todo'}>
                 {t(`tx.stage.${step}`)}
               </Step>

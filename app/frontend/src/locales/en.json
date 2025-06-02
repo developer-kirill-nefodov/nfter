@@ -82,7 +82,8 @@
       "estimating": "Pricing the transaction",
       "signing": "Waiting for your wallet",
       "pending": "Broadcast — waiting for the chain",
-      "confirmed": "Confirmed on chain"
+      "confirmed": "Confirmed on chain",
+      "approving": "Approving the market (one time)"
     },
     "minting": "Minting your artifact",
     "listing": "Listing your token",
@@ -265,7 +266,8 @@
       "title": "The listing dies first",
       "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
     },
-    "alreadyListed": "Listed"
+    "alreadyListed": "Listed",
+    "approvalFirst": "First listing from this collection needs a one-time approval, so your wallet will ask twice: once to let the market move this collection, once to list. Every later listing is a single transaction."
   },
   "invite": {
     "nav": "Invite",

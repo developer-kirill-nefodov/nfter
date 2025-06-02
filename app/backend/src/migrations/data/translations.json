@@ -83,7 +83,8 @@
         "estimating": "Pricing the transaction",
         "signing": "Waiting for your wallet",
         "pending": "Broadcast — waiting for the chain",
-        "confirmed": "Confirmed on chain"
+        "confirmed": "Confirmed on chain",
+        "approving": "Approving the market (one time)"
       },
       "minting": "Minting your artifact",
       "listing": "Listing your token",
@@ -266,7 +267,8 @@
         "title": "The listing dies first",
         "body": "The contract deletes the listing before it moves the token, so a re-entrant call finds nothing left to buy."
       },
-      "alreadyListed": "Listed"
+      "alreadyListed": "Listed",
+      "approvalFirst": "First listing from this collection needs a one-time approval, so your wallet will ask twice: once to let the market move this collection, once to list. Every later listing is a single transaction."
     },
     "invite": {
       "nav": "Invite",
@@ -410,7 +412,8 @@
         "estimating": "Transaktion wird bepreist",
         "signing": "Warte auf deine Wallet",
         "pending": "Gesendet — warte auf die Chain",
-        "confirmed": "Auf der Chain bestätigt"
+        "confirmed": "Auf der Chain bestätigt",
+        "approving": "Markt freigeben (einmalig)"
       },
       "minting": "Artefakt wird geprägt",
       "listing": "Token wird angeboten",
@@ -593,7 +596,8 @@
         "title": "Zuerst stirbt das Listing",
         "body": "Der Vertrag löscht das Listing, bevor er das Token bewegt — ein wiedereintretender Aufruf findet nichts mehr zu kaufen."
       },
-      "alreadyListed": "Gelistet"
+      "alreadyListed": "Gelistet",
+      "approvalFirst": "Das erste Listing aus dieser Sammlung braucht eine einmalige Freigabe — deine Wallet fragt daher zweimal: einmal für die Freigabe, einmal fürs Listing. Jedes weitere Listing ist nur noch eine Transaktion."
     },
     "invite": {
       "nav": "Einladen",
@@ -737,7 +741,8 @@
         "estimating": "正在估算费用",
         "signing": "等待你的钱包确认",
         "pending": "已广播——等待链上确认",
-        "confirmed": "已在链上确认"
+        "confirmed": "已在链上确认",
+        "approving": "授权市场（仅一次）"
       },
       "minting": "正在铸造神器",
       "listing": "正在挂单",
@@ -920,7 +925,8 @@
         "title": "先删除挂单",
         "body": "合约在转移代币之前先删除挂单，于是重入调用再也找不到可买的东西。"
       },
-      "alreadyListed": "已挂单"
+      "alreadyListed": "已挂单",
+      "approvalFirst": "该系列的首次挂单需要一次性授权，因此钱包会弹两次：一次授权市场转移该系列，一次挂单。之后每次挂单只需一笔交易。"
     },
     "invite": {
       "nav": "邀请",
@@ -1064,7 +1070,8 @@
         "estimating": "Оцінюємо вартість транзакції",
         "signing": "Чекаємо на ваш гаманець",
         "pending": "Надіслано — чекаємо на мережу",
-        "confirmed": "Підтверджено в мережі"
+        "confirmed": "Підтверджено в мережі",
+        "approving": "Дозвіл маркету (одноразово)"
       },
       "minting": "Карбуємо ваш артефакт",
       "listing": "Виставляємо токен",
@@ -1247,7 +1254,8 @@
         "title": "Спершу зникає заявка",
         "body": "Контракт видаляє заявку перед переказом токена, тож повторний виклик уже не знаходить, що купувати."
       },
-      "alreadyListed": "У продажу"
+      "alreadyListed": "У продажу",
+      "approvalFirst": "Перше виставлення з цієї колекції потребує одноразового дозволу, тож гаманець запитає двічі: спершу дозвіл, потім саме виставлення. Наступні — вже одна транзакція."
     },
     "invite": {
       "nav": "Запросити",

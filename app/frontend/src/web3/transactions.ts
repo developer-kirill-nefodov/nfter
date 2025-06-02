@@ -17,6 +17,7 @@ import {
   type ITransactionResponse,
   type ITxReceipt,
 } from './contracts';
+import {readProvider} from './read-provider';
 import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
 
 export const isRejection = (error: unknown): boolean => {
@@ -108,6 +109,7 @@ export const explainTxError = (error: unknown): string => {
 export interface ITxHandlers {
   onGasEstimated: (weiCost: string) => void;
   onBroadcast: (hash: string) => void;
+  onApproving?: () => void;
 }
 
 const currentSigner = async (): Promise<JsonRpcSigner> => (await connectWallet()).signer;
@@ -175,9 +177,7 @@ const revealMinted = async (
     return {hash, contract, token: null};
   }
 
-  const signer = await currentSigner();
-
-  return {hash, contract, token: await readToken(signer, contract, tokenId)};
+  return {hash, contract, token: await readToken(await readProvider(), contract, tokenId)};
 };
 
 const gasPriceOf = async (signer: JsonRpcSigner): Promise<bigint> => {
@@ -243,8 +243,7 @@ export interface ITierInfo {
 }
 
 export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
-  const signer = await currentSigner();
-  const artifacts = await getArtifacts(signer);
+  const artifacts = await getArtifacts(await readProvider());
 
   const entries = await Promise.all(
     TIERS.map(async (tier) => [tier.id, {remaining: Number(await artifacts.remaining(tier.id))}]),
@@ -254,10 +253,9 @@ export const readTiers = async (): Promise<Record<ITier, ITierInfo>> => {
 };
 
 export const readBalance = async (address: string): Promise<string> => {
-  const signer = await currentSigner();
-  const balance = await signer.provider.getBalance(address);
+  const provider = await readProvider();
 
-  return balance.toString();
+  return (await provider.getBalance(address)).toString();
 };
 
 export const listToken = async (
@@ -272,6 +270,8 @@ export const listToken = async (
   const approved = await approval.isApprovedForAll(await signer.getAddress(), MARKETPLACE_ADDRESS);
 
   if (!approved) {
+    handlers.onApproving?.();
+
     const tx = await approval.setApprovalForAll(MARKETPLACE_ADDRESS, true);
     await tx.wait(1);
   }
@@ -355,15 +355,19 @@ export const withdrawReferralEarnings = async (handlers: ITxHandlers): Promise<s
 };
 
 export const readProceeds = async (wallet: string): Promise<string> => {
-  const signer = await currentSigner();
-  const market = await getMarket(signer);
+  const market = await getMarket(await readProvider());
 
   return (await market.proceeds(wallet)).toString();
 };
 
 export const hasClaimed = async (wallet: string): Promise<boolean> => {
-  const signer = await currentSigner();
-  const pass = await getPass(signer);
+  const pass = await getPass(await readProvider());
 
   return pass.claimed(wallet);
+};
+
+export const isApprovedForMarket = async (collection: string, owner: string): Promise<boolean> => {
+  const approval = await getApproval(await readProvider(), collection);
+
+  return approval.isApprovedForAll(owner, MARKETPLACE_ADDRESS);
 };

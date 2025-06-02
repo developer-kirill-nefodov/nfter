@@ -1,6 +1,13 @@
 import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
 
-export type ITxStage = 'idle' | 'estimating' | 'signing' | 'pending' | 'confirmed' | 'failed';
+export type ITxStage =
+  | 'idle'
+  | 'approving'
+  | 'estimating'
+  | 'signing'
+  | 'pending'
+  | 'confirmed'
+  | 'failed';
 
 export type ITxKind = 'claim' | 'tip' | 'mint' | 'list' | 'buy' | 'cancel' | 'withdraw';
 
@@ -34,6 +41,9 @@ export const txSlice = createSlice({
       state.rejected = false;
       state.gasEstimate = null;
     },
+    txApproving: (state) => {
+      state.stage = 'approving';
+    },
     txGasEstimated: (state, {payload}: PayloadAction<string>) => {
       state.gasEstimate = payload;
       state.stage = 'signing';
@@ -54,7 +64,14 @@ export const txSlice = createSlice({
   },
 });
 
-export const {txStarted, txGasEstimated, txBroadcast, txConfirmed, txFailed, txReset} =
-  txSlice.actions;
+export const {
+  txStarted,
+  txApproving,
+  txGasEstimated,
+  txBroadcast,
+  txConfirmed,
+  txFailed,
+  txReset,
+} = txSlice.actions;
 
 export default txSlice.reducer;

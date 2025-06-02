@@ -1,4 +1,4 @@
-import type {JsonRpcSigner} from 'ethers';
+import type {ContractRunner} from 'ethers';
 
 export const PASS_ADDRESS = import.meta.env.VITE_NFT_CONTRACT_ADDRESS;
 export const TIP_JAR_ADDRESS = import.meta.env.VITE_TIP_JAR_ADDRESS;
@@ -118,32 +118,32 @@ export interface ITransactionResponse {
   wait(confirmations?: number): Promise<ITxReceipt | null>;
 }
 
-export const getPass = async (signer: JsonRpcSigner): Promise<IPassContract> => {
+export const getPass = async (runner: ContractRunner): Promise<IPassContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(PASS_ADDRESS, PASS_ABI, signer) as unknown as IPassContract;
+  return new Contract(PASS_ADDRESS, PASS_ABI, runner) as unknown as IPassContract;
 };
 
-export const getTipJar = async (signer: JsonRpcSigner): Promise<ITipJarContract> => {
+export const getTipJar = async (runner: ContractRunner): Promise<ITipJarContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(TIP_JAR_ADDRESS, TIP_JAR_ABI, signer) as unknown as ITipJarContract;
+  return new Contract(TIP_JAR_ADDRESS, TIP_JAR_ABI, runner) as unknown as ITipJarContract;
 };
 
-export const getArtifacts = async (signer: JsonRpcSigner): Promise<IArtifactsContract> => {
+export const getArtifacts = async (runner: ContractRunner): Promise<IArtifactsContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(ARTIFACTS_ADDRESS, ARTIFACTS_ABI, signer) as unknown as IArtifactsContract;
+  return new Contract(ARTIFACTS_ADDRESS, ARTIFACTS_ABI, runner) as unknown as IArtifactsContract;
 };
 
 export const readToken = async (
-  signer: JsonRpcSigner,
+  runner: ContractRunner,
   contract: string,
   tokenId: string,
 ): Promise<{tokenId: string; tokenUri: string; name: string; description: string; image: string; attributes: {trait_type: string; value: string | number}[]}> => {
   const {Contract} = await import('ethers');
 
-  const erc721 = new Contract(contract, ['function tokenURI(uint256) view returns (string)'], signer);
+  const erc721 = new Contract(contract, ['function tokenURI(uint256) view returns (string)'], runner);
   const tokenUri = (await erc721.tokenURI!(tokenId)) as string;
 
   const payload = tokenUri.slice(tokenUri.indexOf(',') + 1);
@@ -157,25 +157,25 @@ export const readToken = async (
   return {tokenId, tokenUri, ...json};
 };
 
-export const getMarket = async (signer: JsonRpcSigner): Promise<IMarketContract> => {
+export const getMarket = async (runner: ContractRunner): Promise<IMarketContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(MARKETPLACE_ADDRESS, MARKETPLACE_ABI, signer) as unknown as IMarketContract;
+  return new Contract(MARKETPLACE_ADDRESS, MARKETPLACE_ABI, runner) as unknown as IMarketContract;
 };
 
 export const getApproval = async (
-  signer: JsonRpcSigner,
+  runner: ContractRunner,
   collection: string,
 ): Promise<IApprovalContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(collection, ERC721_APPROVAL_ABI, signer) as unknown as IApprovalContract;
+  return new Contract(collection, ERC721_APPROVAL_ABI, runner) as unknown as IApprovalContract;
 };
 
-export const getReferrals = async (signer: JsonRpcSigner): Promise<IReferralsContract> => {
+export const getReferrals = async (runner: ContractRunner): Promise<IReferralsContract> => {
   const {Contract} = await import('ethers');
 
-  return new Contract(REFERRALS_ADDRESS, REFERRALS_ABI, signer) as unknown as IReferralsContract;
+  return new Contract(REFERRALS_ADDRESS, REFERRALS_ABI, runner) as unknown as IReferralsContract;
 };
 
 export const explorerTx = (hash: string) => `https://sepolia.etherscan.io/tx/${hash}`;

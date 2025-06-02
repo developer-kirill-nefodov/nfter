@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import {listTokenRequest} from '../../store/actions';
@@ -6,6 +6,7 @@ import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
 import Modal from '../Modal';
+import {isApprovedForMarket} from '../../web3/transactions';
 
 import {Field, ListedTag, Pick, Picker, PriceInput, Quote} from './styles';
 
@@ -44,6 +45,30 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
 
   const [selected, setSelected] = useState(0);
   const [price, setPrice] = useState('0.05');
+  const [approved, setApproved] = useState<boolean | null>(null);
+
+  const wallet = useStoreSelector((state) => state.user.user.walletAddress);
+  const collection = owned[selected]?.collection;
+
+  useEffect(() => {
+    if (!wallet || !collection) {
+      return;
+    }
+
+    let current = true;
+
+    void isApprovedForMarket(collection, wallet)
+      .then((value) => {
+        if (current) {
+          setApproved(value);
+        }
+      })
+      .catch(() => setApproved(null));
+
+    return () => {
+      current = false;
+    };
+  }, [wallet, collection]);
 
   const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
 
@@ -102,7 +127,9 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
               </div>
             </Quote>
 
-            <Subtitle>{t('market.approvalHint')}</Subtitle>
+            <Subtitle>
+              {approved === false ? t('market.approvalFirst') : t('market.approvalHint')}
+            </Subtitle>
 
             <Row $justify="flex-end">
               <Button
