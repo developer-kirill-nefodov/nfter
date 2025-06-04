@@ -5,13 +5,13 @@ import {
   REFRESH_COOKIE_NAME,
   REFRESH_COOKIE_OPTIONS,
 } from '../../constants';
-import {createTokens, retireSession} from '../../helpers/token/token';
+import {createTokens, revokeSession} from '../../helpers/token/token';
 import type {IRequestAuth} from '../../middlewares/guard/authorized';
 
 export const refreshTokenController = async (req: IRequestAuth, res: Response) => {
   const {sid, ...data} = req.session;
 
-  await retireSession(data.id, sid);
+  await revokeSession(data.id, sid);
 
   const tokens = await createTokens(data);
 

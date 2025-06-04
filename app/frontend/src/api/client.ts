@@ -26,7 +26,7 @@ type IRetriableConfig = AxiosRequestConfig & {_retry?: boolean};
 
 let refreshing: Promise<string | null> | null = null;
 
-const refresh = async (): Promise<string | null> => {
+const spendRefreshCookie = async (): Promise<string | null> => {
   try {
     const {data} = await axios.post<{token: string}>(
       `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
@@ -40,6 +40,16 @@ const refresh = async (): Promise<string | null> => {
     setAccessToken(null);
     return null;
   }
+};
+
+const REFRESH_LOCK = 'ethers-web3:auth-refresh';
+
+const refresh = async (): Promise<string | null> => {
+  if (!('locks' in navigator)) {
+    return spendRefreshCookie();
+  }
+
+  return navigator.locks.request(REFRESH_LOCK, spendRefreshCookie);
 };
 
 const worthRetrying = (status: number | undefined, config: IRetriableConfig | undefined): boolean => {

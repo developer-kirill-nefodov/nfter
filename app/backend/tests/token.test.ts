@@ -6,8 +6,9 @@ const redis = createRedisMock();
 
 vi.mock('../src/db', () => ({redis, db: {}}));
 
-const {createTokens, getValidSession, retireSession, revokeSession, revokeAllSessions} =
-  await import('../src/helpers/token/token');
+const {createTokens, getValidSession, revokeSession, revokeAllSessions} = await import(
+  '../src/helpers/token/token'
+);
 
 const USER = {
   id: 42,
@@ -71,28 +72,5 @@ describe('session tokens', () => {
   it('ignores garbage', async () => {
     await expect(getValidSession(undefined, 'access')).resolves.toBeNull();
     await expect(getValidSession('not-a-jwt', 'access')).resolves.toBeNull();
-  });
-});
-
-describe('rotation', () => {
-  beforeEach(() => {
-    redis.store.clear();
-  });
-
-  it('keeps the old refresh token usable for a moment after rotating it', async () => {
-    const first = await createTokens(USER);
-
-    await retireSession(USER.id, first.sid);
-
-    expect(await getValidSession(first.refreshToken, 'refresh')).not.toBeNull();
-    expect(await getValidSession(first.accessToken, 'access')).toBeNull();
-  });
-
-  it('still lets a session be revoked outright', async () => {
-    const tokens = await createTokens(USER);
-
-    await revokeSession(USER.id, tokens.sid);
-
-    expect(await getValidSession(tokens.refreshToken, 'refresh')).toBeNull();
   });
 });
