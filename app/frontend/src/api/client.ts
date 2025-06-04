@@ -42,12 +42,24 @@ const refresh = async (): Promise<string | null> => {
   }
 };
 
+const worthRetrying = (status: number | undefined, config: IRetriableConfig | undefined): boolean => {
+  if (!config || config._retry) {
+    return false;
+  }
+
+  if (status === 401) {
+    return true;
+  }
+
+  return status === 403 && accessToken === null;
+};
+
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
     const config = error.config as IRetriableConfig | undefined;
 
-    if (error.response?.status === 401 && config && !config._retry) {
+    if (worthRetrying(error.response?.status, config) && config) {
       config._retry = true;
 
       refreshing ??= refresh().finally(() => {

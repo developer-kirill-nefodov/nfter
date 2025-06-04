@@ -22,6 +22,7 @@ export const createRedisMock = () => {
       const list = Array.isArray(keys) ? keys : [keys];
       return list.filter((key) => store.delete(key)).length;
     }),
+    expire: vi.fn(async (key: string, _seconds: number) => (store.has(key) ? 1 : 0)),
     scanIterator: vi.fn(async function* ({MATCH}: {MATCH: string}) {
       const pattern = new RegExp(`^${MATCH.replace(/\*/g, '[^:]*')}$`);
 

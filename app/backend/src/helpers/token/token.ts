@@ -100,6 +100,18 @@ export const revokeSession = async (userId: number, sid: string): Promise<void> 
   await redis.del([sessionKey('access', userId, sid), sessionKey('refresh', userId, sid)]);
 };
 
+export const ROTATION_GRACE_SEC = 30;
+
+export const retireSession = async (userId: number, sid: string): Promise<void> => {
+  const refresh = sessionKey('refresh', userId, sid);
+  const access = sessionKey('access', userId, sid);
+
+  await Promise.all([
+    redis.expire(refresh, ROTATION_GRACE_SEC),
+    redis.del(access),
+  ]);
+};
+
 export const revokeAllSessions = async (userId: number): Promise<void> => {
   const keys: string[] = [];
 
