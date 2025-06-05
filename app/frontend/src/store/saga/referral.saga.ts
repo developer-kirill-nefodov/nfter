@@ -1,4 +1,4 @@
-import {call, put, takeLatest} from 'redux-saga/effects';
+import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {referralApi} from '../../api/referral';
 import {toast} from '../../components/Toastify/toast';
@@ -11,11 +11,21 @@ import {
   refreshBalanceRequest,
   withdrawReferralRequest,
 } from '../actions';
+import type {RootState} from '../';
 import {setInviters, setReferralStats, setTreasury} from '../reducers/referral-slice';
 
 import {runTransaction} from './run-transaction';
 
 function* fetchReferralsSaga() {
+  const signedIn: boolean = yield select(
+    (state: RootState) => state.user.user.role.name !== 'VISITOR',
+  );
+
+  if (!signedIn) {
+    yield put(setReferralStats(null));
+    return;
+  }
+
   try {
     const stats: IReferralStats = yield call(referralApi.me);
     yield put(setReferralStats(stats));
@@ -34,6 +44,13 @@ function* fetchInvitersSaga() {
 }
 
 function* fetchTreasurySaga() {
+  const founder: boolean = yield select((state: RootState) => state.user.user.isFounder === true);
+
+  if (!founder) {
+    yield put(setTreasury(null));
+    return;
+  }
+
   try {
     const treasury: ITreasury = yield call(referralApi.treasury);
     yield put(setTreasury(treasury));

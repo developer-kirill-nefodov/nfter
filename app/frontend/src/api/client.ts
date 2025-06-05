@@ -3,8 +3,36 @@ import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig} from '
 
 let accessToken: string | null = null;
 
+const SESSION_FLAG = 'ethers-web3:session';
+
+const rememberSession = (exists: boolean) => {
+  try {
+    if (exists) {
+      window.localStorage.setItem(SESSION_FLAG, '1');
+    } else {
+      window.localStorage.removeItem(SESSION_FLAG);
+    }
+  } catch {
+    return;
+  }
+};
+
+export const hasSession = (): boolean => {
+  try {
+    return window.localStorage.getItem(SESSION_FLAG) === '1';
+  } catch {
+    return false;
+  }
+};
+
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
+  rememberSession(token !== null);
+};
+
+export const endSession = () => {
+  accessToken = null;
+  rememberSession(false);
 };
 
 export const getAccessToken = () => accessToken;
@@ -27,6 +55,10 @@ type IRetriableConfig = AxiosRequestConfig & {_retry?: boolean};
 let refreshing: Promise<string | null> | null = null;
 
 const spendRefreshCookie = async (): Promise<string | null> => {
+  if (!hasSession()) {
+    return null;
+  }
+
   try {
     const {data} = await axios.post<{token: string}>(
       `${import.meta.env.VITE_API_URL}/auth/refresh-token`,
@@ -37,7 +69,7 @@ const spendRefreshCookie = async (): Promise<string | null> => {
     setAccessToken(data.token);
     return data.token;
   } catch {
-    setAccessToken(null);
+    endSession();
     return null;
   }
 };

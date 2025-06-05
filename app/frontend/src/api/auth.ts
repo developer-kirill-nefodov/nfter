@@ -1,4 +1,4 @@
-import {api, setAccessToken} from './client';
+import {api, endSession, setAccessToken} from './client';
 import type {IUser} from '../types/user';
 
 export interface IForgotResult {
@@ -39,7 +39,7 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     await api.post('/auth/logout');
-    setAccessToken(null);
+    endSession();
   },
 
   forgotPassword: async (payload: {email: string}): Promise<IForgotResult> => {

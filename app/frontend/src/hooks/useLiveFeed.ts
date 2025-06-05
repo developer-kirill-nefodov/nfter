@@ -12,8 +12,18 @@ import {
 import {useStoreDispatch} from '../store/hooks';
 import {setLiveStatus} from '../store/reducers/chain-slice';
 
+const POLL_MS = 30_000;
+
 export const useLiveFeed = () => {
   const dispatch = useStoreDispatch();
+
+  useEffect(() => {
+    dispatch(fetchChainRequest());
+
+    const timer = setInterval(() => dispatch(fetchChainRequest()), POLL_MS);
+
+    return () => clearInterval(timer);
+  }, [dispatch]);
 
   useEffect(
     () =>

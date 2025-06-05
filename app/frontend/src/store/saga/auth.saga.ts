@@ -1,7 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {authApi, type IForgotResult} from '../../api/auth';
-import {errorMessage, setAccessToken} from '../../api/client';
+import {endSession, errorMessage, hasSession} from '../../api/client';
 import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
 import {revokeWalletAccess} from '../../web3/wallet';
@@ -20,6 +20,11 @@ import {setUser, setUserLoading, setVisitor} from '../reducers/user-slice';
 import {disconnectWallet} from '../reducers/wallet-slice';
 
 function* bootstrapSaga() {
+  if (!hasSession()) {
+    yield put(setVisitor());
+    return;
+  }
+
   try {
     const user: IUser = yield call(authApi.me);
     yield put(setUser(user));
@@ -63,7 +68,7 @@ function* logoutSaga() {
   } catch (error) {
     toast(errorMessage(error, 'Could not sign you out'), 'error');
   } finally {
-    setAccessToken(null);
+    endSession();
     yield put(setVisitor());
     yield put(disconnectWallet());
     yield put(clearNfts());
