@@ -1,7 +1,7 @@
 import {call, put, takeLatest} from 'redux-saga/effects';
 
 import {authApi, type IForgotResult} from '../../api/auth';
-import {endSession, errorMessage, hasSession} from '../../api/client';
+import {endSession, errorMessage, hasSession, restoreSession} from '../../api/client';
 import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
 import {revokeWalletAccess} from '../../web3/wallet';
@@ -21,6 +21,13 @@ import {disconnectWallet} from '../reducers/wallet-slice';
 
 function* bootstrapSaga() {
   if (!hasSession()) {
+    yield put(setVisitor());
+    return;
+  }
+
+  const token: string | null = yield call(restoreSession);
+
+  if (!token) {
     yield put(setVisitor());
     return;
   }

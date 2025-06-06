@@ -59,7 +59,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    command: redis-server --save 60 1 --loglevel warning
+    command: redis-server --appendonly yes --save 60 1 --loglevel warning
     volumes:
       - ethers-web3-redis:/data
     networks: [ethers-web3]

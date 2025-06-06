@@ -26,7 +26,8 @@
       "show": "Show",
       "hide": "Hide",
       "showPassword": "Show password",
-      "hidePassword": "Hide password"
+      "hidePassword": "Hide password",
+      "sessionExpired": "Your session has ended. Please sign in again."
     },
     "wallet": {
       "connect": "Connect wallet",
@@ -355,7 +356,8 @@
       "show": "Zeigen",
       "hide": "Verbergen",
       "showPassword": "Passwort anzeigen",
-      "hidePassword": "Passwort verbergen"
+      "hidePassword": "Passwort verbergen",
+      "sessionExpired": "Deine Sitzung ist beendet. Bitte melde dich erneut an."
     },
     "wallet": {
       "connect": "Wallet verbinden",
@@ -684,7 +686,8 @@
       "show": "显示",
       "hide": "隐藏",
       "showPassword": "显示密码",
-      "hidePassword": "隐藏密码"
+      "hidePassword": "隐藏密码",
+      "sessionExpired": "会话已结束，请重新登录。"
     },
     "wallet": {
       "connect": "连接钱包",
@@ -1013,7 +1016,8 @@
       "show": "Показати",
       "hide": "Сховати",
       "showPassword": "Показати пароль",
-      "hidePassword": "Сховати пароль"
+      "hidePassword": "Сховати пароль",
+      "sessionExpired": "Сесія завершилася. Будь ласка, увійдіть знову."
     },
     "wallet": {
       "connect": "Підключити гаманець",

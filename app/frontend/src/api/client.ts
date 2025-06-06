@@ -30,9 +30,17 @@ export const setAccessToken = (token: string | null) => {
   rememberSession(token !== null);
 };
 
+export const SESSION_ENDED = 'ethers-web3:session-ended';
+
 export const endSession = () => {
+  const had = hasSession();
+
   accessToken = null;
   rememberSession(false);
+
+  if (had) {
+    window.dispatchEvent(new CustomEvent(SESSION_ENDED));
+  }
 };
 
 export const getAccessToken = () => accessToken;
@@ -68,8 +76,16 @@ const spendRefreshCookie = async (): Promise<string | null> => {
 
     setAccessToken(data.token);
     return data.token;
-  } catch {
-    endSession();
+  } catch (error) {
+    const status = axios.isAxiosError(error) ? error.response?.status : undefined;
+    const refused = status === 401 || status === 403;
+
+    if (refused) {
+      endSession();
+    } else {
+      accessToken = null;
+    }
+
     return null;
   }
 };
@@ -118,6 +134,18 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export const restoreSession = async (): Promise<string | null> => {
+  if (!hasSession() || accessToken) {
+    return accessToken;
+  }
+
+  refreshing ??= refresh().finally(() => {
+    refreshing = null;
+  });
+
+  return refreshing;
+};
 
 export const errorMessage = (error: unknown, fallback = 'Something went wrong'): string => {
   if (!axios.isAxiosError(error)) {

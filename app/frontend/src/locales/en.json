@@ -25,7 +25,8 @@
     "show": "Show",
     "hide": "Hide",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "sessionExpired": "Your session has ended. Please sign in again."
   },
   "wallet": {
     "connect": "Connect wallet",

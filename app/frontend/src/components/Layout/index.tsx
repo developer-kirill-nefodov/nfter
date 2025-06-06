@@ -1,6 +1,7 @@
 import type {ReactNode} from 'react';
 
 import {useLiveFeed} from '../../hooks/useLiveFeed';
+import {useSessionGuard} from '../../hooks/useSessionGuard';
 import ScrollTop from '../ScrollTop';
 import Toastify from '../Toastify';
 
@@ -14,6 +15,7 @@ interface ILayout {
 
 const Layout = ({children}: ILayout) => {
   useLiveFeed();
+  useSessionGuard();
 
   return (
     <Shell>
