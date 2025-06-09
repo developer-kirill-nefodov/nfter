@@ -35,6 +35,20 @@ export class WalletBusyError extends Error {
 
 export const hasWallet = (): boolean => typeof window.ethereum !== 'undefined';
 
+export const activeAccount = async (): Promise<string | null> => {
+  if (!window.ethereum) {
+    return null;
+  }
+
+  try {
+    const accounts = (await window.ethereum.request({method: 'eth_accounts'})) as string[];
+
+    return accounts[0] ?? null;
+  } catch {
+    return null;
+  }
+};
+
 const getProvider = async (): Promise<BrowserProvider> => {
   if (!window.ethereum) {
     throw new WalletError('No Ethereum wallet found. Install MetaMask to continue.');

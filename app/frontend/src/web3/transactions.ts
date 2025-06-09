@@ -112,7 +112,26 @@ export interface ITxHandlers {
   onApproving?: () => void;
 }
 
-const currentSigner = async (): Promise<JsonRpcSigner> => (await connectWallet()).signer;
+let linkedWallet: string | null = null;
+
+export const setLinkedWallet = (address: string | null): void => {
+  linkedWallet = address;
+};
+
+const short = (address: string): string => `${address.slice(0, 6)}…${address.slice(-4)}`;
+
+const currentSigner = async (): Promise<JsonRpcSigner> => {
+  const {address, signer} = await connectWallet();
+
+  if (linkedWallet && address.toLowerCase() !== linkedWallet.toLowerCase()) {
+    throw new WalletError(
+      `Your wallet is on ${short(address)}, but this account is linked to ${short(linkedWallet)}. ` +
+        'Switch accounts in MetaMask, or connect this wallet to the account you are signed in as.',
+    );
+  }
+
+  return signer;
+};
 
 const send = async (
   estimate: () => Promise<bigint>,

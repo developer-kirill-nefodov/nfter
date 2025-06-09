@@ -6,6 +6,7 @@ import {errorMessage} from '../../api/client';
 import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
 import {buildSiweMessage} from '../../web3/siwe';
+import {setLinkedWallet} from '../../web3/transactions';
 import {
   CHAIN_ID,
   CHAIN_NAME,
@@ -88,6 +89,7 @@ function* walletLinkSaga() {
     const signed: ISignedSiwe = yield call(signIn);
     const user: IUser = yield call(authApi.walletLink, signed);
 
+    yield call(setLinkedWallet, user.walletAddress);
     yield put(setUser(user));
     yield put(setWalletStatus('connected'));
     yield put(fetchNftsRequest());
@@ -102,6 +104,7 @@ function* walletUnlinkSaga() {
   try {
     const user: IUser = yield call(authApi.walletUnlink);
 
+    yield call(setLinkedWallet, null);
     yield put(setUser(user));
     yield put(disconnectWallet());
     yield put(clearNfts());

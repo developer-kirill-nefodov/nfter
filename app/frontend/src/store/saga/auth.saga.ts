@@ -4,6 +4,7 @@ import {authApi, type IForgotResult} from '../../api/auth';
 import {endSession, errorMessage, hasSession, restoreSession} from '../../api/client';
 import {toast} from '../../components/Toastify/toast';
 import type {IUser} from '../../types/user';
+import {setLinkedWallet} from '../../web3/transactions';
 import {revokeWalletAccess} from '../../web3/wallet';
 import {
   bootstrapSession,
@@ -34,6 +35,7 @@ function* bootstrapSaga() {
 
   try {
     const user: IUser = yield call(authApi.me);
+    yield call(setLinkedWallet, user.walletAddress);
     yield put(setUser(user));
     yield put(fetchReferralsRequest());
   } catch {
@@ -46,6 +48,7 @@ function* loginSaga({payload}: ReturnType<typeof loginRequest>) {
 
   try {
     const user: IUser = yield call(authApi.login, payload);
+    yield call(setLinkedWallet, user.walletAddress);
     yield put(setUser(user));
     yield put(fetchReferralsRequest());
     toast('Signed in.', 'success');
@@ -60,6 +63,7 @@ function* registerSaga({payload}: ReturnType<typeof registerRequest>) {
 
   try {
     const user: IUser = yield call(authApi.register, payload);
+    yield call(setLinkedWallet, user.walletAddress);
     yield put(setUser(user));
     yield put(fetchReferralsRequest());
     toast('Welcome aboard.', 'success');
@@ -76,6 +80,7 @@ function* logoutSaga() {
     toast(errorMessage(error, 'Could not sign you out'), 'error');
   } finally {
     endSession();
+    yield call(setLinkedWallet, null);
     yield put(setVisitor());
     yield put(disconnectWallet());
     yield put(clearNfts());

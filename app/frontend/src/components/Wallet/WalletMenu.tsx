@@ -8,6 +8,7 @@ import {NavigateUrls} from '../../utils/navigate-urls';
 import {explorerAddress} from '../../web3/contracts';
 import {CHAIN_ID, CHAIN_NAME, formatAddress, formatBalance} from '../../web3/wallet';
 import {useHasWallet} from '../../hooks/useHasWallet';
+import {useWalletMismatch} from '../../hooks/useWalletMismatch';
 import Button from '../Button';
 import {toast} from '../Toastify/toast';
 
@@ -28,6 +29,7 @@ const WalletMenu = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
   const {installed, recheck} = useHasWallet();
+  const mismatch = useWalletMismatch();
 
   const user = useStoreSelector((state) => state.user.user);
   const {status, chainId, balance} = useStoreSelector((state) => state.wallet);
@@ -107,9 +109,10 @@ const WalletMenu = () => {
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
+        title={mismatch ? t('wallet.mismatch', {address: formatAddress(mismatch)}) : undefined}
         onClick={() => setOpen((value) => !value)}
       >
-        <Avatar $address={address} aria-hidden="true" />
+        <Avatar $address={mismatch ?? address} aria-hidden="true" $warn={Boolean(mismatch)} />
         <Balance>{balance ? `${formatBalance(balance, 3)} Ξ` : '—'}</Balance>
         <span>{formatAddress(address)}</span>
       </Trigger>
@@ -136,6 +139,13 @@ const WalletMenu = () => {
               {wrongNetwork ? t('wallet.wrongNetwork') : CHAIN_NAME}
             </Network>
           </MenuRow>
+
+          {mismatch && (
+            <MenuRow>
+              <span>{t('wallet.activeAccount')}</span>
+              <Network $ok={false}>{formatAddress(mismatch)}</Network>
+            </MenuRow>
+          )}
 
           <Divider />
 

@@ -43,10 +43,11 @@ export const Trigger = styled.button`
   }
 `;
 
-export const Avatar = styled.span<{$address: string}>`
+export const Avatar = styled.span<{$address: string; $warn?: boolean}>`
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  box-shadow: ${({theme, $warn}) => ($warn ? `0 0 0 2px ${theme.colors.warning}` : 'none')};
   background: ${({$address}) => {
     const hue = parseInt($address.slice(2, 8), 16) % 360;
     return `linear-gradient(135deg, hsl(${hue}, 70%, 55%), hsl(${(hue + 60) % 360}, 70%, 45%))`;

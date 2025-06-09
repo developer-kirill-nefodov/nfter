@@ -40,7 +40,9 @@
     "copy": "Copy",
     "copied": "Address copied",
     "viewOnExplorer": "View on Etherscan ↗",
-    "wrongNetwork": "Wrong network"
+    "wrongNetwork": "Wrong network",
+    "activeAccount": "Active in MetaMask",
+    "mismatch": "MetaMask is on {{address}}, which is not the wallet this account is linked to."
   },
   "home": {
     "title": "Your Ethereum wallet, in one place",

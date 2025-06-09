@@ -41,7 +41,9 @@
       "copy": "Copy",
       "copied": "Address copied",
       "viewOnExplorer": "View on Etherscan ↗",
-      "wrongNetwork": "Wrong network"
+      "wrongNetwork": "Wrong network",
+      "activeAccount": "Active in MetaMask",
+      "mismatch": "MetaMask is on {{address}}, which is not the wallet this account is linked to."
     },
     "home": {
       "title": "Your Ethereum wallet, in one place",
@@ -371,7 +373,9 @@
       "copy": "Kopieren",
       "copied": "Adresse kopiert",
       "viewOnExplorer": "Auf Etherscan ansehen ↗",
-      "wrongNetwork": "Falsches Netzwerk"
+      "wrongNetwork": "Falsches Netzwerk",
+      "activeAccount": "In MetaMask aktiv",
+      "mismatch": "MetaMask steht auf {{address}} — nicht die Wallet, mit der dieses Konto verknüpft ist."
     },
     "home": {
       "title": "Deine Ethereum-Wallet an einem Ort",
@@ -701,7 +705,9 @@
       "copy": "复制",
       "copied": "地址已复制",
       "viewOnExplorer": "在 Etherscan 查看 ↗",
-      "wrongNetwork": "网络不对"
+      "wrongNetwork": "网络不对",
+      "activeAccount": "MetaMask 当前账户",
+      "mismatch": "MetaMask 当前是 {{address}}，与本账户绑定的钱包不一致。"
     },
     "home": {
       "title": "你的以太坊钱包，一站式管理",
@@ -1031,7 +1037,9 @@
       "copy": "Копіювати",
       "copied": "Адресу скопійовано",
       "viewOnExplorer": "Переглянути на Etherscan ↗",
-      "wrongNetwork": "Не та мережа"
+      "wrongNetwork": "Не та мережа",
+      "activeAccount": "Активний у MetaMask",
+      "mismatch": "У MetaMask обрано {{address}} — це не той гаманець, до якого прив’язаний акаунт."
     },
     "home": {
       "title": "Ваш Ethereum-гаманець в одному місці",
