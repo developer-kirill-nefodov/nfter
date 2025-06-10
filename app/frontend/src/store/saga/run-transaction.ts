@@ -2,7 +2,6 @@ import {channel, type Channel, type Task} from 'redux-saga';
 import {call, cancel, fork, put, take} from 'redux-saga/effects';
 import type {Action} from '@reduxjs/toolkit';
 
-import {toast} from '../../components/Toastify/toast';
 import {explainTxError, isRejection} from '../../web3/transactions';
 import {
   txApproving,
@@ -28,6 +27,7 @@ export function* runTransaction<TResult>(
     onBroadcast: (hash: string) => void;
     onApproving: () => void;
   }) => Promise<TResult>,
+  outcome?: string,
 ): Generator<unknown, TResult | null, never> {
   const actions: Channel<Action> = channel<Action>();
   const pump = (yield fork(drain, actions)) as Task;
@@ -41,7 +41,7 @@ export function* runTransaction<TResult>(
       onApproving: () => actions.put(txApproving()),
     })) as TResult;
 
-    yield put(txConfirmed());
+    yield put(txConfirmed(outcome));
 
     return result;
   } catch (error) {
@@ -49,7 +49,6 @@ export function* runTransaction<TResult>(
     const rejected = isRejection(error);
 
     yield put(txFailed({message, rejected}));
-    toast(message, rejected ? 'info' : 'error');
 
     return null;
   } finally {

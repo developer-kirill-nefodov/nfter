@@ -7,7 +7,6 @@ import type {RootState} from '../';
 
 import {errorMessage} from '../../api/client';
 import {tipApi} from '../../api/tip';
-import {toast} from '../../components/Toastify/toast';
 import type {ITipFeed} from '../../types/tip';
 import {
   claimPass,
@@ -37,7 +36,12 @@ import {setBalance} from '../reducers/wallet-slice';
 import {setTipFeed, setTipsError, setTipsLoading} from '../reducers/tip-slice';
 
 function* claimSaga() {
-  const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'claim', claimPass);
+  const result: IMintResult | null = yield call(
+    runTransaction<IMintResult>,
+    'claim',
+    claimPass,
+    'Your pass is minted.',
+  );
 
   if (!result) {
     return;
@@ -51,26 +55,30 @@ function* claimSaga() {
     yield put(setReveal({token: result.token, contract: result.contract, txHash: result.hash}));
   }
 
-  toast('Your pass is minted.', 'success');
 }
 
 function* sendTipSaga({payload}: ReturnType<typeof sendTipRequest>) {
-  const hash: string | null = yield call(runTransaction<string>, 'tip', (handlers) =>
-    sendTip(BigInt(payload.amountWei), payload.message, handlers),
+  const hash: string | null = yield call(
+    runTransaction<string>,
+    'tip',
+    (handlers) => sendTip(BigInt(payload.amountWei), payload.message, handlers),
+    'Thank you — your tip is on chain.',
   );
 
   if (hash) {
     yield put(fetchTipsRequest({refresh: true}));
     yield put(refreshBalanceRequest());
-    toast('Thank you — your tip is on chain.', 'success');
   }
 }
 
 function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
   const referrer: string = yield call(resolveReferrer);
 
-  const result: IMintResult | null = yield call(runTransaction<IMintResult>, 'mint', (handlers) =>
-    mintArtifact(payload, handlers, referrer),
+  const result: IMintResult | null = yield call(
+    runTransaction<IMintResult>,
+    'mint',
+    (handlers) => mintArtifact(payload, handlers, referrer),
+    'Your artifact is minted.',
   );
 
   if (!result) {
@@ -102,7 +110,6 @@ function* mintArtifactSaga({payload}: ReturnType<typeof mintArtifactRequest>) {
 
   yield put(fetchStatsRequest({refresh: true}));
 
-  toast('Your artifact is minted.', 'success');
 }
 
 function* fetchTiersSaga() {

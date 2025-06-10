@@ -27,7 +27,9 @@ const TxStatus = () => {
   const {t} = useTranslation();
   const dispatch = useStoreDispatch();
 
-  const {kind, stage, hash, error, rejected, gasEstimate} = useStoreSelector((state) => state.tx);
+  const {kind, stage, hash, error, rejected, gasEstimate, outcome} = useStoreSelector(
+    (state) => state.tx,
+  );
 
   useEffect(() => {
     const linger = stage === 'confirmed' ? 5000 : rejected ? 2500 : 0;
@@ -60,6 +62,8 @@ const TxStatus = () => {
 
         {failed ? (
           <Subtitle>{error}</Subtitle>
+        ) : done && outcome ? (
+          <Subtitle>{outcome}</Subtitle>
         ) : (
           <Steps>
             {steps.map((step, index) => (

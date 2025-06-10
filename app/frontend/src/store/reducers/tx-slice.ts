@@ -18,6 +18,7 @@ export interface ITxState {
   error: string | null;
   rejected: boolean;
   gasEstimate: string | null;
+  outcome: string | null;
 }
 
 const initialState: ITxState = {
@@ -27,6 +28,7 @@ const initialState: ITxState = {
   error: null,
   rejected: false,
   gasEstimate: null,
+  outcome: null,
 };
 
 export const txSlice = createSlice({
@@ -40,6 +42,7 @@ export const txSlice = createSlice({
       state.error = null;
       state.rejected = false;
       state.gasEstimate = null;
+      state.outcome = null;
     },
     txApproving: (state) => {
       state.stage = 'approving';
@@ -52,8 +55,9 @@ export const txSlice = createSlice({
       state.hash = payload;
       state.stage = 'pending';
     },
-    txConfirmed: (state) => {
+    txConfirmed: (state, {payload}: PayloadAction<string | undefined>) => {
       state.stage = 'confirmed';
+      state.outcome = payload ?? null;
     },
     txFailed: (state, {payload}: PayloadAction<{message: string; rejected: boolean}>) => {
       state.stage = 'failed';

@@ -1,7 +1,6 @@
 import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {referralApi} from '../../api/referral';
-import {toast} from '../../components/Toastify/toast';
 import type {IInviterEntry, IReferralStats, ITreasury} from '../../types/referral';
 import {withdrawReferralEarnings} from '../../web3/transactions';
 import {
@@ -64,12 +63,12 @@ function* withdrawReferralSaga() {
     runTransaction<string>,
     'withdraw',
     withdrawReferralEarnings,
+    'Your referral earnings are in your wallet.',
   );
 
   if (hash) {
     yield put(fetchReferralsRequest());
     yield put(refreshBalanceRequest());
-    toast('Your referral earnings are in your wallet.', 'success');
   }
 }
 

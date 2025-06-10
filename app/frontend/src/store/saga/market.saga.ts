@@ -2,7 +2,6 @@ import {call, put, select, takeLatest} from 'redux-saga/effects';
 
 import {errorMessage} from '../../api/client';
 import {marketApi} from '../../api/market';
-import {toast} from '../../components/Toastify/toast';
 import type {IMarket} from '../../types/market';
 import {
   buyListing,
@@ -54,50 +53,61 @@ function* fetchProceedsSaga() {
 }
 
 function* listTokenSaga({payload}: ReturnType<typeof listTokenRequest>) {
-  const hash: string | null = yield call(runTransaction<string>, 'list', (handlers) =>
-    listToken(payload.collection, payload.tokenId, BigInt(payload.priceWei), handlers),
+  const hash: string | null = yield call(
+    runTransaction<string>,
+    'list',
+    (handlers) => listToken(payload.collection, payload.tokenId, BigInt(payload.priceWei), handlers),
+    'Your token is on sale.',
   );
 
   if (hash) {
     yield put(fetchMarketRequest({refresh: true}));
     yield put(refreshBalanceRequest());
-    toast('Your token is on sale.', 'success');
   }
 }
 
 function* buyListingSaga({payload}: ReturnType<typeof buyListingRequest>) {
   const referrer: string = yield call(resolveReferrer);
 
-  const hash: string | null = yield call(runTransaction<string>, 'buy', (handlers) =>
-    buyListing(payload.collection, payload.tokenId, BigInt(payload.priceWei), handlers, referrer),
+  const hash: string | null = yield call(
+    runTransaction<string>,
+    'buy',
+    (handlers) =>
+      buyListing(payload.collection, payload.tokenId, BigInt(payload.priceWei), handlers, referrer),
+    'Bought. It is yours.',
   );
 
   if (hash) {
     yield put(fetchMarketRequest({refresh: true}));
     yield put(fetchNftsRequest({refresh: true}));
     yield put(refreshBalanceRequest());
-    toast('Bought. It is yours.', 'success');
   }
 }
 
 function* cancelListingSaga({payload}: ReturnType<typeof cancelListingRequest>) {
-  const hash: string | null = yield call(runTransaction<string>, 'cancel', (handlers) =>
-    cancelListing(payload.collection, payload.tokenId, handlers),
+  const hash: string | null = yield call(
+    runTransaction<string>,
+    'cancel',
+    (handlers) => cancelListing(payload.collection, payload.tokenId, handlers),
+    'Listing taken down.',
   );
 
   if (hash) {
     yield put(fetchMarketRequest({refresh: true}));
-    toast('Listing taken down.', 'success');
   }
 }
 
 function* withdrawSaga() {
-  const hash: string | null = yield call(runTransaction<string>, 'withdraw', withdrawProceeds);
+  const hash: string | null = yield call(
+    runTransaction<string>,
+    'withdraw',
+    withdrawProceeds,
+    'Withdrawn to your wallet.',
+  );
 
   if (hash) {
     yield put(fetchProceedsRequest());
     yield put(refreshBalanceRequest());
-    toast('Withdrawn to your wallet.', 'success');
   }
 }
 
