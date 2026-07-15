@@ -2,9 +2,8 @@ const data = require('../data/translations.json');
 
 const COUNTRIES = [
   {countries: 'United States', iso2: 'US', iso3: 'USA', lang: 'English'},
+  {countries: 'Spain', iso2: 'ES', iso3: 'ESP', lang: 'Spanish'},
   {countries: 'Germany', iso2: 'DE', iso3: 'DEU', lang: 'German'},
-  {countries: 'China', iso2: 'CN', iso3: 'CHN', lang: 'Chinese'},
-  {countries: 'Ukraine', iso2: 'UA', iso3: 'UKR', lang: 'Ukrainian'},
 ];
 
 const timestamps = () => ({created_at: new Date(), updated_at: new Date()});

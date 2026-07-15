@@ -1,7 +1,7 @@
 {
   "auth": {
     "login": "Sign in",
-    "loginSubtitle": "Use your email, or sign in with your wallet.",
+    "loginSubtitle": "Sign in with your email.",
     "logout": "Sign out",
     "register": "Sign up",
     "registerSubtitle": "Create an account with an email and password.",

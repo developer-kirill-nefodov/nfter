@@ -1,75 +1,54 @@
 # Nfter
 
-Sign in with an Ethereum wallet, browse the ERC-721 tokens it holds.
+![License](https://img.shields.io/badge/license-MIT-blue)
+![Tests](https://img.shields.io/badge/tests-171%20passing-brightgreen)
+![Network](https://img.shields.io/badge/network-Sepolia-627EEA?logo=ethereum&logoColor=white)
 
-A full-stack TypeScript app: **Sign-In with Ethereum (EIP-4361)** on top of a conventional
-JWT session layer, an ERC-721 reader with Redis caching, and a React SPA that only loads
-`ethers` once the user actually reaches for their wallet.
+Nfter is a full-stack TypeScript Web3 application on the Sepolia Ethereum testnet.
 
-```
-React 19 · Vite 6 · Redux Toolkit · redux-saga · styled-components · ethers v6
-Express 5 · Sequelize · PostgreSQL · Redis · BullMQ · Argon2 · Joi · Pino
-```
+Create an account, link an Ethereum wallet through **Sign-In with Ethereum (EIP-4361)**, mint
+generative ERC-721 NFTs, send tips, trade through an approval-based marketplace, and verify key
+product state directly from the blockchain.
 
----
+The idea isn't "just another NFT app." Nfter is built around **verifiable on-chain state**:
+contract addresses, gas data, indexer lag, tier supply, fee splits, referral rewards, and founder
+ownership are surfaced in the UI and can be recomputed from Sepolia by anyone with an RPC URL.
 
-## What it does
+## Core features
 
-**Its own contracts.** `EthersWeb3Pass` is a free, one-per-wallet ERC-721 whose artwork is
-generated *inside the contract* — a symmetric identicon derived from `keccak256(your address)`,
-returned from `tokenURI` as a `data:` URI. No IPFS, no metadata server, nothing that can rot.
-`EthersWeb3Artifacts` sells the same idea in four tiers, with a hard supply cap enforced on chain.
-`TipJar` takes tips with a note attached. `Marketplace` lists, sells and cancels — taking 2.5% and
-never taking custody: it holds an approval to move your token, not the token itself, and pays
-nobody during a sale. Proceeds are credited and withdrawn, which is what makes a hostile seller
-unable to re-enter or to revert a stranger's purchase.
+- Account auth with Argon2id, Redis-backed refresh sessions, token rotation, and global logout
+- SIWE / EIP-4361 wallet linking with one-time nonce verification and replay protection
+- Generative ERC-721 NFTs with in-contract metadata (no IPFS, nothing to rot)
+- Capped artifact tiers with on-chain supply limits
+- TipJar contract with message events
+- Approval-based marketplace with pull payments and a 2.5% project fee
+- Referral registry where rewards are paid from the project fee, not from the buyer
+- On-chain transparency panel: contract state, gas, indexer lag, supply, and payment splits
+- Founder role derived from on-chain `owner()`, not a database flag
+- 171 tests across smart contracts, API, and browser behavior
 
-**Every page shows its own plumbing.** The head block, the gas price, how far behind the indexer
-is, each contract's address and cursor, how much of every tier is left, and exactly how a mint or
-a sale splits between seller, treasury and referrer — all read from `/api/stats/chain`, all
-recomputable by anyone with an RPC URL. A screen that claims to be on chain should be able to
-prove it without being asked.
+## Stack
 
-**Invite someone, earn a share of the fee.** `Referrals` is a registry: the first time an invited
-account buys on chain, it records who invited them — once, permanently, and never for themselves.
-From then on every mint and every sale by that account credits the inviter 10% of *our* commission.
-The buyer's price does not move by a wei; the reward comes out of the project's revenue, not out
-of their pocket. Balances are pulled, not pushed, so an inviter who cannot receive ETH cannot
-brick anyone else's purchase.
+**Frontend**  
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-6-646CFF?logo=vite&logoColor=white)
+![Redux Toolkit](https://img.shields.io/badge/Redux_Toolkit-2-764ABC?logo=redux&logoColor=white)
+![styled-components](https://img.shields.io/badge/styled--components-6-DB7093?logo=styledcomponents&logoColor=white)
+![ethers.js](https://img.shields.io/badge/ethers.js-6-2535A0?logo=ethereum&logoColor=white)
 
-**Two roles, and only one of them is a claim.** A regular account invites and collects. The founder
-also sees the treasury. That role is *not* a column in the users table — a flag in Postgres is a
-claim anybody with database access can make. The founder is whoever the contracts say owns them:
-the server reads `owner()` from the chain and compares. To forge the role you would have to forge
-ownership, and the chain will not let you.
+**Backend**  
+![Node.js](https://img.shields.io/badge/Node.js-20+-339933?logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/Express-5-000000?logo=express&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
+![Sequelize](https://img.shields.io/badge/Sequelize-6-52B0E7?logo=sequelize&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-7-DC382D?logo=redis&logoColor=white)
 
-**An account, and the wallet it owns.** Sessions come from email and password: a short-lived
-access token in memory plus an httpOnly refresh cookie, allow-listed in Redis. A wallet is
-something an account *has* — it is linked to a signed-in user, never a way to become one. Every
-wallet route on the server, the nonce included, refuses an anonymous caller.
-
-**Sign-In with Ethereum.** Linking proves ownership of the address with EIP-4361: the server
-issues a single-use nonce, the wallet signs it, the server verifies the signature and burns the
-nonce. The signature stays cryptographically valid forever, so single-use nonces are the only
-thing standing between a captured message and a replay — the test suite asserts exactly that.
-
-Disconnecting works in both directions: the address is dropped from the account *and* the site's
-permission is revoked inside the wallet, so MetaMask stops handing the address back. Signing out
-does the same automatically.
-
-**Transactions, not just reads.** Claiming a pass and sending a tip both run the full lifecycle:
-the gas is estimated *before* the wallet opens (so the user can still walk away), then signing,
-then broadcast with the hash on screen, then confirmation — with a rejected prompt, an
-out-of-gas, and a revert each explained in a sentence rather than as `execution reverted`.
-
-**Your collection.** The API reads `balanceOf` → `tokenOfOwnerByIndex` → `tokenURI` from the
-contract, resolves `ipfs://` metadata onto a gateway, and caches the whole collection per owner
-in Redis, because a public RPC endpoint will rate-limit a re-rendering gallery in seconds.
-
-**Sessions that actually end.** Logout revokes the session in Redis. Refresh rotates it, so a
-captured refresh token can be spent exactly once. Changing a password signs out every device.
-
----
+**Contracts &amp; infra**  
+![Solidity](https://img.shields.io/badge/Solidity-0.8.28-363636?logo=solidity&logoColor=white)
+![Sepolia](https://img.shields.io/badge/Sepolia-Ethereum-627EEA?logo=ethereum&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI-2088FF?logo=githubactions&logoColor=white)
 
 ## Run it
 
@@ -82,71 +61,13 @@ cd nfter
 make init                 # writes the .env files, generates JWT secrets
 make build-img up migrate seed
 
-# Then deploy the contracts (needs a throwaway key with Sepolia ETH):
-#   1. put DEPLOYER_PRIVATE_KEY in app/contracts/.env
-#   2. fund it from a faucet — sepolia-faucet.pk910.de
-make deploy-contracts     # prints the addresses to paste into the .env files
-
 open http://localhost:3000
 ```
 
-| | |
-|---|---|
-| App | http://localhost:3000 |
-| API | http://localhost:3001/api |
-| Mail (password resets) | http://localhost:8025 |
-
-The seeded demo account is `user@nfter.dev` / `DevPassword123`. For the wallet flow you
-need MetaMask on **Sepolia** — no API keys, no funded account, no deployment of your own.
-
-```shell
-make check    # lint + typecheck + tests, both packages
-make down
-```
-
----
-
-## How it fits together
-
-```
-app/contracts
-  contracts/         EthersWeb3Pass · EthersWeb3Artifacts · TipJar · Marketplace
-  test/              54 Hardhat tests — mint rules, SVG validity, supply caps,
-                     tip accounting, escrow-by-approval, pull payments
-  scripts/           deploy · preview (renders a sheet of passes to look at)
-
-app/backend
-  src/web3/          SIWE verification, ERC-721 reads, tip indexer, the RPC provider
-  src/helpers/token/ JWT + the Redis session allow-list
-  src/controllers/   thin: read the body, call a service, answer
-  src/middlewares/   guards · rate limits · Joi validation · error handler
-  src/workers/       BullMQ email queue (password resets)
-  src/migrations/    schema + seeds
-
-app/frontend
-  src/web3/          wallet connect, SIWE message building (both lazily imported)
-  src/store/         RTK slices + sagas (auth · wallet · nft)
-  src/api/           axios client: in-memory token, refresh-and-retry interceptor
-  src/screens/       home · sign in · sign up · forgot · reset · 404
-```
-
-### A few decisions worth explaining
-
-**The access token never touches `localStorage`.** Anything an injected script can read, it can
-exfiltrate. It lives in a module-scoped variable; the refresh token is an httpOnly cookie scoped
-to `/api/auth`, and the client's 401 interceptor spends it to recover the session across reloads.
-
-**`ethers` is loaded lazily.** It is ~890 kB — a third of everything the app ships — and it is
-worth nothing to a visitor who never opens a wallet. It is behind a dynamic `import()` triggered
-by the Connect button, so the initial download does not include it.
-
-**Argon2id, not PBKDF2.** With a per-user random salt and OWASP's 2024 parameters. Hashes are
-transparently upgraded on login when the cost parameters are raised.
-
-**Every environment variable is validated at boot.** A missing or malformed value stops the
-process with a readable error, rather than surfacing as a `NaN` token lifetime at 3am.
-
----
+Sign in with the seeded account `user@nfter.dev` / `DevPassword123`, then link **MetaMask on
+Sepolia** to try the on-chain flows — no API keys, no funded account, no deployment of your own.
+Optionally deploy your own contracts with `make deploy-contracts` (needs a throwaway key funded
+from a Sepolia faucet). App runs on `:3000`, API on `:3001/api`, mail viewer on `:8025`.
 
 ## Deployed on Sepolia
 
@@ -158,38 +79,18 @@ process with a readable error, rather than surfacing as a `NaN` token lifetime a
 | Marketplace | [`0x9DCc60Cf…b8994`](https://sepolia.etherscan.io/address/0x9DCc60CfDd8ad78F9557D2bB83e62afeA0Fb8994) |
 | Referrals | [`0xCEa9ba1d…1Ba85`](https://sepolia.etherscan.io/address/0xCEa9ba1d0fd011C7F6D472572b4489483E41Ba85) |
 
-The three contracts that hold money are owned by the treasury wallet — deliberately not the
-wallet the author collects with, so that the founder's balance and the project's are never the
-same number.
-
-Addresses and the deployment block live in `app/contracts/deployments/sepolia.json` — the indexer
-starts there rather than at genesis, because a public node will not read logs any further back.
-
----
+Addresses and the deployment block live in `app/contracts/deployments/sepolia.json`.
 
 ## Tests
 
 ```shell
-make test     # backend · frontend · contracts
+make test     # contracts · API · browser
 ```
 
-171 tests: 79 on the contracts, 48 on the API, 44 in the browser. They cover what would actually
-hurt if it broke — that a logged-out token is refused, that a refresh token cannot be spent twice,
-that a SIWE signature cannot be replayed or reused across domains, that a wrong password and an
-unknown email are answered identically, that a referrer is credited out of the fee and never out
-of the buyer's price, that a stale invite cannot revert someone else's purchase, and that a
-network failure does not white-screen the app.
-
----
-
-## History
-
-The first version of this project (May–June 2023) was an auth and i18n skeleton. It had `ethers`
-in `package.json` and a Connect button wired to nothing — no wallet code on either side. The
-work in this repository from December 2024 onward is what makes the name honest: real SIWE
-authentication, real contract reads, and a rewrite of the session layer that was quietly broken
-underneath it.
+171 tests covering what would actually hurt if it broke: a refresh token can't be spent twice, a
+SIWE signature can't be replayed or reused across domains, a wrong password and an unknown email
+are answered identically, and a referrer is credited out of the fee, never out of the buyer's price.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

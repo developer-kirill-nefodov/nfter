@@ -2,7 +2,7 @@
   "US": {
     "auth": {
       "login": "Sign in",
-      "loginSubtitle": "Use your email, or sign in with your wallet.",
+      "loginSubtitle": "Sign in with your email.",
       "logout": "Sign out",
       "register": "Sign up",
       "registerSubtitle": "Create an account with an email and password.",
@@ -69,7 +69,10 @@
       "home": "Go home"
     },
     "footer": {
-      "network": "Running on {{chain}}"
+      "network": "Running on {{chain}}",
+      "github": "GitHub",
+      "etherscan": "Etherscan",
+      "rights": "© {{years}} Kirill Nefodov · MIT License"
     },
     "pass": {
       "title": "Claim your pass",
@@ -331,6 +334,341 @@
       "connecting": "Reconnecting…"
     }
   },
+  "ES": {
+    "auth": {
+      "login": "Iniciar sesión",
+      "loginSubtitle": "Inicia sesión con tu correo.",
+      "logout": "Cerrar sesión",
+      "register": "Crear cuenta",
+      "registerSubtitle": "Crea una cuenta con un correo y una contraseña.",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "forgotSubtitle": "Te enviaremos por correo un enlace para elegir una nueva contraseña.",
+      "resetPassword": "Establece una nueva contraseña",
+      "resetSubtitle": "Elige una contraseña que no hayas usado antes.",
+      "sendLink": "Enviar enlace de restablecimiento",
+      "backToLogin": "Volver a iniciar sesión",
+      "noAccount": "¿Aún no tienes cuenta? Regístrate",
+      "haveAccount": "¿Ya tienes una cuenta?",
+      "or": "o",
+      "resendIn": "Se acaba de enviar un enlace. Puedes pedir otro en {{seconds}}s.",
+      "resendCountdown": "Reenviar en {{seconds}}s",
+      "pitch": "Una cuenta, una cartera y cuatro contratos que dibujan su propia obra. Inicia sesión para acuñar, comerciar, donar — e invitar.",
+      "bulletContracts": "Obra generada dentro del contrato — sin IPFS, nada que se pierda",
+      "bulletSiwe": "Inicio de sesión con Ethereum, con nonces de un solo uso",
+      "bulletReferrals": "Invita a un amigo y gana el 10% de nuestra comisión",
+      "invitedBy": "Te invitaron con",
+      "demoFill": "Rellenar la cuenta de demostración",
+      "show": "Mostrar",
+      "hide": "Ocultar",
+      "showPassword": "Mostrar contraseña",
+      "hidePassword": "Ocultar contraseña",
+      "sessionExpired": "Tu sesión ha terminado. Inicia sesión de nuevo."
+    },
+    "wallet": {
+      "connect": "Conectar cartera",
+      "link": "Vincular cartera",
+      "signing": "Revisa tu cartera…",
+      "install": "Instalar MetaMask",
+      "recheck": "Comprobar de nuevo",
+      "notDetected": "Aún no se detecta ninguna cartera. Recarga la página después de instalar MetaMask.",
+      "disconnect": "Desconectar",
+      "signInFirst": "Inicia sesión para conectar una cartera",
+      "copy": "Copiar",
+      "copied": "Dirección copiada",
+      "viewOnExplorer": "Ver en Etherscan ↗",
+      "wrongNetwork": "Red incorrecta",
+      "activeAccount": "Activa en MetaMask",
+      "mismatch": "MetaMask está en {{address}}, que no es la cartera vinculada a esta cuenta."
+    },
+    "home": {
+      "title": "Tu cartera de Ethereum, en un solo lugar",
+      "connectPrompt": "Conecta una cartera para iniciar sesión y ver los tokens ERC-721 que contiene.",
+      "wallet": "Cartera",
+      "network": "Red",
+      "balance": "Saldo",
+      "tokens": "Tokens",
+      "signInPrompt": "Inicia sesión primero — una cartera pertenece a una cuenta y se vincula con un clic."
+    },
+    "nft": {
+      "title": "Tu colección",
+      "owned": "{{count}} token {{symbol}} en propiedad",
+      "owned_other": "{{count}} tokens {{symbol}} en propiedad",
+      "empty": "Aún no tienes tokens de esta colección en tu cartera.",
+      "loading": "Cargando tu colección",
+      "refresh": "Actualizar",
+      "retry": "Reintentar",
+      "goCollect": "Explorar artefactos"
+    },
+    "notFound": {
+      "message": "Esa página no existe.",
+      "home": "Ir al inicio"
+    },
+    "footer": {
+      "network": "Funcionando en {{chain}}",
+      "github": "GitHub",
+      "etherscan": "Etherscan",
+      "rights": "© {{years}} Kirill Nefodov · Licencia MIT"
+    },
+    "pass": {
+      "title": "Reclama tu pase",
+      "subtitle": "Un NFT gratuito, uno por cartera. La obra se genera dentro del contrato a partir de tu dirección — sin IPFS, nada que se pueda perder.",
+      "claim": "Reclamar pase"
+    },
+    "tx": {
+      "claiming": "Acuñando tu pase",
+      "tipping": "Enviando tu propina",
+      "gas": "Gas estimado: {{amount}} ETH",
+      "viewOnExplorer": "Ver en Etherscan →",
+      "dismiss": "Descartar",
+      "stage": {
+        "estimating": "Calculando el precio de la transacción",
+        "signing": "Esperando a tu cartera",
+        "pending": "Difundida — esperando a la cadena",
+        "confirmed": "Confirmada en la cadena",
+        "approving": "Aprobando el mercado (una sola vez)"
+      },
+      "minting": "Acuñando tu artefacto",
+      "listing": "Publicando tu token",
+      "buying": "Comprando",
+      "cancelling": "Retirando la publicación",
+      "withdrawing": "Retirando"
+    },
+    "tip": {
+      "nav": "Propina",
+      "title": "Invítame a un café, on-chain",
+      "subtitle": "Las propinas pasan por un contrato en {{chain}}, así que todas son públicas y cada mensaje se guarda en el registro de eventos. ETH de testnet — no cambia de manos dinero real.",
+      "amount": "Cantidad (ETH)",
+      "message": "Mensaje",
+      "messagePlaceholder": "Di algo bonito (opcional)",
+      "messageHint": "Quedan {{left}} caracteres",
+      "send": "Enviar {{amount}} ETH",
+      "connectFirst": "Conecta una cartera para enviar una propina.",
+      "jar": "Bote de propinas:",
+      "raised": "{{amount}} ETH de {{count}} propinas",
+      "recent": "Propinas recientes",
+      "empty": "Aún no hay propinas. Sé el primero.",
+      "signInFirst": "Inicia sesión y conecta una cartera para enviar una propina.",
+      "leaderboard": "Mejores mecenas",
+      "leaderboardEmpty": "Aún no hay mecenas — el primer nombre del tablero podría ser el tuyo.",
+      "you": "(tú)",
+      "tipsCount": "{{count}} propina",
+      "tipsCount_other": "{{count}} propinas",
+      "open": "Donar"
+    },
+    "landing": {
+      "badge": "En vivo en {{chain}}",
+      "title": "Tu cartera, tu arte, tu nombre en el tablero.",
+      "subtitle": "Una app full-stack de Ethereum: inicia sesión, reclama un NFT generativo cuya obra vive dentro del contrato y deja propina on-chain. Todo lo de abajo se lee directamente de Sepolia — no necesitas cartera para mirar.",
+      "getStarted": "Crear una cuenta",
+      "openDashboard": "Abrir panel",
+      "support": "Dar propina al proyecto",
+      "stats": {
+        "minted": "Pases acuñados",
+        "holders": "Poseedores",
+        "raised": "Propinas recaudadas",
+        "tips": "Propinas enviadas"
+      },
+      "showcase": "Recién acuñados",
+      "showcaseHint": "Cada imagen se genera dentro del contrato a partir de la dirección de quien acuña. Sin IPFS, sin servidor — la cadena guarda el arte en sí.",
+      "showcaseEmpty": "Nadie ha reclamado un pase todavía. Sé el primero.",
+      "how": "Cómo está construido",
+      "contracts": "Contratos",
+      "features": {
+        "art": {
+          "title": "Arte que no se puede perder",
+          "body": "tokenURI devuelve un data: URI construido en Solidity — un identicon simétrico derivado del keccak256 de tu dirección. Nada que fijar, nada que alojar, nada que perder."
+        },
+        "siwe": {
+          "title": "Inicio de sesión con Ethereum",
+          "body": "Vincular una cartera se demuestra con EIP-4361: un nonce de un solo uso, firmado y quemado. Una firma capturada no vale nada la segunda vez que se usa."
+        },
+        "tx": {
+          "title": "Transacciones como máquina de estados",
+          "body": "El gas se estima antes de que se abra la cartera, así que aún puedes echarte atrás. Luego la firma, la difusión con el hash y la confirmación — cada etapa visible."
+        },
+        "indexer": {
+          "title": "Su propio indexador de la cadena",
+          "body": "Los nodos RPC públicos rechazan los registros históricos. Un worker de BullMQ sigue la cabeza en las ventanas que sí permiten y guarda el historial en Postgres, así que los feeds cuestan un SELECT."
+        }
+      },
+      "underTheHood": "Bajo el capó"
+    },
+    "nav": {
+      "dashboard": "Panel",
+      "backToTop": "Volver arriba"
+    },
+    "collect": {
+      "nav": "Coleccionar",
+      "title": "Artefactos",
+      "subtitle": "Compra tantos como quieras. Eliges el nivel y lo pagas — sin lotería, sin caja sorpresa. La obra se genera en el contrato, y el límite de suministro también se aplica ahí.",
+      "tiers": {
+        "common": "Común",
+        "rare": "Raro",
+        "epic": "Épico",
+        "legendary": "Legendario"
+      },
+      "remaining": "Quedan {{left}} de {{cap}}",
+      "soldOut": "Agotado",
+      "buy": "Comprar {{tier}} — {{price}} ETH",
+      "hint": "Un nivel más alto dibuja más anillos, más color, y los Legendarios giran.",
+      "connectFirst": "Conecta una cartera para comprar un artefacto.",
+      "signInFirst": "Inicia sesión y conecta una cartera para comprar un artefacto.",
+      "recent": "Comprados recientemente",
+      "mintedSoFar": "{{count}} artefactos acuñados hasta ahora",
+      "noneYet": "Nadie ha comprado un artefacto todavía. El primero es tuyo.",
+      "yours": "Tuyo",
+      "mechanics": "Cómo se crea un artefacto",
+      "onchain": {
+        "title": "El arte es el contrato",
+        "body": "tokenURI construye un SVG a partir de la semilla del token y lo devuelve como un data: URI en base64. No hay servidor de imágenes que se caiga ni pin de IPFS que caduque."
+      },
+      "cap": {
+        "title": "El límite se aplica en la cadena",
+        "body": "Cada nivel tiene un suministro fijo escrito en el contrato. Cuando se acuña el último, ninguna clave de propietario puede imprimir otro."
+      },
+      "seed": {
+        "title": "Tu dirección es la semilla",
+        "body": "La semilla proviene del keccak256 de quien acuña, el bloque y el id del token — así que dos artefactos nunca son iguales, y nadie elige cuál te toca."
+      }
+    },
+    "nftModal": {
+      "revealTitle": "Es tuyo",
+      "etherscan": "Ver en Etherscan ↗",
+      "transaction": "Ver transacción ↗",
+      "copyUri": "Copiar tokenURI",
+      "copied": "Copiado",
+      "copyFailed": "No se pudo copiar"
+    },
+    "rating": {
+      "nav": "Ranking",
+      "title": "Ranking",
+      "subtitle": "Tres tableros — donaciones, coleccionistas e invitadores — cada uno extraído del propio registro de eventos de la cadena, así que cualquiera puede recalcularlos y obtener los mismos números.",
+      "tabs": {
+        "donors": "Donaciones",
+        "collectors": "Coleccionistas",
+        "inviters": "Invitadores"
+      },
+      "emptyDonors": "Aún no hay donaciones — el primer nombre del tablero podría ser el tuyo.",
+      "emptyCollectors": "Nadie ha acuñado nada todavía. Sé el primero.",
+      "bestTier": "Mejor: {{tier}}",
+      "spent": "{{amount}} Ξ gastados",
+      "vacant": "Esperando a alguien",
+      "emptyInviters": "Nadie ha invitado a nadie todavía — el primer nombre del tablero podría ser el tuyo.",
+      "invited": "invitados"
+    },
+    "activity": {
+      "title": "Actividad",
+      "empty": "Aún no ha pasado nada en la cadena.",
+      "hint": "En directo desde los contratos. Pasa el ratón para pausar; haz clic en una fila para abrir la transacción.",
+      "minted": "acuñó un artefacto {{tier}}",
+      "claimed": "reclamó un pase",
+      "tipped": "donó {{amount}} Ξ",
+      "free": "gratis"
+    },
+    "market": {
+      "nav": "Mercado",
+      "title": "Mercado",
+      "subtitle": "Compra y vende on-chain. El mercado nunca guarda tu token — solo el permiso para moverlo — y se lleva el {{fee}}% de una venta.",
+      "sell": "Vender un token",
+      "refresh": "Actualizar el libro",
+      "empty": "Aún no hay nada en venta. Publica el primero.",
+      "price": "precio",
+      "buy": "Comprar por {{price}} Ξ",
+      "cancel": "Retirar",
+      "yourListing": "Tu publicación",
+      "history": "Ventas recientes",
+      "noSales": "Aún no hay ventas.",
+      "soldLine": "{{buyer}} compró #{{tokenId}} a {{seller}}",
+      "earned": "Ganado en ventas, esperándote",
+      "withdraw": "Retirar",
+      "contract": "Mercado:",
+      "pickToken": "¿Qué token?",
+      "priceLabel": "Precio (ETH)",
+      "fee": "Comisión del mercado (2,5%)",
+      "youGet": "Recibes",
+      "listIt": "Publicar",
+      "approvalHint": "La primera publicación también pide a tu cartera permiso para que el mercado mueva esa colección. Tu token sigue siendo tuyo hasta que se venda.",
+      "nothingToSell": "Aún no tienes nada que vender. Acuña un artefacto primero.",
+      "book": "Libro de órdenes",
+      "listed": "Publicado",
+      "floor": "Suelo",
+      "sold": "Vendido",
+      "volume": "Volumen",
+      "feesPaid": "Comisiones pagadas",
+      "mechanics": "Cómo funciona el mercado",
+      "escrow": {
+        "title": "Nunca guarda tu token",
+        "body": "Publicar otorga al contrato permiso para mover un token. El NFT permanece en tu cartera hasta que alguien lo compra, y puedes cancelar en cualquier momento."
+      },
+      "pull": {
+        "title": "Nadie cobra durante una venta",
+        "body": "Las ganancias se acreditan a un saldo y se retiran después. Un vendedor que revierte el pago no puede bloquear la compra de un desconocido."
+      },
+      "cei": {
+        "title": "La publicación muere primero",
+        "body": "El contrato elimina la publicación antes de mover el token, así que una llamada reentrante no encuentra nada que comprar."
+      },
+      "alreadyListed": "Publicado",
+      "approvalFirst": "La primera publicación de esta colección necesita una aprobación única, así que tu cartera preguntará dos veces: una para permitir que el mercado mueva esta colección y otra para publicar. Cada publicación posterior es una sola transacción."
+    },
+    "invite": {
+      "nav": "Invitar",
+      "title": "Invita a amigos",
+      "subtitle": "Comparte tu código. Cada vez que alguien a quien invitaste acuña o compra, el registro te acredita el 10% de la comisión — pagado de nuestros ingresos, nunca añadido a su precio.",
+      "yourCode": "Tu código de invitación",
+      "copyLink": "Copiar enlace de invitación",
+      "copiedShort": "Copiado",
+      "copied": "Enlace de invitación copiado al portapapeles.",
+      "connectToEarn": "Conecta una cartera para recibir tus recompensas — la cadena necesita una dirección para pagar.",
+      "invited": "Invitados",
+      "lifetime": "Ganado en total",
+      "pending": "Listo para reclamar",
+      "readyToWithdraw": "Tienes recompensas sin reclamar",
+      "withdraw": "Retirar",
+      "invitedBy": "Te uniste con el código de invitación {{code}}",
+      "signInFirst": "Inicia sesión para obtener tu código de invitación.",
+      "howTitle": "Cómo funciona",
+      "how1": "1. Envía tu enlace. Quien se registre con él queda vinculado a ti la primera vez que compra on-chain — de forma permanente, y solo una vez.",
+      "how2": "2. Cada acuñación o venta de esa persona te acredita el 10% de la comisión. El comprador paga el mismo precio de todos modos.",
+      "how3": "3. Retira cuando quieras. Tu saldo lo guarda el contrato del registro, no nosotros."
+    },
+    "treasury": {
+      "nav": "Tesorería",
+      "title": "Tesorería",
+      "subtitle": "Lo que los contratos guardan para su propietario. Leído directamente de la cadena — esta página informa, no decide.",
+      "total": "Total retenido para la tesorería",
+      "owner": "Propietario",
+      "mintRevenue": "Ingresos por acuñación",
+      "tips": "Donaciones",
+      "marketFees": "Comisiones del mercado",
+      "owedToReferrers": "Debido a los referidores (no tuyo)",
+      "withdrawHint": "Retira desde la cartera propietaria — cada contrato paga solo a la dirección que lo posee.",
+      "notFounder": "Esta página pertenece al fundador. El servidor la comprueba contra el propietario de los contratos, así que aquí no hay nada que ver."
+    },
+    "chain": {
+      "title": "Red",
+      "live": "En vivo",
+      "offline": "RPC inaccesible",
+      "network": "Red",
+      "chainId": "ID de cadena",
+      "block": "Bloque de cabecera",
+      "gas": "Precio del gas",
+      "indexerLag": "Retraso del indexador",
+      "blocks": "{{count}} bloque de retraso",
+      "blocks_other": "{{count}} bloques de retraso",
+      "contracts": "Contratos",
+      "behind": "{{count}} bloque de retraso",
+      "behind_other": "{{count}} bloques de retraso",
+      "notIndexed": "aún no indexado",
+      "supply": "Suministro de artefactos",
+      "saleSplit": "A dónde va una venta",
+      "mintSplit": "A dónde va una acuñación",
+      "seller": "Vendedor",
+      "treasury": "Tesorería",
+      "referrer": "Referidor",
+      "connecting": "Reconectando…"
+    }
+  },
   "DE": {
     "auth": {
       "login": "Anmelden",
@@ -401,7 +739,10 @@
       "home": "Zur Startseite"
     },
     "footer": {
-      "network": "Läuft auf {{chain}}"
+      "network": "Läuft auf {{chain}}",
+      "github": "GitHub",
+      "etherscan": "Etherscan",
+      "rights": "© {{years}} Kirill Nefodov · MIT-Lizenz"
     },
     "pass": {
       "title": "Hol dir deinen Pass",
@@ -661,670 +1002,6 @@
       "treasury": "Kasse",
       "referrer": "Werber",
       "connecting": "Neu verbinden…"
-    }
-  },
-  "CN": {
-    "auth": {
-      "login": "登录",
-      "loginSubtitle": "使用邮箱登录，或直接用钱包登录。",
-      "logout": "退出登录",
-      "register": "注册",
-      "registerSubtitle": "使用邮箱和密码创建账户。",
-      "forgotPassword": "忘记密码？",
-      "forgotSubtitle": "我们会发送一个重置密码的链接到你的邮箱。",
-      "resetPassword": "设置新密码",
-      "resetSubtitle": "请选择一个你没用过的密码。",
-      "sendLink": "发送重置链接",
-      "backToLogin": "返回登录",
-      "noAccount": "还没有账户？注册",
-      "haveAccount": "已经有账户了？",
-      "or": "或",
-      "resendIn": "链接刚刚已发送。{{seconds}} 秒后可再次请求。",
-      "resendCountdown": "{{seconds}} 秒后可重发",
-      "pitch": "一个账户、一个钱包，以及四份自己绘制作品的合约。登录即可铸造、交易、捐赠 —— 也可以邀请他人。",
-      "bulletContracts": "作品在合约内部生成 —— 不用 IPFS，没有会失效的东西",
-      "bulletSiwe": "以太坊登录（SIWE），随机数一次性有效",
-      "bulletReferrals": "邀请好友，赚取我们佣金的 10%",
-      "invitedBy": "邀请你的是",
-      "demoFill": "填入演示账户",
-      "show": "显示",
-      "hide": "隐藏",
-      "showPassword": "显示密码",
-      "hidePassword": "隐藏密码",
-      "sessionExpired": "会话已结束，请重新登录。"
-    },
-    "wallet": {
-      "connect": "连接钱包",
-      "link": "绑定钱包",
-      "signing": "请查看你的钱包…",
-      "install": "安装 MetaMask",
-      "recheck": "重新检测",
-      "notDetected": "仍未检测到钱包。安装 MetaMask 后请刷新页面。",
-      "disconnect": "断开连接",
-      "signInFirst": "登录后才能连接钱包",
-      "copy": "复制",
-      "copied": "地址已复制",
-      "viewOnExplorer": "在 Etherscan 查看 ↗",
-      "wrongNetwork": "网络不对",
-      "activeAccount": "MetaMask 当前账户",
-      "mismatch": "MetaMask 当前是 {{address}}，与本账户绑定的钱包不一致。"
-    },
-    "home": {
-      "title": "你的以太坊钱包，一站式管理",
-      "connectPrompt": "连接钱包即可登录并查看其中的 ERC-721 代币。",
-      "wallet": "钱包",
-      "network": "网络",
-      "balance": "余额",
-      "tokens": "代币",
-      "signInPrompt": "请先登录——钱包属于账户，登录后一键即可绑定。"
-    },
-    "nft": {
-      "title": "你的收藏",
-      "owned": "持有 {{count}} 个 {{symbol}} 代币",
-      "owned_other": "持有 {{count}} 个 {{symbol}} 代币",
-      "empty": "你的钱包中还没有该系列的代币。",
-      "loading": "正在加载你的收藏",
-      "refresh": "刷新",
-      "retry": "重试",
-      "goCollect": "去看神器"
-    },
-    "notFound": {
-      "message": "该页面不存在。",
-      "home": "返回首页"
-    },
-    "footer": {
-      "network": "运行于 {{chain}}"
-    },
-    "pass": {
-      "title": "领取你的通行证",
-      "subtitle": "免费 NFT，每个钱包限领一个。图案由合约根据你的地址生成——不依赖 IPFS，永不失效。",
-      "claim": "领取通行证"
-    },
-    "tx": {
-      "claiming": "正在铸造通行证",
-      "tipping": "正在发送打赏",
-      "gas": "预估 Gas：{{amount}} ETH",
-      "viewOnExplorer": "在 Etherscan 查看 →",
-      "dismiss": "关闭",
-      "stage": {
-        "estimating": "正在估算费用",
-        "signing": "等待你的钱包确认",
-        "pending": "已广播——等待链上确认",
-        "confirmed": "已在链上确认",
-        "approving": "授权市场（仅一次）"
-      },
-      "minting": "正在铸造神器",
-      "listing": "正在挂单",
-      "buying": "正在购买",
-      "cancelling": "正在撤单",
-      "withdrawing": "正在提现"
-    },
-    "tip": {
-      "nav": "打赏",
-      "title": "请我喝杯咖啡，链上直达",
-      "subtitle": "打赏通过 {{chain}} 上的合约进行：全部公开，留言存入事件日志。测试网 ETH——不涉及真实资金。",
-      "amount": "金额（ETH）",
-      "message": "留言",
-      "messagePlaceholder": "说点好听的（可选）",
-      "messageHint": "还可输入 {{left}} 个字符",
-      "send": "发送 {{amount}} ETH",
-      "connectFirst": "请先连接钱包再打赏。",
-      "jar": "打赏罐：",
-      "raised": "共 {{amount}} ETH，来自 {{count}} 次打赏",
-      "recent": "最近的打赏",
-      "empty": "还没有打赏，来做第一个吧。",
-      "signInFirst": "请先登录并连接钱包，然后再打赏。",
-      "leaderboard": "打赏榜",
-      "leaderboardEmpty": "还没有支持者——榜首可以是你。",
-      "you": "（你）",
-      "tipsCount": "{{count}} 次打赏",
-      "tipsCount_other": "{{count}} 次打赏",
-      "open": "打赏"
-    },
-    "landing": {
-      "badge": "已上线 {{chain}}",
-      "title": "你的钱包，你的作品，你的名字上榜。",
-      "subtitle": "一个全栈以太坊应用：登录、领取图案存在合约里的生成式 NFT、链上打赏。下面的数据全部直接读自 Sepolia——不连钱包也能看。",
-      "getStarted": "创建账户",
-      "openDashboard": "打开面板",
-      "support": "支持这个项目",
-      "stats": {
-        "minted": "已铸造",
-        "holders": "持有人",
-        "raised": "已筹集",
-        "tips": "打赏次数"
-      },
-      "showcase": "最新铸造",
-      "showcaseHint": "每张图都由合约根据铸造者地址生成。不用 IPFS，不用服务器——链本身就承载着这幅画。",
-      "showcaseEmpty": "还没有人领取通行证，来做第一个吧。",
-      "how": "它是如何构建的",
-      "contracts": "合约",
-      "features": {
-        "art": {
-          "title": "不会失效的作品",
-          "body": "tokenURI 返回在 Solidity 中构建的 data: URI——由你地址的 keccak256 生成的对称 identicon。无需固定、无需托管、不会丢失。"
-        },
-        "siwe": {
-          "title": "以太坊登录（SIWE）",
-          "body": "绑定钱包通过 EIP-4361 证明：一次性 nonce，签名后即销毁。被截获的签名，第二次使用时毫无价值。"
-        },
-        "tx": {
-          "title": "把交易当作状态机",
-          "body": "在钱包弹出之前就估算 Gas，你仍可以选择放弃。随后是签名、广播（附带哈希）、确认——每一步都看得见。"
-        },
-        "indexer": {
-          "title": "自建链上索引器",
-          "body": "公共 RPC 拒绝提供历史日志。BullMQ 工作进程按允许的窗口跟随链头，把历史存进 Postgres，于是查询只是一条 SELECT。"
-        }
-      },
-      "underTheHood": "技术细节"
-    },
-    "nav": {
-      "dashboard": "面板",
-      "backToTop": "回到顶部"
-    },
-    "collect": {
-      "nav": "收藏",
-      "title": "神器",
-      "subtitle": "想买多少都行。等级由你选择并支付——不是抽奖，也不是盲盒。图案在合约中生成，发行上限也由合约强制执行。",
-      "tiers": {
-        "common": "普通",
-        "rare": "稀有",
-        "epic": "史诗",
-        "legendary": "传说"
-      },
-      "remaining": "剩余 {{left}} / {{cap}}",
-      "soldOut": "已售罄",
-      "buy": "购买{{tier}} — {{price}} ETH",
-      "hint": "等级越高，环越多、色彩越丰富——传说级还会旋转。",
-      "connectFirst": "请先连接钱包再购买。",
-      "signInFirst": "请先登录并连接钱包再购买。",
-      "recent": "最近购买",
-      "mintedSoFar": "目前已铸造 {{count}} 个神器",
-      "noneYet": "还没有人买过神器。第一个可以是你的。",
-      "yours": "你的",
-      "mechanics": "一件艺术品如何诞生",
-      "onchain": {
-        "title": "艺术品就是合约本身",
-        "body": "tokenURI 依据代币的种子生成 SVG，并以 base64 的 data: URI 返回。没有会宕机的图床，也没有会过期的 IPFS pin。"
-      },
-      "cap": {
-        "title": "上限由链上强制执行",
-        "body": "每个等级的供应量写死在合约里。铸完最后一枚，连所有者私钥也无法再增发。"
-      },
-      "seed": {
-        "title": "你的地址就是种子",
-        "body": "种子取自铸造者、区块与代币 ID 的 keccak256 —— 两件艺术品永不相同，也没人能挑选你会得到哪一件。"
-      }
-    },
-    "nftModal": {
-      "revealTitle": "它属于你了",
-      "etherscan": "在 Etherscan 查看 ↗",
-      "transaction": "查看交易 ↗",
-      "copyUri": "复制 tokenURI",
-      "copied": "已复制",
-      "copyFailed": "复制失败"
-    },
-    "rating": {
-      "nav": "排行榜",
-      "title": "排行榜",
-      "subtitle": "三张榜单 —— 捐赠、收藏者与邀请人 —— 全部由链上事件日志折算而来，任何人都能自行重算并得到相同的数字。",
-      "tabs": {
-        "donors": "打赏",
-        "collectors": "收藏家",
-        "inviters": "邀请人"
-      },
-      "emptyDonors": "还没有打赏——榜首可以是你。",
-      "emptyCollectors": "还没有人铸造过，来做第一个吧。",
-      "bestTier": "最高：{{tier}}",
-      "spent": "已花费 {{amount}} Ξ",
-      "vacant": "虚位以待",
-      "emptyInviters": "还没有人邀请过任何人 —— 榜单上的第一个名字可能就是你。",
-      "invited": "已邀请"
-    },
-    "activity": {
-      "title": "动态",
-      "empty": "链上还没有任何记录。",
-      "hint": "实时来自合约。悬停暂停，点击查看交易。",
-      "minted": "铸造了一个{{tier}}神器",
-      "claimed": "领取了通行证",
-      "tipped": "打赏了 {{amount}} Ξ",
-      "free": "免费"
-    },
-    "market": {
-      "nav": "市场",
-      "title": "市场",
-      "subtitle": "链上买卖。市场从不托管你的代币——只获得转移它的授权——并收取成交额的 {{fee}}%。",
-      "sell": "出售代币",
-      "refresh": "刷新挂单",
-      "empty": "还没有人挂单，来做第一个。",
-      "price": "价格",
-      "buy": "以 {{price}} Ξ 购买",
-      "cancel": "撤单",
-      "yourListing": "你的挂单",
-      "history": "最近成交",
-      "noSales": "还没有成交。",
-      "soldLine": "{{buyer}} 从 {{seller}} 处买下 #{{tokenId}}",
-      "earned": "待领取的销售收入",
-      "withdraw": "提现",
-      "contract": "市场合约：",
-      "pickToken": "选择代币",
-      "priceLabel": "价格（ETH）",
-      "fee": "市场手续费（2.5%）",
-      "youGet": "你将获得",
-      "listIt": "挂单",
-      "approvalHint": "首次挂单时，钱包会请求授权市场转移该系列。在售出之前，代币始终属于你。",
-      "nothingToSell": "你还没有可出售的东西，先铸造一个神器吧。",
-      "book": "挂单簿",
-      "listed": "在售",
-      "floor": "地板价",
-      "sold": "已成交",
-      "volume": "成交额",
-      "feesPaid": "已付手续费",
-      "mechanics": "市场如何运作",
-      "escrow": {
-        "title": "它从不托管你的代币",
-        "body": "挂单只是授予合约移动某个代币的权限。NFT 仍在你的钱包里，直到有人买走，你随时可以取消。"
-      },
-      "pull": {
-        "title": "成交时不向任何人付款",
-        "body": "收益记入余额，稍后自行提取。卖家即便在收款时回滚，也无法阻断他人的购买。"
-      },
-      "cei": {
-        "title": "先删除挂单",
-        "body": "合约在转移代币之前先删除挂单，于是重入调用再也找不到可买的东西。"
-      },
-      "alreadyListed": "已挂单",
-      "approvalFirst": "该系列的首次挂单需要一次性授权，因此钱包会弹两次：一次授权市场转移该系列，一次挂单。之后每次挂单只需一笔交易。"
-    },
-    "invite": {
-      "nav": "邀请",
-      "title": "邀请好友",
-      "subtitle": "分享你的邀请码。你邀请的人每次铸造或购买，登记合约都会把手续费的 10% 记到你名下 —— 从我们的收入中支付，绝不会加到他们的价格上。",
-      "yourCode": "你的邀请码",
-      "copyLink": "复制邀请链接",
-      "copiedShort": "已复制",
-      "copied": "邀请链接已复制到剪贴板。",
-      "connectToEarn": "连接钱包才能收到奖励 —— 链上需要一个地址才能付款。",
-      "invited": "已邀请",
-      "lifetime": "累计收益",
-      "pending": "可领取",
-      "readyToWithdraw": "你有尚未领取的奖励",
-      "withdraw": "提取",
-      "invitedBy": "你通过邀请码 {{code}} 加入",
-      "signInFirst": "登录后即可获得你的邀请码。",
-      "howTitle": "规则说明",
-      "how1": "1. 发送你的链接。用它注册的人，会在第一次链上购买时与你永久绑定 —— 只绑定一次。",
-      "how2": "2. 此后他每次铸造或成交，你都能拿到佣金的 10%。买家支付的价格不变。",
-      "how3": "3. 随时提取。余额由登记合约保管，而不是由我们保管。"
-    },
-    "treasury": {
-      "nav": "金库",
-      "title": "金库",
-      "subtitle": "合约为其所有者保管的资金，直接从链上读取 —— 本页只做展示，不做决定。",
-      "total": "金库累计持有",
-      "owner": "所有者",
-      "mintRevenue": "铸造收入",
-      "tips": "捐赠",
-      "marketFees": "市场手续费",
-      "owedToReferrers": "应付给推荐人（不属于你）",
-      "withdrawHint": "请用所有者钱包提取 —— 每个合约只会付款给拥有它的地址。",
-      "notFounder": "本页属于创始人。服务器会对照合约的所有者进行校验，这里没有可看的内容。"
-    },
-    "chain": {
-      "title": "网络",
-      "live": "实时",
-      "offline": "RPC 不可达",
-      "network": "网络",
-      "chainId": "链 ID",
-      "block": "最新区块",
-      "gas": "Gas 价格",
-      "indexerLag": "索引延迟",
-      "blocks": "落后 {{count}} 个区块",
-      "blocks_other": "落后 {{count}} 个区块",
-      "contracts": "合约",
-      "behind": "落后 {{count}} 个区块",
-      "behind_other": "落后 {{count}} 个区块",
-      "notIndexed": "尚未索引",
-      "supply": "艺术品供应",
-      "saleSplit": "一笔成交的去向",
-      "mintSplit": "一次铸造的去向",
-      "seller": "卖家",
-      "treasury": "金库",
-      "referrer": "推荐人",
-      "connecting": "正在重连…"
-    }
-  },
-  "UA": {
-    "auth": {
-      "login": "Увійти",
-      "loginSubtitle": "Увійдіть через пошту або одразу гаманцем.",
-      "logout": "Вийти",
-      "register": "Зареєструватися",
-      "registerSubtitle": "Створіть акаунт з поштою та паролем.",
-      "forgotPassword": "Забули пароль?",
-      "forgotSubtitle": "Надішлемо на пошту посилання для зміни пароля.",
-      "resetPassword": "Встановити новий пароль",
-      "resetSubtitle": "Оберіть пароль, який ви ще не використовували.",
-      "sendLink": "Надіслати посилання",
-      "backToLogin": "Повернутися до входу",
-      "noAccount": "Ще немає акаунта? Зареєструйтеся",
-      "haveAccount": "Вже маєте акаунт?",
-      "or": "або",
-      "resendIn": "Посилання щойно надіслано. Наступне можна запросити через {{seconds}}с.",
-      "resendCountdown": "Надіслати ще раз через {{seconds}}с",
-      "pitch": "Обліковий запис, гаманець і чотири контракти, що самі малюють свої зображення. Увійдіть, щоб мінтити, торгувати, донатити — і запрошувати.",
-      "bulletContracts": "Зображення генерується всередині контракту — без IPFS, нема чому зіпсуватися",
-      "bulletSiwe": "Вхід через Ethereum (SIWE) з одноразовими nonce",
-      "bulletReferrals": "Запросіть друга й отримуйте 10% нашої комісії",
-      "invitedBy": "Вас запросили за кодом",
-      "demoFill": "Підставити демо-акаунт",
-      "show": "Показати",
-      "hide": "Сховати",
-      "showPassword": "Показати пароль",
-      "hidePassword": "Сховати пароль",
-      "sessionExpired": "Сесія завершилася. Будь ласка, увійдіть знову."
-    },
-    "wallet": {
-      "connect": "Підключити гаманець",
-      "link": "Прив'язати гаманець",
-      "signing": "Перевірте свій гаманець…",
-      "install": "Встановити MetaMask",
-      "recheck": "Перевірити ще раз",
-      "notDetected": "Гаманець досі не знайдено. Перезавантажте сторінку після встановлення MetaMask.",
-      "disconnect": "Відʼєднати",
-      "signInFirst": "Увійдіть, щоб підключити гаманець",
-      "copy": "Копіювати",
-      "copied": "Адресу скопійовано",
-      "viewOnExplorer": "Переглянути на Etherscan ↗",
-      "wrongNetwork": "Не та мережа",
-      "activeAccount": "Активний у MetaMask",
-      "mismatch": "У MetaMask обрано {{address}} — це не той гаманець, до якого прив’язаний акаунт."
-    },
-    "home": {
-      "title": "Ваш Ethereum-гаманець в одному місці",
-      "connectPrompt": "Підключіть гаманець, щоб увійти та побачити свої ERC-721 токени.",
-      "wallet": "Гаманець",
-      "network": "Мережа",
-      "balance": "Баланс",
-      "tokens": "Токени",
-      "signInPrompt": "Спершу увійдіть — гаманець належить акаунту й привʼязується одним кліком."
-    },
-    "nft": {
-      "title": "Ваша колекція",
-      "owned": "У власності {{count}} токен {{symbol}}",
-      "owned_other": "У власності {{count}} токенів {{symbol}}",
-      "empty": "У вашому гаманці ще немає токенів цієї колекції.",
-      "loading": "Завантажуємо вашу колекцію",
-      "refresh": "Оновити",
-      "retry": "Спробувати ще раз",
-      "goCollect": "Переглянути артефакти"
-    },
-    "notFound": {
-      "message": "Такої сторінки не існує.",
-      "home": "На головну"
-    },
-    "footer": {
-      "network": "Працює в мережі {{chain}}"
-    },
-    "pass": {
-      "title": "Отримайте свій пас",
-      "subtitle": "Безкоштовний NFT, один на гаманець. Зображення генерується всередині контракту з вашої адреси — без IPFS, нічого не загубиться.",
-      "claim": "Отримати пас"
-    },
-    "tx": {
-      "claiming": "Карбуємо ваш пас",
-      "tipping": "Надсилаємо ваш донат",
-      "gas": "Орієнтовний газ: {{amount}} ETH",
-      "viewOnExplorer": "Переглянути на Etherscan →",
-      "dismiss": "Закрити",
-      "stage": {
-        "estimating": "Оцінюємо вартість транзакції",
-        "signing": "Чекаємо на ваш гаманець",
-        "pending": "Надіслано — чекаємо на мережу",
-        "confirmed": "Підтверджено в мережі",
-        "approving": "Дозвіл маркету (одноразово)"
-      },
-      "minting": "Карбуємо ваш артефакт",
-      "listing": "Виставляємо токен",
-      "buying": "Купуємо",
-      "cancelling": "Знімаємо лот",
-      "withdrawing": "Виводимо кошти"
-    },
-    "tip": {
-      "nav": "Донат",
-      "title": "Купіть мені каву — просто в мережі",
-      "subtitle": "Донати йдуть через контракт у мережі {{chain}}: усе публічно, кожне повідомлення зберігається в лозі подій. Тестові ETH — справжні гроші не рухаються.",
-      "amount": "Сума (ETH)",
-      "message": "Повідомлення",
-      "messagePlaceholder": "Скажіть щось приємне (необовʼязково)",
-      "messageHint": "Залишилось символів: {{left}}",
-      "send": "Надіслати {{amount}} ETH",
-      "connectFirst": "Підключіть гаманець, щоб надіслати донат.",
-      "jar": "Скарбничка:",
-      "raised": "{{amount}} ETH від {{count}} донатів",
-      "recent": "Останні донати",
-      "empty": "Донатів ще немає. Будьте першим.",
-      "signInFirst": "Увійдіть і підключіть гаманець, щоб надіслати донат.",
-      "leaderboard": "Топ прихильників",
-      "leaderboardEmpty": "Прихильників ще немає — першим у рейтингу можете стати ви.",
-      "you": "(ви)",
-      "tipsCount": "{{count}} донат",
-      "tipsCount_other": "{{count}} донатів",
-      "open": "Задонатити"
-    },
-    "landing": {
-      "badge": "Працює в {{chain}}",
-      "title": "Ваш гаманець, ваше мистецтво, ваше імʼя в рейтингу.",
-      "subtitle": "Повноцінний Ethereum-застосунок: увійдіть, отримайте генеративний NFT, чиє зображення живе всередині контракту, і надішліть донат у мережі. Усе нижче читається просто з Sepolia — щоб подивитись, гаманець не потрібен.",
-      "getStarted": "Створити акаунт",
-      "openDashboard": "Відкрити панель",
-      "support": "Підтримати проєкт",
-      "stats": {
-        "minted": "Викарбувано",
-        "holders": "Власників",
-        "raised": "Зібрано",
-        "tips": "Донатів"
-      },
-      "showcase": "Щойно викарбувані",
-      "showcaseHint": "Кожне зображення генерується всередині контракту з адреси власника. Без IPFS і без сервера — мережа тримає саме мистецтво.",
-      "showcaseEmpty": "Ще ніхто не отримав пас. Будьте першим.",
-      "how": "Як це побудовано",
-      "contracts": "Контракти",
-      "features": {
-        "art": {
-          "title": "Мистецтво, яке не зникне",
-          "body": "tokenURI повертає data: URI, зібраний у Solidity — симетричний identicon із keccak256 вашої адреси. Нічого не треба пінити чи хостити."
-        },
-        "siwe": {
-          "title": "Sign-In with Ethereum",
-          "body": "Привʼязку доводить EIP-4361: одноразовий nonce, підписаний і спалений. Перехоплений підпис вдруге нічого не вартий."
-        },
-        "tx": {
-          "title": "Транзакція як автомат станів",
-          "body": "Газ оцінюється ще до відкриття гаманця — можна передумати. Далі підпис, надсилання з хешем, підтвердження. Кожен крок видно."
-        },
-        "indexer": {
-          "title": "Власний індексер мережі",
-          "body": "Публічні RPC не віддають історичні логи. BullMQ-воркер іде за головою ланцюга дозволеними вікнами й тримає історію в Postgres."
-        }
-      },
-      "underTheHood": "Під капотом"
-    },
-    "nav": {
-      "dashboard": "Панель",
-      "backToTop": "Нагору"
-    },
-    "collect": {
-      "nav": "Колекція",
-      "title": "Артефакти",
-      "subtitle": "Купуйте скільки завгодно. Рівень ви обираєте самі й платите за нього — жодної лотереї. Зображення генерується в контракті, і ліміт випуску теж діє там.",
-      "tiers": {
-        "common": "Звичайний",
-        "rare": "Рідкісний",
-        "epic": "Епічний",
-        "legendary": "Легендарний"
-      },
-      "remaining": "Залишилось {{left}} з {{cap}}",
-      "soldOut": "Розпродано",
-      "buy": "Купити {{tier}} — {{price}} ETH",
-      "hint": "Вищий рівень малює більше кілець і кольору — легендарні ще й обертаються.",
-      "connectFirst": "Підключіть гаманець, щоб купити артефакт.",
-      "signInFirst": "Увійдіть і підключіть гаманець, щоб купити.",
-      "recent": "Нещодавно куплені",
-      "mintedSoFar": "Викарбувано артефактів: {{count}}",
-      "noneYet": "Ще ніхто не купив артефакт. Перший — ваш.",
-      "yours": "Ваш",
-      "mechanics": "Як народжується артефакт",
-      "onchain": {
-        "title": "Мистецтво — це сам контракт",
-        "body": "tokenURI будує SVG із сіда токена й повертає його як base64 data: URI. Немає сервера картинок, який упаде, і немає IPFS-піна, який протермінується."
-      },
-      "cap": {
-        "title": "Ліміт стежиться в мережі",
-        "body": "Для кожного рівня тираж записаний у контракті. Коли зʼявиться останній, навіть ключ власника не надрукує ще один."
-      },
-      "seed": {
-        "title": "Ваша адреса — це сід",
-        "body": "Сід — це keccak256 від мінтера, блоку та id токена, тож два артефакти ніколи не збігаються і ніхто не обирає, який дістанеться вам."
-      }
-    },
-    "nftModal": {
-      "revealTitle": "Він ваш",
-      "etherscan": "Переглянути на Etherscan ↗",
-      "transaction": "Переглянути транзакцію ↗",
-      "copyUri": "Скопіювати tokenURI",
-      "copied": "Скопійовано",
-      "copyFailed": "Не вдалося скопіювати"
-    },
-    "rating": {
-      "nav": "Рейтинг",
-      "title": "Рейтинг",
-      "subtitle": "Три таблиці — донати, колекціонери та запрошувачі — кожна згорнута з лога подій мережі, тож будь-хто може перерахувати їх і отримати ті самі числа.",
-      "tabs": {
-        "donors": "Донати",
-        "collectors": "Колекціонери",
-        "inviters": "Запрошувачі"
-      },
-      "emptyDonors": "Донатів ще немає — першим у рейтингу можете стати ви.",
-      "emptyCollectors": "Ще ніхто нічого не викарбував. Будьте першим.",
-      "bestTier": "Найкращий: {{tier}}",
-      "spent": "Витрачено {{amount}} Ξ",
-      "vacant": "Чекає на когось",
-      "emptyInviters": "Ще ніхто нікого не запросив — першим у таблиці можете стати ви.",
-      "invited": "запрошено"
-    },
-    "activity": {
-      "title": "Активність",
-      "empty": "У мережі ще нічого не сталося.",
-      "hint": "Наживо з контрактів. Наведіть, щоб зупинити; клацніть, щоб відкрити транзакцію.",
-      "minted": "викарбував артефакт {{tier}}",
-      "claimed": "отримав пас",
-      "tipped": "задонатив {{amount}} Ξ",
-      "free": "безкоштовно"
-    },
-    "market": {
-      "nav": "Ринок",
-      "title": "Ринок",
-      "subtitle": "Купівля і продаж у мережі. Ринок ніколи не тримає ваш токен — лише дозвіл його перемістити — і бере {{fee}}% з продажу.",
-      "sell": "Продати токен",
-      "refresh": "Оновити книгу",
-      "empty": "Ще нічого не виставлено. Будьте першим.",
-      "price": "ціна",
-      "buy": "Купити за {{price}} Ξ",
-      "cancel": "Зняти",
-      "yourListing": "Ваш лот",
-      "history": "Останні продажі",
-      "noSales": "Продажів ще немає.",
-      "soldLine": "{{buyer}} купив #{{tokenId}} у {{seller}}",
-      "earned": "Зароблено з продажів",
-      "withdraw": "Вивести",
-      "contract": "Маркетплейс:",
-      "pickToken": "Який токен?",
-      "priceLabel": "Ціна (ETH)",
-      "fee": "Комісія ринку (2,5%)",
-      "youGet": "Ви отримаєте",
-      "listIt": "Виставити",
-      "approvalHint": "Перше виставлення також попросить гаманець дозволити ринку переміщати цю колекцію. Токен лишається у вас до продажу.",
-      "nothingToSell": "Вам поки нічого продавати. Спершу викарбуйте артефакт.",
-      "book": "Книга заявок",
-      "listed": "У продажу",
-      "floor": "Мінімальна ціна",
-      "sold": "Продано",
-      "volume": "Обсяг",
-      "feesPaid": "Сплачені комісії",
-      "mechanics": "Як працює маркет",
-      "escrow": {
-        "title": "Він ніколи не тримає ваш токен",
-        "body": "Виставлення лише дає контракту дозвіл перемістити один токен. NFT залишається у вашому гаманці, доки хтось не купить, і ви можете скасувати будь-коли."
-      },
-      "pull": {
-        "title": "Під час продажу нікому не платять",
-        "body": "Виторг зараховується на баланс і виводиться потім. Продавець, який відхиляє платіж, не може заблокувати чужу покупку."
-      },
-      "cei": {
-        "title": "Спершу зникає заявка",
-        "body": "Контракт видаляє заявку перед переказом токена, тож повторний виклик уже не знаходить, що купувати."
-      },
-      "alreadyListed": "У продажу",
-      "approvalFirst": "Перше виставлення з цієї колекції потребує одноразового дозволу, тож гаманець запитає двічі: спершу дозвіл, потім саме виставлення. Наступні — вже одна транзакція."
-    },
-    "invite": {
-      "nav": "Запросити",
-      "title": "Запросити друзів",
-      "subtitle": "Поділіться своїм кодом. Щоразу, коли запрошений вами мінтить або купує, реєстр нараховує вам 10% комісії — з нашого доходу, а не понад його ціну.",
-      "yourCode": "Ваш код запрошення",
-      "copyLink": "Скопіювати посилання",
-      "copiedShort": "Скопійовано",
-      "copied": "Посилання скопійовано в буфер обміну.",
-      "connectToEarn": "Під'єднайте гаманець, щоб отримувати винагороду — мережі потрібна адреса, на яку платити.",
-      "invited": "Запрошено",
-      "lifetime": "Зароблено всього",
-      "pending": "Готово до виплати",
-      "readyToWithdraw": "У вас є невитребувана винагорода",
-      "withdraw": "Вивести",
-      "invitedBy": "Ви приєдналися за кодом {{code}}",
-      "signInFirst": "Увійдіть, щоб отримати свій код запрошення.",
-      "howTitle": "Як це працює",
-      "how1": "1. Надішліть посилання. Той, хто зареєструється за ним, прив'яжеться до вас під час першої покупки в мережі — назавжди і лише один раз.",
-      "how2": "2. Кожен мінт чи продаж цієї людини приносить вам 10% комісії. Покупець платить ту саму ціну.",
-      "how3": "3. Виводьте будь-коли. Ваш баланс зберігає контракт-реєстр, а не ми."
-    },
-    "treasury": {
-      "nav": "Казна",
-      "title": "Казна",
-      "subtitle": "Те, що контракти тримають для свого власника. Читається просто з мережі — ця сторінка звітує, а не вирішує.",
-      "total": "Усього в казні",
-      "owner": "Власник",
-      "mintRevenue": "Дохід із мінтів",
-      "tips": "Донати",
-      "marketFees": "Комісії маркетплейсу",
-      "owedToReferrers": "Належить рефералам (не вам)",
-      "withdrawHint": "Виводьте з гаманця-власника — кожен контракт платить лише тій адресі, якій належить.",
-      "notFounder": "Ця сторінка належить засновнику. Сервер звіряє це з власником контрактів, тож тут нічого дивитися."
-    },
-    "chain": {
-      "title": "Мережа",
-      "live": "Наживо",
-      "offline": "RPC недоступний",
-      "network": "Мережа",
-      "chainId": "ID мережі",
-      "block": "Останній блок",
-      "gas": "Ціна газу",
-      "indexerLag": "Відставання індексера",
-      "blocks": "на {{count}} блок позаду",
-      "blocks_other": "на {{count}} блоків позаду",
-      "contracts": "Контракти",
-      "behind": "на {{count}} блок позаду",
-      "behind_other": "на {{count}} блоків позаду",
-      "notIndexed": "ще не проіндексовано",
-      "supply": "Запас артефактів",
-      "saleSplit": "Куди йде продаж",
-      "mintSplit": "Куди йде мінт",
-      "seller": "Продавець",
-      "treasury": "Казна",
-      "referrer": "Реферал",
-      "connecting": "Перепідключення…"
     }
   }
 }
