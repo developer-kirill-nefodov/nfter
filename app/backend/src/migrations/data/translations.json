@@ -219,7 +219,11 @@
       "spent": "{{amount}} Ξ spent",
       "vacant": "Waiting for someone",
       "emptyInviters": "Nobody has invited anyone yet — the first name on the board could be yours.",
-      "invited": "invited"
+      "invited": "invited",
+      "points": "{{points}} pts",
+      "pointsTitle": "Rarity points",
+      "pointsHint": "Ranked by total points.",
+      "pass": "Pass"
     },
     "activity": {
       "title": "Activity",
@@ -554,7 +558,11 @@
       "spent": "{{amount}} Ξ gastados",
       "vacant": "Esperando a alguien",
       "emptyInviters": "Nadie ha invitado a nadie todavía — el primer nombre del tablero podría ser el tuyo.",
-      "invited": "invitados"
+      "invited": "invitados",
+      "points": "{{points}} pts",
+      "pointsHint": "Clasificado por puntos totales.",
+      "pointsTitle": "Puntos de rareza",
+      "pass": "Pase"
     },
     "activity": {
       "title": "Actividad",
@@ -889,7 +897,11 @@
       "spent": "{{amount}} Ξ ausgegeben",
       "vacant": "Wartet auf jemanden",
       "emptyInviters": "Noch hat niemand jemanden eingeladen — der erste Name auf der Tafel könnte deiner sein.",
-      "invited": "eingeladen"
+      "invited": "eingeladen",
+      "points": "{{points}} Pkt.",
+      "pointsHint": "Rangfolge nach Gesamtpunkten.",
+      "pointsTitle": "Seltenheitspunkte",
+      "pass": "Pass"
     },
     "activity": {
       "title": "Aktivität",

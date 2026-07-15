@@ -5,6 +5,20 @@ import {media} from '../../theme';
 
 const PLACE_COLOURS = ['#fbbf24', '#cbd5e1', '#d19a66'];
 
+export const BoardArea = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: ${({theme}) => theme.space.xl};
+`;
+
+export const LegendSlot = styled.div`
+  position: absolute;
+  top: -15px;
+  right: 0;
+  z-index: 1;
+`;
+
 export const Tabs = styled.div`
   display: inline-flex;
   gap: ${({theme}) => theme.space.xs};
@@ -52,7 +66,7 @@ export const PodiumBlock = styled.div<{$place: number; $you: boolean}>`
   padding: ${({theme}) => theme.space.lg};
   padding-top: ${({$place, theme}) => ($place === 0 ? theme.space.xl : theme.space.lg)};
   background: ${({theme}) => theme.colors.surface};
-  border: 1px solid ${({$place, theme}) => (PLACE_COLOURS[$place] ?? theme.colors.border)};
+  border: 1px solid ${({$place, theme}) => PLACE_COLOURS[$place] ?? theme.colors.border};
   border-radius: ${({theme}) => theme.radii.lg};
   text-align: center;
 

@@ -36,8 +36,7 @@ export interface ICollectorEntry {
   tokens: number;
   passes: number;
   artifacts: number;
-  spentWei: string;
-  spentEth: string;
+  points: number;
   bestTier: string;
 }
 

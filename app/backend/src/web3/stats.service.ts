@@ -4,8 +4,12 @@ import {env} from '../config';
 import {redis} from '../db';
 import {logger} from '../lib/logger';
 
+import {rankCollectors} from './collectors';
+import type {ICollectorEntry} from './collectors';
 import {ERC721_ABI} from './erc721.abi';
 import {readEvents} from './indexer.service';
+
+export type {ICollectorEntry};
 import {provider} from './provider';
 import {getTipFeed} from './tip.service';
 
@@ -217,65 +221,20 @@ export const getPublicStats = async ({refresh = false} = {}): Promise<IPublicSta
 
 export const formatEth = formatEther;
 
-export interface ICollectorEntry {
-  rank: number;
-  address: string;
-  tokens: number;
-  passes: number;
-  artifacts: number;
-  spentWei: string;
-  spentEth: string;
-  bestTier: string;
-}
-
 export const getCollectors = async (limit = 20): Promise<ICollectorEntry[]> => {
-  const [claims, mints] = await Promise.all([
+  const [claims, mints, sales] = await Promise.all([
     readEvents(env.web3.nftContract, 'Claimed'),
     readEvents(env.web3.artifacts, 'Minted'),
+    readEvents(env.web3.marketplace, 'Sold'),
   ]);
 
-  const totals = new Map<
-    string,
-    {passes: number; artifacts: number; spent: bigint; bestTier: number}
-  >();
-
-  const entry = (address: string) =>
-    totals.get(address) ?? {passes: 0, artifacts: 0, spent: 0n, bestTier: -1};
-
-  for (const {args} of claims) {
-    const key = (args.minter ?? '').toLowerCase();
-    const current = entry(key);
-
-    totals.set(key, {...current, passes: current.passes + 1});
-  }
-
-  for (const {args} of mints) {
-    const key = (args.minter ?? '').toLowerCase();
-    const current = entry(key);
-    const tier = Number(args.tier ?? 0);
-
-    totals.set(key, {
-      ...current,
-      artifacts: current.artifacts + 1,
-      spent: current.spent + BigInt(args.price ?? '0'),
-      bestTier: Math.max(current.bestTier, tier),
-    });
-  }
-
-  return [...totals.entries()]
-    .map(([address, value]) => ({address, ...value, tokens: value.passes + value.artifacts}))
-    .sort((a, b) => (b.spent === a.spent ? b.tokens - a.tokens : b.spent > a.spent ? 1 : -1))
-    .slice(0, limit)
-    .map((value, index) => ({
-      rank: index + 1,
-      address: getAddress(value.address),
-      tokens: value.tokens,
-      passes: value.passes,
-      artifacts: value.artifacts,
-      spentWei: value.spent.toString(),
-      spentEth: formatEther(value.spent),
-      bestTier: TIER_NAMES[value.bestTier] ?? '',
-    }));
+  // Rank by the rarity points of what each address currently holds — mint attribution re-pointed by
+  // every marketplace sale — so buying or selling actually moves the board once the sale is indexed.
+  return rankCollectors(claims, mints, sales, {
+    passContract: env.web3.nftContract,
+    artifactsContract: env.web3.artifacts,
+    limit,
+  });
 };
 
 export type IActivityKind = 'artifact' | 'pass' | 'tip';

@@ -2,7 +2,8 @@ import {useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 
 import Board, {type IBoardRow} from '../../components/Rating/Board';
-import {Tab, Tabs} from '../../components/Rating/styles';
+import RarityLegend from '../../components/Rating/RarityLegend';
+import {BoardArea, LegendSlot, Tab, Tabs} from '../../components/Rating/styles';
 import Button from '../../components/Button';
 import ContractsPanel from '../../components/Chain/ContractsPanel';
 import NetworkPanel from '../../components/Chain/NetworkPanel';
@@ -46,10 +47,10 @@ const RatingPage = () => {
   const collectorRows: IBoardRow[] = collectors.map((entry) => ({
     rank: entry.rank,
     address: entry.address,
-    value: `${entry.tokens} NFT`,
+    value: t('rating.points', {points: entry.points}),
     subtitle: [
+      `${entry.tokens} NFT`,
       entry.bestTier && t('rating.bestTier', {tier: entry.bestTier}),
-      t('rating.spent', {amount: Number(entry.spentEth).toFixed(3)}),
     ]
       .filter(Boolean)
       .join(' · '),
@@ -97,12 +98,20 @@ const RatingPage = () => {
       </Row>
 
       <Stack $gap="24px">
-        <Board
-          rows={rows}
-          you={wallet}
-          loading={loading && rows.length === 0}
-          emptyText={t(emptyText)}
-        />
+        <BoardArea>
+          {board === 'collectors' && (
+            <LegendSlot>
+              <RarityLegend />
+            </LegendSlot>
+          )}
+
+          <Board
+            rows={rows}
+            you={wallet}
+            loading={loading && rows.length === 0}
+            emptyText={t(emptyText)}
+          />
+        </BoardArea>
       </Stack>
 
       <PanelGrid>

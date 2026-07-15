@@ -218,7 +218,11 @@
     "spent": "{{amount}} Ξ spent",
     "vacant": "Waiting for someone",
     "emptyInviters": "Nobody has invited anyone yet — the first name on the board could be yours.",
-    "invited": "invited"
+    "invited": "invited",
+    "points": "{{points}} pts",
+    "pointsTitle": "Rarity points",
+    "pointsHint": "Ranked by total points.",
+    "pass": "Pass"
   },
   "activity": {
     "title": "Activity",
