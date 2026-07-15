@@ -126,7 +126,9 @@ function* checkClaimSaga({payload}: ReturnType<typeof checkClaimRequest>) {
     const claimed: boolean = yield call(hasClaimed, payload);
     yield put(setClaimed(claimed));
   } catch {
-    yield put(setClaimed(false));
+    // A failed read is not "has not claimed". Asserting false here shows the Claim card to a wallet
+    // that already claimed, so the next click burns gas on a guaranteed AlreadyClaimed revert.
+    // Leave the flag as-is and let the next successful read settle it.
   }
 }
 
@@ -152,7 +154,7 @@ function* refreshBalanceSaga() {
       yield put(setBalance(balance));
     }
   } catch {
-    yield put(setBalance('0'));
+    // Don't flash a false 0 ETH on a transient RPC hiccup — keep the last known balance.
   }
 }
 

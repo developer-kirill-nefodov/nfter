@@ -7,6 +7,7 @@ import {PanelGrid} from '../../components/Chain/styles';
 import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchReferralsRequest, withdrawReferralRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Card, Row, Stack, Subtitle, Title} from '../../styles';
 import {toast} from '../../components/Toastify/toast';
 import {explorerAddress} from '../../web3/contracts';
@@ -39,7 +40,7 @@ const InvitePage = () => {
     );
   }
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
   const link = stats?.code ? `${window.location.origin}/sign-up?invite=${stats.code}` : '';
   const pending = Number(stats?.pendingEth ?? '0');
 

@@ -81,7 +81,13 @@ contract EthersWeb3Artifacts is ERC721Enumerable {
         if (msg.value != price) revert WrongPrice(price, msg.value);
         if (remaining(tier) == 0) revert SoldOut(uint8(tier));
 
-        referrals.record(msg.sender, referrer);
+        // Only touch the referral registry when there is actually a referrer to record. `record` is
+        // onlyCaller, so calling it unconditionally makes every mint — including the common
+        // no-referrer one — revert if this contract's caller authorization is ever removed. A paid
+        // mint must not depend on referral bookkeeping.
+        if (referrer != address(0)) {
+            referrals.record(msg.sender, referrer);
+        }
 
         _payReferrer(price);
 

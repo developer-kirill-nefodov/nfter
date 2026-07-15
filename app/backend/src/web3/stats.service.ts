@@ -83,7 +83,14 @@ const readStats = async (): Promise<IPublicStats> => {
 
   const recent = claims.slice(-SHOWCASE_SIZE).reverse();
 
-  const showcase = await Promise.all(
+  // Each showcase item is an independent chain read. One nonexistent/failing token must not throw
+  // and blank the entire public stats page — drop the item that failed and keep the rest.
+  const settle = async <T>(items: Promise<T>[]): Promise<T[]> =>
+    (await Promise.allSettled(items))
+      .filter((r): r is PromiseFulfilledResult<Awaited<T>> => r.status === 'fulfilled')
+      .map((r) => r.value);
+
+  const showcase = await settle(
     recent.map(async ({args}) => {
       const tokenId = args.tokenId ?? '0';
 
@@ -104,7 +111,7 @@ const readStats = async (): Promise<IPublicStats> => {
     }),
   );
 
-  const artifactShowcase = await Promise.all(
+  const artifactShowcase = await settle(
     mints
       .slice(-SHOWCASE_SIZE)
       .reverse()
@@ -159,27 +166,53 @@ const emptyStats = (): IPublicStats => ({
   deployed: false,
 });
 
-export const getPublicStats = async ({refresh = false} = {}): Promise<IPublicStats> => {
-  if (!refresh) {
-    const cached = await redis.get(CACHE_KEY);
+// `readStats` fans out a tokenURI/rarityOf read per showcase item, and the endpoint is public with
+// a `?refresh=true` bypass. Collapse concurrent refreshes into one execution and rate-limit the
+// heavy read, so a flood of forced refreshes cannot exhaust the RPC or evict the shared cache.
+const REFRESH_COOLDOWN_SEC = 3;
 
-    if (cached) {
-      return JSON.parse(cached) as IPublicStats;
+let refreshInFlight: Promise<IPublicStats> | null = null;
+
+const doRefresh = async (cached: string | null): Promise<IPublicStats> => {
+  try {
+    const stats = await readStats();
+
+    await redis.setEx(CACHE_KEY, CACHE_TTL_SEC, JSON.stringify(stats));
+
+    return stats;
+  } catch (err) {
+    // Don't cache zeros over a transient RPC failure — that shows "deployed: false" to everyone for
+    // a full minute. Serve the last good stats if we have them, and leave the cache intact.
+    logger.warn({err}, 'stats unreadable');
+
+    return cached ? (JSON.parse(cached) as IPublicStats) : emptyStats();
+  }
+};
+
+export const getPublicStats = async ({refresh = false} = {}): Promise<IPublicStats> => {
+  const cached = await redis.get(CACHE_KEY);
+
+  if (!refresh && cached) {
+    return JSON.parse(cached) as IPublicStats;
+  }
+
+  if (refresh && cached && (await redis.get(`${CACHE_KEY}:refreshed`))) {
+    return JSON.parse(cached) as IPublicStats;
+  }
+
+  if (!refreshInFlight) {
+    refreshInFlight = doRefresh(cached).finally(() => {
+      refreshInFlight = null;
+    });
+
+    if (refresh) {
+      void redis
+        .setEx(`${CACHE_KEY}:refreshed`, REFRESH_COOLDOWN_SEC, '1')
+        .catch((err: unknown) => logger.warn({err}, 'could not set stats refresh cooldown'));
     }
   }
 
-  let stats: IPublicStats;
-
-  try {
-    stats = await readStats();
-  } catch (err) {
-    logger.warn({err}, 'stats unreadable — serving zeros');
-    stats = emptyStats();
-  }
-
-  await redis.setEx(CACHE_KEY, CACHE_TTL_SEC, JSON.stringify(stats));
-
-  return stats;
+  return refreshInFlight;
 };
 
 export const formatEth = formatEther;

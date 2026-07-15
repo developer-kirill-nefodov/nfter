@@ -63,11 +63,18 @@ contract Marketplace {
 
     function list(address collection, uint256 tokenId, uint256 price) external {
         if (price == 0) revert ZeroPrice();
-        if (listings[collection][tokenId].price != 0) revert AlreadyListed();
 
         IERC721 nft = IERC721(collection);
 
         if (nft.ownerOf(tokenId) != msg.sender) revert NotOwner();
+
+        // Reject only a *live* listing this same owner already placed. A listing left behind by a
+        // previous owner — who transferred the token (or let a buy revert at transferFrom) without
+        // cancelling — must not brick the token: without this, the new owner can neither list
+        // (AlreadyListed) nor cancel (NotOwner, they are not the recorded seller), and the token is
+        // stuck forever. Establishing current ownership above lets us safely overwrite the stale one.
+        Listing memory existing = listings[collection][tokenId];
+        if (existing.price != 0 && existing.seller == msg.sender) revert AlreadyListed();
 
         if (
             nft.getApproved(tokenId) != address(this) &&
@@ -99,7 +106,11 @@ contract Marketplace {
 
         delete listings[collection][tokenId];
 
-        referrals.record(msg.sender, referrer);
+        // Only record when a referrer is actually supplied. `record` is onlyCaller; calling it on
+        // every sale would let a revoked caller authorization brick all buys, referrer or not.
+        if (referrer != address(0)) {
+            referrals.record(msg.sender, referrer);
+        }
 
         uint256 fee = (msg.value * FEE_BPS) / BPS;
         uint256 referralCut = _payReferrer(fee);

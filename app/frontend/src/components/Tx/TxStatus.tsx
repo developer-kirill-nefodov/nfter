@@ -11,7 +11,9 @@ import Spinner from '../Spinner';
 
 import {Panel, Step, Steps} from './styles';
 
-const STAGES = ['approving', 'estimating', 'signing', 'pending', 'confirmed'] as const;
+// Order matches the real sequence a listing goes through (estimating starts the panel, then the
+// approval leg, then sign/broadcast/confirm) so the step indicator only ever moves forward.
+const STAGES = ['estimating', 'approving', 'signing', 'pending', 'confirmed'] as const;
 
 const TITLES: Record<string, string> = {
   claim: 'claiming',
@@ -84,7 +86,9 @@ const TxStatus = () => {
           </a>
         )}
 
-        {(done || failed) && (
+        {/* Always offer an exit once a hash exists: a stuck/underpriced tx sits in 'pending'
+            indefinitely, and without this the panel spins forever with every button disabled. */}
+        {(done || failed || (stage === 'pending' && hash)) && (
           <Row $justify="flex-end">
             <Button variant="ghost" onClick={() => dispatch(txReset())}>
               {t('tx.dismiss')}

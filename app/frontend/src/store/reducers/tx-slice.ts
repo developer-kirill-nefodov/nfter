@@ -11,6 +11,17 @@ export type ITxStage =
 
 export type ITxKind = 'claim' | 'tip' | 'mint' | 'list' | 'buy' | 'cancel' | 'withdraw';
 
+/**
+ * A transaction is in flight from the moment we start estimating until it confirms or fails. The
+ * approval leg of a first listing counts: leaving it out re-enables every button mid-flow, and a
+ * second click there cancels the in-flight saga whose approval is already on chain.
+ */
+export const isTxBusy = (stage: ITxStage): boolean =>
+  stage === 'approving' ||
+  stage === 'estimating' ||
+  stage === 'signing' ||
+  stage === 'pending';
+
 export interface ITxState {
   kind: ITxKind | null;
   stage: ITxStage;
@@ -44,8 +55,12 @@ export const txSlice = createSlice({
       state.gasEstimate = null;
       state.outcome = null;
     },
-    txApproving: (state) => {
+    txApproving: (state, {payload}: PayloadAction<string | undefined>) => {
       state.stage = 'approving';
+
+      if (payload) {
+        state.hash = payload;
+      }
     },
     txGasEstimated: (state, {payload}: PayloadAction<string>) => {
       state.gasEstimate = payload;

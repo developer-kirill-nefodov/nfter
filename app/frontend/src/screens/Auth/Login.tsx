@@ -13,7 +13,7 @@ import {loginFields, loginInitial, loginSchema, type ILoginValues} from '../../v
 import AuthLayout from './AuthLayout';
 import {Demo, Divider, FormActions} from './styles';
 
-const DEMO: ILoginValues = {email: 'user@ethers-web3.dev', password: 'DevPassword123'};
+const DEMO: ILoginValues = {email: 'user@nfter.dev', password: 'DevPassword123'};
 
 const DemoFill = () => {
   const {t} = useTranslation();

@@ -59,9 +59,9 @@ const LayoutHeader = () => {
     <Header>
       <Inner>
         <Zone>
-          <BrandLink to={NavigateUrls.home} aria-label="EthersWeb3 home">
+          <BrandLink to={NavigateUrls.home} aria-label="Nfter home">
             <Logo src={LogoMark} alt="" />
-            <Brand>EthersWeb3</Brand>
+            <Brand>Nfter</Brand>
           </BrandLink>
         </Zone>
 

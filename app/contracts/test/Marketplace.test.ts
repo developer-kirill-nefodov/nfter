@@ -97,6 +97,27 @@ describe('Marketplace', () => {
         market.connect(alice).list(collection, 1, PRICE),
       ).to.be.revertedWithCustomError(market, 'AlreadyListed');
     });
+
+    it('lets the new owner relist a token whose stale listing outlived a transfer', async () => {
+      const {market, artifacts, alice, bob, collection} = await loadFixture(deploy);
+
+      // Alice lists, then hands the token to Bob directly — the stale listing is never cancelled.
+      await market.connect(alice).list(collection, 1, PRICE);
+      await artifacts.connect(alice).transferFrom(alice.address, bob.address, 1);
+
+      // Bob cannot cancel Alice's listing (he is not the recorded seller); without the fix he could
+      // not list either, and the token would be stuck forever. The new owner must be able to relist.
+      await artifacts.connect(bob).setApprovalForAll(await market.getAddress(), true);
+
+      await expect(market.connect(bob).list(collection, 1, PRICE * 2n))
+        .to.emit(market, 'Listed')
+        .withArgs(bob.address, collection, 1n, PRICE * 2n);
+
+      const [seller, price] = await market.listingOf(collection, 1);
+
+      expect(seller).to.equal(bob.address);
+      expect(price).to.equal(PRICE * 2n);
+    });
   });
 
   describe('buying', () => {
@@ -111,6 +132,23 @@ describe('Marketplace', () => {
 
       expect(await artifacts.ownerOf(1)).to.equal(bob.address);
       expect(await market.proceeds(alice.address)).to.equal(TO_SELLER);
+    });
+
+    it('lets a no-referrer sale go through even if the referral caller is revoked', async () => {
+      const {market, referrals, artifacts, alice, bob, collection} = await loadFixture(deploy);
+
+      await market.connect(alice).list(collection, 1, PRICE);
+
+      // An operator revokes the marketplace's referral-registry authorization. A plain no-referrer
+      // buy must not depend on that authorization and must still settle.
+      await referrals.setCaller(await market.getAddress(), false);
+
+      await expect(market.connect(bob).buy(collection, 1, NOBODY, {value: PRICE})).to.emit(
+        market,
+        'Sold',
+      );
+
+      expect(await artifacts.ownerOf(1)).to.equal(bob.address);
     });
 
     it('takes 2.5% and gives the rest to the seller', async () => {

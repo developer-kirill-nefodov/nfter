@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
   <defs>
-    <linearGradient id="ew-logo" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+    <linearGradient id="ew-favicon" x1="4" y1="4" x2="36" y2="36" gradientUnits="userSpaceOnUse">
       <stop stop-color="#6366f1"/>
       <stop offset="1" stop-color="#22d3ee"/>
     </linearGradient>
   </defs>
-  <g fill="none" stroke="url(#ew-logo)" stroke-linecap="round" stroke-width="5">
+  <g fill="none" stroke="url(#ew-favicon)" stroke-linecap="round" stroke-width="6">
     <path d="M17 36H4.9a.8.8 0 0 1-.8-.8V8.7c0-4.2 5-6.3 8-3.3L30 23.6"/>
     <path stroke-opacity=".85" d="M22.4 4h12.3c.4 0 .8.4.8.8v26.5c0 4.2-5 6.3-8 3.3L9.3 16.4"/>
   </g>

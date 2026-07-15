@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {listTokenRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import Button from '../Button';
 import Modal from '../Modal';
@@ -10,7 +11,7 @@ import {isApprovedForMarket} from '../../web3/transactions';
 
 import {Field, ListedTag, Pick, Picker, PriceInput, Quote} from './styles';
 
-const FEE_BPS = 250n;
+const DEFAULT_FEE_BPS = 250n;
 
 const toWei = (eth: string): bigint => {
   const [whole = '0', fraction = ''] = eth.split('.');
@@ -39,16 +40,22 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
     collection.items.map((nft) => ({
       ...nft,
       collection: collection.contract,
+      tokenKey: `${collection.contract.toLowerCase()}-${nft.tokenId}`,
       listed: listed.has(`${collection.contract.toLowerCase()}-${nft.tokenId}`),
     })),
   );
 
-  const [selected, setSelected] = useState(0);
+  // Track the selection by identity, not by array index. `owned` is recomputed on every render from
+  // live holdings and the market book, and useLiveFeed refetches both on any chain event — an index
+  // silently starts pointing at a different token, so "List it" would list one the user never chose.
+  const [selectedId, setSelectedId] = useState<string | null>(owned[0]?.tokenKey ?? null);
   const [price, setPrice] = useState('0.05');
   const [approved, setApproved] = useState<boolean | null>(null);
 
   const wallet = useStoreSelector((state) => state.user.user.walletAddress);
-  const collection = owned[selected]?.collection;
+
+  const current = owned.find((nft) => nft.tokenKey === selectedId) ?? owned[0];
+  const collection = current?.collection;
 
   useEffect(() => {
     if (!wallet || !collection) {
@@ -70,11 +77,12 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
     };
   }, [wallet, collection]);
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
 
+  const feeBps = BigInt(book?.feeBps ?? Number(DEFAULT_FEE_BPS));
   const wei = /^\d*\.?\d{0,18}$/.test(price) ? toWei(price || '0') : 0n;
-  const fee = (wei * FEE_BPS) / 10_000n;
-  const token = owned[selected]?.listed ? undefined : owned[selected];
+  const fee = (wei * feeBps) / 10_000n;
+  const token = current?.listed ? undefined : current;
 
   return (
     <Modal open onClose={onClose} label={t('market.sell')}>
@@ -88,14 +96,14 @@ const ListDialog = ({onClose}: {onClose: () => void}) => {
             <Field>
               <label>{t('market.pickToken')}</label>
               <Picker>
-                {owned.map((nft, index) => (
+                {owned.map((nft) => (
                   <Pick
-                    key={`${nft.collection}-${nft.tokenId}`}
+                    key={nft.tokenKey}
                     type="button"
                     disabled={nft.listed}
-                    $active={index === selected}
-                    aria-pressed={index === selected}
-                    onClick={() => setSelected(index)}
+                    $active={nft.tokenKey === current?.tokenKey}
+                    aria-pressed={nft.tokenKey === current?.tokenKey}
+                    onClick={() => setSelectedId(nft.tokenKey)}
                   >
                     {nft.listed && <ListedTag>{t('market.alreadyListed')}</ListedTag>}
                     <img src={nft.image} alt={nft.name} />

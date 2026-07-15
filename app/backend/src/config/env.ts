@@ -30,13 +30,14 @@ const schema = Joi.object({
   MARKETPLACE_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   REFERRALS_ADDRESS: Joi.string().pattern(/^0x[a-fA-F0-9]{40}$/).required(),
   CONTRACTS_FROM_BLOCK: Joi.number().min(0).default(0),
+  CONTRACTS_CONFIRMATIONS: Joi.number().min(0).default(5),
   IPFS_GATEWAY: Joi.string().uri().default('https://ipfs.io/ipfs/'),
 
   SMTP_HOST: Joi.string().allow('').default(''),
   SMTP_PORT: Joi.number().port().default(1025),
   SMTP_USER: Joi.string().allow('').default(''),
   SMTP_PASSWORD: Joi.string().allow('').default(''),
-  MAIL_FROM: Joi.string().default('no-reply@ethers-web3.dev'),
+  MAIL_FROM: Joi.string().default('no-reply@nfter.dev'),
 
   LOG_LEVEL: Joi.string().valid('fatal', 'error', 'warn', 'info', 'debug', 'trace').default('info'),
 }).unknown(true);
@@ -65,6 +66,7 @@ interface IRawEnv {
   MARKETPLACE_ADDRESS: string;
   REFERRALS_ADDRESS: string;
   CONTRACTS_FROM_BLOCK: number;
+  CONTRACTS_CONFIRMATIONS: number;
   IPFS_GATEWAY: string;
   SMTP_HOST: string;
   SMTP_PORT: number;
@@ -128,6 +130,7 @@ export const env = {
     marketplace: config.MARKETPLACE_ADDRESS,
     referrals: config.REFERRALS_ADDRESS,
     fromBlock: config.CONTRACTS_FROM_BLOCK,
+    confirmations: config.CONTRACTS_CONFIRMATIONS,
     ipfsGateway: config.IPFS_GATEWAY,
   },
 

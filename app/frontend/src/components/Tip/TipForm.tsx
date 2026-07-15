@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {sendTipRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import {explorerAddress} from '../../web3/contracts';
 import {CHAIN_NAME, formatAddress} from '../../web3/wallet';
@@ -31,7 +32,7 @@ const TipForm = () => {
   const [amount, setAmount] = useState('0.01');
   const [message, setMessage] = useState('');
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
   const parsed = /^\d*\.?\d{0,18}$/.test(amount) ? toWei(amount || '0') : 0n;
   const valid = parsed > 0n && message.length <= MAX_MESSAGE;
 

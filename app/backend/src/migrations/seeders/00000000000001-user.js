@@ -12,12 +12,21 @@ const hash = (password) =>
 
 module.exports = {
   async up(queryInterface) {
+    // These are development fixtures with a hardcoded, public password — including a full ADMIN.
+    // Refuse to seed them into a production database, where they would be a live backdoor.
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error(
+        'Refusing to seed development users (including a hardcoded admin) in production. ' +
+          'These fixtures are for local/dev only.',
+      );
+    }
+
     const password = await hash(DEV_PASSWORD);
     const timestamps = {created_at: new Date(), updated_at: new Date()};
 
     await queryInterface.bulkInsert('users', [
       {
-        email: 'admin@ethers-web3.dev',
+        email: 'admin@nfter.dev',
         password,
         wallet_address: null,
         role: JSON.stringify({
@@ -27,7 +36,7 @@ module.exports = {
         ...timestamps,
       },
       {
-        email: 'user@ethers-web3.dev',
+        email: 'user@nfter.dev',
         password,
         wallet_address: null,
         role: JSON.stringify({name: 'USER', permissions: {}}),

@@ -29,7 +29,8 @@ function* fetchReferralsSaga() {
     const stats: IReferralStats = yield call(referralApi.me);
     yield put(setReferralStats(stats));
   } catch {
-    yield put(setReferralStats(null));
+    // A transient fetch failure is not "you have no referral program". Overwriting with null wipes
+    // the invite code, counts and the copy-link button, misleading the user — keep the last value.
   }
 }
 
@@ -54,7 +55,7 @@ function* fetchTreasurySaga() {
     const treasury: ITreasury = yield call(referralApi.treasury);
     yield put(setTreasury(treasury));
   } catch {
-    yield put(setTreasury(null));
+    // Keep the last known treasury on a transient failure rather than blanking the whole page.
   }
 }
 

@@ -99,27 +99,52 @@ const emptyFeed = (): ITipFeed => ({
   deployed: false,
 });
 
-export const getTipFeed = async ({refresh = false} = {}): Promise<ITipFeed> => {
-  if (!refresh) {
-    const cached = await redis.get(CACHE_KEY);
+// `readFeed` fans out several on-chain reads plus a full event scan, and the endpoint is public with
+// a `?refresh=true` bypass. Collapse concurrent reads into one and rate-limit the forced refresh so
+// a flood cannot exhaust the RPC or evict the shared cache.
+const REFRESH_COOLDOWN_SEC = 3;
 
-    if (cached) {
-      return JSON.parse(cached) as ITipFeed;
+let refreshInFlight: Promise<ITipFeed> | null = null;
+
+const doRefresh = async (cached: string | null): Promise<ITipFeed> => {
+  try {
+    const feed = await readFeed();
+
+    await redis.setEx(CACHE_KEY, CACHE_TTL_SEC, JSON.stringify(feed));
+
+    return feed;
+  } catch (err) {
+    // Don't cache an empty feed over a transient RPC failure — serve the last good one if we have it.
+    logger.warn({err, contract: env.web3.tipJar}, 'tip jar unreachable');
+
+    return cached ? (JSON.parse(cached) as ITipFeed) : emptyFeed();
+  }
+};
+
+export const getTipFeed = async ({refresh = false} = {}): Promise<ITipFeed> => {
+  const cached = await redis.get(CACHE_KEY);
+
+  if (!refresh && cached) {
+    return JSON.parse(cached) as ITipFeed;
+  }
+
+  if (refresh && cached && (await redis.get(`${CACHE_KEY}:refreshed`))) {
+    return JSON.parse(cached) as ITipFeed;
+  }
+
+  if (!refreshInFlight) {
+    refreshInFlight = doRefresh(cached).finally(() => {
+      refreshInFlight = null;
+    });
+
+    if (refresh) {
+      void redis
+        .setEx(`${CACHE_KEY}:refreshed`, REFRESH_COOLDOWN_SEC, '1')
+        .catch((err: unknown) => logger.warn({err}, 'could not set tip refresh cooldown'));
     }
   }
 
-  let feed: ITipFeed;
-
-  try {
-    feed = await readFeed();
-  } catch (err) {
-    logger.warn({err, contract: env.web3.tipJar}, 'tip jar unreachable — serving an empty feed');
-    feed = emptyFeed();
-  }
-
-  await redis.setEx(CACHE_KEY, CACHE_TTL_SEC, JSON.stringify(feed));
-
-  return feed;
+  return refreshInFlight;
 };
 
 export const refreshTipFeed = async (): Promise<ITipFeed> => {

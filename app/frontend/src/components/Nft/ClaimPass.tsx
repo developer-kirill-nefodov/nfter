@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {checkClaimRequest, claimPassRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import {PASS_ADDRESS} from '../../web3/contracts';
 import Button from '../Button';
@@ -33,7 +34,7 @@ const ClaimPass = () => {
     return null;
   }
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
 
   return (
     <ClaimCard>

@@ -20,6 +20,7 @@ export const MARKETPLACE_ABI = [
   'function buy(address collection, uint256 tokenId, address referrer) payable',
   'function withdraw()',
   'function proceeds(address) view returns (uint256)',
+  'function listingOf(address collection, uint256 tokenId) view returns (address seller, uint256 price)',
 ];
 
 export const ERC721_APPROVAL_ABI = [
@@ -80,6 +81,7 @@ export interface IMarketContract {
   >;
   withdraw: IContractMethod<[], ITransactionResponse>;
   proceeds: IContractMethod<[account: string], bigint>;
+  listingOf: IContractMethod<[collection: string, tokenId: string], [string, bigint]>;
 }
 
 export interface IApprovalContract {
@@ -146,13 +148,20 @@ export const readToken = async (
   const erc721 = new Contract(contract, ['function tokenURI(uint256) view returns (string)'], runner);
   const tokenUri = (await erc721.tokenURI!(tokenId)) as string;
 
-  const payload = tokenUri.slice(tokenUri.indexOf(',') + 1);
-  const json = JSON.parse(atob(payload)) as {
-    name: string;
-    description: string;
-    image: string;
-    attributes: {trait_type: string; value: string | number}[];
-  };
+  const comma = tokenUri.indexOf(',');
+
+  // These tokens carry their metadata inline as a base64 data: URI, but a caller cannot assume the
+  // shape of an arbitrary tokenURI. A missing comma or non-base64 body must not throw and take a
+  // confirmed mint down with it.
+  const json =
+    comma === -1
+      ? {name: `#${tokenId}`, description: '', image: '', attributes: []}
+      : (JSON.parse(atob(tokenUri.slice(comma + 1))) as {
+          name: string;
+          description: string;
+          image: string;
+          attributes: {trait_type: string; value: string | number}[];
+        });
 
   return {tokenId, tokenUri, ...json};
 };

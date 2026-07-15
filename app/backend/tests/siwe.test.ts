@@ -16,7 +16,7 @@ const buildMessage = async (overrides: Partial<SiweMessage> = {}) =>
   new SiweMessage({
     domain: 'localhost:3000',
     address: wallet.address,
-    statement: 'Sign in to ethers-web3',
+    statement: 'Sign in to nfter',
     uri: 'http://localhost:3000',
     version: '1',
     chainId: 11155111,
@@ -34,7 +34,7 @@ const clientSideMessage = (address: string, nonce: string, issuedAt: string) =>
     `localhost:3000 wants you to sign in with your Ethereum account:`,
     address,
     '',
-    'Sign in to ethers-web3. This request will not trigger a transaction.',
+    'Sign in to nfter. This request will not trigger a transaction.',
     '',
     `URI: http://localhost:3000`,
     'Version: 1',

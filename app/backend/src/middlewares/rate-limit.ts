@@ -17,6 +17,21 @@ export const authLimiter = rateLimit({
   skipSuccessfulRequests: true,
 });
 
+// For login, only failed attempts should count (`skipSuccessfulRequests`), so a busy legitimate user
+// is never locked out. But endpoints whose *successful* calls are the abuse — account creation
+// (spam/referral farming) and nonce issuance (unbounded Redis keys) — must count successes too.
+export const createLimiter = rateLimit({
+  ...base,
+  windowMs: 60 * 60 * 1000,
+  limit: 20,
+});
+
+export const nonceLimiter = rateLimit({
+  ...base,
+  windowMs: 60 * 1000,
+  limit: 30,
+});
+
 export const forgotPasswordLimiter = rateLimit({
   ...base,
   windowMs: 60 * 60 * 1000,

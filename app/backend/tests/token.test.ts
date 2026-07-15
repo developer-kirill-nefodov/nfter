@@ -12,7 +12,7 @@ const {createTokens, getValidSession, revokeSession, revokeAllSessions} = await 
 
 const USER = {
   id: 42,
-  email: 'user@ethers-web3.dev',
+  email: 'user@nfter.dev',
   role: {name: 'USER' as const, permissions: {}},
   walletAddress: null,
 };

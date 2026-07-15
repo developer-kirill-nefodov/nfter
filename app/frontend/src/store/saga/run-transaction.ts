@@ -1,5 +1,5 @@
 import {channel, type Channel, type Task} from 'redux-saga';
-import {call, cancel, fork, put, take} from 'redux-saga/effects';
+import {call, cancel, cancelled, fork, put, take} from 'redux-saga/effects';
 import type {Action} from '@reduxjs/toolkit';
 
 import {explainTxError, isRejection} from '../../web3/transactions';
@@ -25,7 +25,7 @@ export function* runTransaction<TResult>(
   execute: (handlers: {
     onGasEstimated: (wei: string) => void;
     onBroadcast: (hash: string) => void;
-    onApproving: () => void;
+    onApproving: (hash?: string) => void;
   }) => Promise<TResult>,
   outcome?: string,
 ): Generator<unknown, TResult | null, never> {
@@ -38,7 +38,7 @@ export function* runTransaction<TResult>(
     const result = (yield call(execute, {
       onGasEstimated: (wei) => actions.put(txGasEstimated(wei)),
       onBroadcast: (value) => actions.put(txBroadcast(value)),
-      onApproving: () => actions.put(txApproving()),
+      onApproving: (hash) => actions.put(txApproving(hash)),
     })) as TResult;
 
     yield put(txConfirmed(outcome));
@@ -52,6 +52,18 @@ export function* runTransaction<TResult>(
 
     return null;
   } finally {
+    // takeLatest cancels this saga when the same action fires again. The underlying transaction is
+    // already in the mempool and cannot be recalled, so leave the panel in a terminal state the
+    // user can dismiss instead of a spinner frozen at 'pending' forever.
+    if (yield cancelled()) {
+      yield put(
+        txFailed({
+          message: 'This transaction was superseded by a newer one. Check your wallet for its status.',
+          rejected: false,
+        }),
+      );
+    }
+
     actions.close();
     yield cancel(pump);
   }

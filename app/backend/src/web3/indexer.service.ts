@@ -15,8 +15,6 @@ import {
 
 const WINDOW = 40;
 
-const MAX_BACKFILL = 5_000;
-
 interface ISource {
   address: string;
   abi: string[];
@@ -57,8 +55,11 @@ const syncSource = async (source: ISource, head: number): Promise<number> => {
   const [state] = await IndexerStateModel.findOrCreate({
     where: {contract: source.address},
     defaults: {
+      // Always start at the deployment block. A `head - MAX_BACKFILL` floor silently skips every
+      // event between deployment and the first run if that gap exceeds the window — leaderboards,
+      // treasury and stats would undercount permanently, and nothing would ever go back for them.
       contract: source.address,
-      last_block: Math.max(env.web3.fromBlock - 1, head - MAX_BACKFILL),
+      last_block: env.web3.fromBlock - 1,
     },
   });
 
@@ -102,14 +103,27 @@ const syncSource = async (source: ISource, head: number): Promise<number> => {
   return written;
 };
 
+/**
+ * The tip of the chain can be reorganised away. Indexing a block at zero confirmations means a
+ * reorg leaves a phantom event in the database forever (rows are keyed by tx hash + log index and
+ * the cursor only moves forward, so the orphan is never revisited). Stay `confirmations` blocks
+ * behind the head, where a reorg is vanishingly unlikely, and treat that as the frontier.
+ */
+const safeHead = async (): Promise<number> =>
+  (await provider.getBlockNumber()) - env.web3.confirmations;
+
 export const syncChainEvents = async (): Promise<number> => {
-  const head = await provider.getBlockNumber();
+  const head = await safeHead();
+
+  if (head < env.web3.fromBlock) {
+    return 0;
+  }
 
   let written = 0;
 
   for (const source of SOURCES) {
     try {
-      written += await syncSource(source, head);
+      written += await withoutOverlap(source.address, () => syncSource(source, head));
     } catch (err) {
       logger.warn({err, contract: source.address}, 'indexer source failed');
     }
@@ -120,6 +134,55 @@ export const syncChainEvents = async (): Promise<number> => {
   }
 
   return written;
+};
+
+const inFlight = new Map<string, Promise<number>>();
+
+// A read request and the scheduled worker can ask for the same contract at the same time. Writes are
+// idempotent, but the block cursor is not: two walkers racing on it re-fetch the same logs and can
+// move it backwards. One walk per contract, everyone else waits for its answer.
+const withoutOverlap = async (address: string, run: () => Promise<number>): Promise<number> => {
+  const key = address.toLowerCase();
+  const running = inFlight.get(key);
+
+  if (running) {
+    return running;
+  }
+
+  const started = run().finally(() => inFlight.delete(key));
+
+  inFlight.set(key, started);
+
+  return started;
+};
+
+/**
+ * Bring a single contract's events up to the current head, now, rather than waiting for the next
+ * scheduled indexer run. A user who just sent a transaction is asking about *their* block: making
+ * them wait 30s for a background job to notice it is what makes a confirmed listing look lost.
+ */
+export const syncContract = async (address: string): Promise<number> => {
+  const source = SOURCES.find(
+    ({address: candidate}) => candidate.toLowerCase() === address.toLowerCase(),
+  );
+
+  if (!source) {
+    return 0;
+  }
+
+  try {
+    const head = await safeHead();
+
+    if (head < env.web3.fromBlock) {
+      return 0;
+    }
+
+    return await withoutOverlap(source.address, () => syncSource(source, head));
+  } catch (err) {
+    logger.warn({err, contract: address}, 'on-demand sync failed');
+
+    return 0;
+  }
 };
 
 export const readEvents = async (contract: string, event: string) => {

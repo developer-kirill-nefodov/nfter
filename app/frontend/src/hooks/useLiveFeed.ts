@@ -7,6 +7,7 @@ import {
   fetchCollectorsRequest,
   fetchLeaderboardRequest,
   fetchMarketRequest,
+  fetchProceedsRequest,
   fetchStatsRequest,
 } from '../store/actions';
 import {useStoreDispatch} from '../store/hooks';
@@ -40,6 +41,9 @@ export const useLiveFeed = () => {
           dispatch(fetchMarketRequest({refresh: true}));
           dispatch(fetchLeaderboardRequest());
           dispatch(fetchCollectorsRequest());
+          // A sale of your listing lands as a chain event; without this the "earned" figure and the
+          // Withdraw button stay stale until a full reload.
+          dispatch(fetchProceedsRequest());
         },
       }),
     [dispatch],

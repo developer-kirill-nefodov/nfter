@@ -79,12 +79,15 @@ function* logoutSaga() {
   } catch (error) {
     toast(errorMessage(error, 'Could not sign you out'), 'error');
   } finally {
-    endSession();
+    // Deliberate sign-out: clear state directly and do NOT emit SESSION_ENDED, so the session guard
+    // does not warn the user that their session "expired".
+    endSession({notify: false});
     yield call(setLinkedWallet, null);
     yield put(setVisitor());
     yield put(disconnectWallet());
     yield put(clearNfts());
     yield call(revokeWalletAccess);
+    toast('Signed out.', 'success');
   }
 }
 

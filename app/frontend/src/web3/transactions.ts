@@ -18,7 +18,7 @@ import {
   type ITxReceipt,
 } from './contracts';
 import {readProvider} from './read-provider';
-import {CHAIN_NAME, WalletError, connectWallet} from './wallet';
+import {CHAIN_ID, CHAIN_NAME, WalletError, connectWallet, switchChain} from './wallet';
 
 export const isRejection = (error: unknown): boolean => {
   if (error instanceof WalletError) {
@@ -109,7 +109,7 @@ export const explainTxError = (error: unknown): string => {
 export interface ITxHandlers {
   onGasEstimated: (weiCost: string) => void;
   onBroadcast: (hash: string) => void;
-  onApproving?: () => void;
+  onApproving?: (hash?: string) => void;
 }
 
 let linkedWallet: string | null = null;
@@ -121,7 +121,7 @@ export const setLinkedWallet = (address: string | null): void => {
 const short = (address: string): string => `${address.slice(0, 6)}…${address.slice(-4)}`;
 
 const currentSigner = async (): Promise<JsonRpcSigner> => {
-  const {address, signer} = await connectWallet();
+  let {address, chainId, signer} = await connectWallet();
 
   if (linkedWallet && address.toLowerCase() !== linkedWallet.toLowerCase()) {
     throw new WalletError(
@@ -130,7 +130,71 @@ const currentSigner = async (): Promise<JsonRpcSigner> => {
     );
   }
 
+  // The signer is bound to whatever network the wallet is on right now. Our contract addresses only
+  // exist on CHAIN_ID; on any other network a payable call to one of them is a value transfer to an
+  // address with no code — it does not revert, so real ETH would leave and never come back. Never
+  // build a transaction until the wallet is provably on the right chain.
+  if (chainId !== CHAIN_ID) {
+    ({address, chainId, signer} = await switchChain(CHAIN_ID));
+
+    if (chainId !== CHAIN_ID) {
+      throw new WalletError(
+        `Your wallet is on the wrong network. Switch it to ${CHAIN_NAME} and try again.`,
+      );
+    }
+
+    if (linkedWallet && address.toLowerCase() !== linkedWallet.toLowerCase()) {
+      throw new WalletError(
+        `Your wallet is on ${short(address)}, but this account is linked to ${short(linkedWallet)}.`,
+      );
+    }
+  }
+
   return signer;
+};
+
+/**
+ * Wait for a mined receipt, surviving the two things ethers turns into an exception even though the
+ * user's intent went through: a "Speed up" / "Cancel" in MetaMask (`TRANSACTION_REPLACED`, where the
+ * replacement is usually mined fine) and our own confirmations count. Only a genuine revert or a
+ * real cancellation should reach the caller as a failure.
+ */
+const waitMined = async (tx: ITransactionResponse): Promise<{hash: string; receipt: ITxReceipt}> => {
+  try {
+    const receipt = await tx.wait(1);
+
+    if (!receipt || receipt.status === 0) {
+      throw new Error('The transaction was mined but reverted.');
+    }
+
+    return {hash: tx.hash, receipt};
+  } catch (error) {
+    const replaced = error as {
+      code?: string;
+      reason?: string;
+      receipt?: ITxReceipt & {hash?: string};
+      replacement?: {hash?: string};
+    };
+
+    if (replaced?.code === 'TRANSACTION_REPLACED') {
+      // "repriced" is a Speed-up: the exact same transaction was resubmitted with a higher fee and
+      // mined. That is our transaction succeeding, not a failure — only this case is safe to accept.
+      if (replaced.reason === 'repriced' && replaced.receipt && replaced.receipt.status !== 0) {
+        // Report the hash that actually mined (the replacement), not `tx.hash`, which was dropped —
+        // otherwise the explorer link and any stored mint hash point at a transaction that no longer
+        // exists on chain.
+        const minedHash = replaced.replacement?.hash ?? replaced.receipt.hash ?? tx.hash;
+
+        return {hash: minedHash, receipt: replaced.receipt};
+      }
+
+      // "cancelled" (0-value self-send) or "replaced" (a different transaction) means our intended
+      // transaction never went through.
+      throw new WalletError('The transaction was replaced in your wallet before it confirmed.');
+    }
+
+    throw error;
+  }
 };
 
 const send = async (
@@ -147,13 +211,7 @@ const send = async (
 
   onBroadcast(tx.hash);
 
-  const receipt = await tx.wait(1);
-
-  if (!receipt || receipt.status === 0) {
-    throw new Error('The transaction was mined but reverted.');
-  }
-
-  return {hash: tx.hash, receipt};
+  return waitMined(tx);
 };
 
 const mintedTokenId = async (receipt: ITxReceipt, contract: string): Promise<string | null> => {
@@ -190,13 +248,21 @@ const revealMinted = async (
   receipt: ITxReceipt,
   contract: string,
 ): Promise<IMintResult> => {
-  const tokenId = await mintedTokenId(receipt, contract);
+  // The mint is already confirmed — this whole block is decoration. The read provider is a
+  // different node than the wallet's and routinely lags a block, so tokenURI can revert on a token
+  // that demonstrably exists. Letting that throw would turn a paid, successful mint into a reported
+  // failure and skip every post-mint refresh. Reveal is best-effort; the transaction is not.
+  try {
+    const tokenId = await mintedTokenId(receipt, contract);
 
-  if (!tokenId) {
+    if (!tokenId) {
+      return {hash, contract, token: null};
+    }
+
+    return {hash, contract, token: await readToken(await readProvider(), contract, tokenId)};
+  } catch {
     return {hash, contract, token: null};
   }
-
-  return {hash, contract, token: await readToken(await readProvider(), contract, tokenId)};
 };
 
 const gasPriceOf = async (signer: JsonRpcSigner): Promise<bigint> => {
@@ -292,7 +358,17 @@ export const listToken = async (
     handlers.onApproving?.();
 
     const tx = await approval.setApprovalForAll(MARKETPLACE_ADDRESS, true);
-    await tx.wait(1);
+
+    // The first listing from a wallet is two transactions, and this one can sit in the mempool for
+    // a minute. Hand the hash up so the panel can show it and link to the explorer instead of
+    // spinning silently — a silent minute is indistinguishable from a hang.
+    handlers.onApproving?.(tx.hash);
+
+    const receipt = await tx.wait(1);
+
+    if (!receipt || receipt.status === 0) {
+      throw new Error('The approval was mined but reverted — the market cannot move that token.');
+    }
   }
 
   const market = await getMarket(signer);
@@ -307,19 +383,47 @@ export const listToken = async (
   return hash;
 };
 
+export interface IListingState {
+  seller: string;
+  price: bigint;
+}
+
+/** What the chain says right now — the book on the server can be a tick behind, this cannot. */
+export const readListing = async (
+  collection: string,
+  tokenId: string,
+): Promise<IListingState | null> => {
+  const market = await getMarket(await readProvider());
+
+  const [seller, price] = await market.listingOf(collection, tokenId);
+
+  return price === 0n ? null : {seller, price};
+};
+
 export const buyListing = async (
   collection: string,
   tokenId: string,
-  priceWei: bigint,
+  _priceWei: bigint,
   handlers: ITxHandlers,
   referrer: string = NO_REFERRER,
 ): Promise<string> => {
   const signer = await currentSigner();
+
+  // The price we were handed came from the (possibly cached) book. The contract checks msg.value
+  // against the live price exactly, so buying with a stale figure just burns gas on a WrongPrice
+  // revert. Read the current listing and pay what it actually asks — or tell the user it is gone.
+  const live = await readListing(collection, tokenId);
+
+  if (!live) {
+    throw new Error('NotListed');
+  }
+
+  const value = live.price;
   const market = await getMarket(signer);
 
   const {hash} = await send(
-    () => market.buy.estimateGas(collection, tokenId, referrer, {value: priceWei}),
-    () => market.buy(collection, tokenId, referrer, {value: priceWei}),
+    () => market.buy.estimateGas(collection, tokenId, referrer, {value}),
+    () => market.buy(collection, tokenId, referrer, {value}),
     handlers,
     await gasPriceOf(signer),
   );

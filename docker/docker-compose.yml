@@ -11,7 +11,7 @@ services:
       # (or nothing) the host happens to have installed.
       - /app/node_modules
     restart: unless-stopped
-    networks: [ethers-web3]
+    networks: [nfter]
 
   api:
     build:
@@ -24,7 +24,7 @@ services:
       - ../app/backend:/home/nodejs/api
       - /home/nodejs/api/node_modules
     restart: unless-stopped
-    networks: [ethers-web3]
+    networks: [nfter]
     depends_on:
       db:
         condition: service_healthy
@@ -48,8 +48,8 @@ services:
       # The volume has to be mounted where Postgres actually keeps its data.
       # The old compose pointed PGDATA at ./postgres and mounted /data/postgres,
       # so nothing was ever persisted.
-      - ethers-web3-data:/var/lib/postgresql/data
-    networks: [ethers-web3]
+      - nfter-data:/var/lib/postgresql/data
+    networks: [nfter]
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
       interval: 5s
@@ -61,8 +61,8 @@ services:
     restart: unless-stopped
     command: redis-server --appendonly yes --save 60 1 --loglevel warning
     volumes:
-      - ethers-web3-redis:/data
-    networks: [ethers-web3]
+      - nfter-redis:/data
+    networks: [nfter]
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 5s
@@ -76,7 +76,7 @@ services:
     restart: unless-stopped
     ports:
       - '8025:8025'
-    networks: [ethers-web3]
+    networks: [nfter]
 
   nginx:
     image: nginx:1.27-alpine
@@ -85,15 +85,15 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     ports:
       - '3000:3000'
-    networks: [ethers-web3]
+    networks: [nfter]
     depends_on:
       api:
         condition: service_healthy
 
 volumes:
-  ethers-web3-data:
-  ethers-web3-redis:
+  nfter-data:
+  nfter-redis:
 
 networks:
-  ethers-web3:
+  nfter:
     external: false

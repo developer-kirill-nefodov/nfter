@@ -76,7 +76,7 @@ jobs:
       # Proves the production images still build — the thing that silently rots
       # while everyone runs the app in dev mode.
       - name: Build API image
-        run: docker build -f docker/prod/api.Dockerfile -t ethers-web3-api .
+        run: docker build -f docker/prod/api.Dockerfile -t nfter-api .
 
       - name: Build site image
         run: |
@@ -84,4 +84,4 @@ jobs:
             --build-arg VITE_API_URL=http://localhost:3001/api \
             --build-arg VITE_CHAIN_ID=11155111 \
             --build-arg VITE_CHAIN_NAME=Sepolia \
-            -t ethers-web3-site .
+            -t nfter-site .

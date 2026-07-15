@@ -19,6 +19,7 @@ import {
   withdrawProceedsRequest,
 } from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import {formatBalance} from '../../web3/wallet';
 
@@ -47,7 +48,7 @@ const MarketPage = () => {
     }
   }, [dispatch, wallet]);
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
   const earned = proceeds && proceeds !== '0' ? proceeds : null;
 
   return (

@@ -3,7 +3,7 @@ import axios, { type AxiosRequestConfig, type InternalAxiosRequestConfig} from '
 
 let accessToken: string | null = null;
 
-const SESSION_FLAG = 'ethers-web3:session';
+const SESSION_FLAG = 'nfter:session';
 
 const rememberSession = (exists: boolean) => {
   try {
@@ -30,15 +30,18 @@ export const setAccessToken = (token: string | null) => {
   rememberSession(token !== null);
 };
 
-export const SESSION_ENDED = 'ethers-web3:session-ended';
+export const SESSION_ENDED = 'nfter:session-ended';
 
-export const endSession = () => {
+// `notify` distinguishes an involuntary expiry (the server refused our refresh) from a deliberate
+// sign-out. Only the former should raise the "your session has ended" warning; a user who clicked
+// Log out did not lose anything and should not be told they did.
+export const endSession = ({notify = true} = {}) => {
   const had = hasSession();
 
   accessToken = null;
   rememberSession(false);
 
-  if (had) {
+  if (had && notify) {
     window.dispatchEvent(new CustomEvent(SESSION_ENDED));
   }
 };
@@ -90,7 +93,7 @@ const spendRefreshCookie = async (): Promise<string | null> => {
   }
 };
 
-const REFRESH_LOCK = 'ethers-web3:auth-refresh';
+const REFRESH_LOCK = 'nfter:auth-refresh';
 
 const refresh = async (): Promise<string | null> => {
   if (!('locks' in navigator)) {

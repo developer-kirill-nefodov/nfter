@@ -3,6 +3,7 @@ import {useTranslation} from 'react-i18next';
 
 import {buyListingRequest, cancelListingRequest} from '../../store/actions';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 
 import type {INft} from '../../types/nft';
 import {formatAddress} from '../../web3/wallet';
@@ -35,7 +36,7 @@ const Listings = () => {
 
   const [open, setOpen] = useState<{nft: INft; contract: string} | null>(null);
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
 
   if (loading && !book) {
     return (
