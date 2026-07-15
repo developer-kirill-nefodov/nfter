@@ -28,7 +28,17 @@ export const walletLinkController = async (req: IRequestAuth, res: Response) => 
     throw AppError.unauthorized('Account no longer exists');
   }
 
-  await user.update({wallet_address: address});
+  try {
+    await user.update({wallet_address: address});
+  } catch (error) {
+    // Two accounts can race past the existence check above and reach the unique constraint on
+    // wallet_address. Surface the intended 409 rather than a generic 500.
+    if ((error as {name?: string}).name === 'SequelizeUniqueConstraintError') {
+      throw AppError.conflict('That wallet is already linked to another account');
+    }
+
+    throw error;
+  }
 
   await issueSession(res, user, 'Wallet linked to your account.');
 };

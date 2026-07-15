@@ -14,7 +14,7 @@ const {createResetToken, consumeResetToken} = await import(
   '../src/services/auth/forgot-password.service'
 );
 
-const EMAIL = 'user@ethers-web3.dev';
+const EMAIL = 'user@nfter.dev';
 
 const tokenFrom = (resetUrl: string) => new URL(resetUrl).searchParams.get('token') ?? '';
 
@@ -60,7 +60,7 @@ describe('password reset', () => {
 
   it('lets a different mailbox through immediately', async () => {
     await createResetToken(7, EMAIL);
-    await createResetToken(8, 'someone-else@ethers-web3.dev');
+    await createResetToken(8, 'someone-else@nfter.dev');
 
     expect(emailJobs).toHaveLength(2);
   });

@@ -68,7 +68,10 @@
     "home": "Go home"
   },
   "footer": {
-    "network": "Running on {{chain}}"
+    "network": "Running on {{chain}}",
+    "github": "GitHub",
+    "etherscan": "Etherscan",
+    "rights": "© {{years}} Kirill Nefodov · MIT License"
   },
   "pass": {
     "title": "Claim your pass",

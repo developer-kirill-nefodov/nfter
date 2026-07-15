@@ -5,7 +5,7 @@ export const buildSiweMessage = (address: string, nonce: string): string => {
     `${window.location.host} wants you to sign in with your Ethereum account:`,
     address,
     '',
-    'Sign in to ethers-web3. This request will not trigger a transaction.',
+    'Sign in to nfter. This request will not trigger a transaction.',
     '',
     `URI: ${window.location.origin}`,
     'Version: 1',

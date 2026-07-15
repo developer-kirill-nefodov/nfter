@@ -19,7 +19,7 @@ const AuthLayout = ({note, children}: IAuthLayout) => {
           <Identicon />
         </Scene>
 
-        <Brand>EthersWeb3</Brand>
+        <Brand>Nfter</Brand>
         <Pitch>{t('auth.pitch')}</Pitch>
 
         <Bullets>

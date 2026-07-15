@@ -11,7 +11,12 @@ import {
   walletUnlinkController,
 } from '../../controllers/auth';
 import {authed, isAuthorized, isRefreshToken} from '../../middlewares/guard';
-import {authLimiter, forgotPasswordLimiter} from '../../middlewares/rate-limit';
+import {
+  authLimiter,
+  createLimiter,
+  forgotPasswordLimiter,
+  nonceLimiter,
+} from '../../middlewares/rate-limit';
 import {validate} from '../../middlewares/validate';
 import {
   forgotPasswordValidator,
@@ -33,7 +38,7 @@ const AuthRouters: IAnyRouter = {
     {
       method: 'post',
       path: 'register',
-      middleware: [authLimiter, validate(registerValidator)],
+      middleware: [createLimiter, validate(registerValidator)],
       handler: registerController,
     },
     {
@@ -69,7 +74,7 @@ const AuthRouters: IAnyRouter = {
     {
       method: 'get',
       path: 'nonce',
-      middleware: [authLimiter, isAuthorized],
+      middleware: [nonceLimiter, isAuthorized],
       handler: nonceController,
     },
     {

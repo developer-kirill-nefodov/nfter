@@ -1,5 +1,5 @@
 {
-  "name": "@ethers-web3/contracts",
+  "name": "@nfter/contracts",
   "version": "1.0.0",
   "private": true,
   "description": "EthersWeb3Pass \u2014 a fully on-chain generative ERC-721 \u2014 and a TipJar",

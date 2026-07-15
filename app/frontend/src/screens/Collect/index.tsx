@@ -16,6 +16,7 @@ import ConnectButton from '../../components/Wallet/ConnectButton';
 import {fetchStatsRequest, fetchTiersRequest, mintArtifactRequest} from '../../store/actions';
 import {clearHighlight} from '../../store/reducers/stats-slice';
 import {useStoreDispatch, useStoreSelector} from '../../store/hooks';
+import {isTxBusy} from '../../store/reducers/tx-slice';
 import {Row, Stack, Subtitle, Title} from '../../styles';
 import type {INft} from '../../types/nft';
 import {ARTIFACTS_ADDRESS, TIERS, type ITier} from '../../web3/contracts';
@@ -65,7 +66,7 @@ const CollectPage = () => {
     return () => clearTimeout(timer);
   }, [dispatch, highlight]);
 
-  const busy = stage === 'estimating' || stage === 'signing' || stage === 'pending';
+  const busy = isTxBusy(stage);
 
   const remainingOf = (tier: ITier): number | undefined => {
     const onChain = status?.tiers.find((item) => item.tier === tier);

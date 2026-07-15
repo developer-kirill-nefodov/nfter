@@ -64,13 +64,13 @@ describe('auth routes', () => {
     emailJobs.length = 0;
     redis.store.clear();
 
-    makeUser({email: 'user@ethers-web3.dev', password: await hashPassword(PASSWORD)});
+    makeUser({email: 'user@nfter.dev', password: await hashPassword(PASSWORD)});
   });
 
   it('logs in and returns an access token plus an httpOnly refresh cookie', async () => {
     const res = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     expect(res.status).toBe(200);
     expect(res.body.token).toEqual(expect.any(String));
@@ -84,11 +84,11 @@ describe('auth routes', () => {
   it('answers a wrong password and an unknown email identically', async () => {
     const wrongPassword = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: 'WrongPassword123'});
+      .send({email: 'user@nfter.dev', password: 'WrongPassword123'});
 
     const unknownEmail = await request(app)
       .post('/api/auth/login')
-      .send({email: 'nobody@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'nobody@nfter.dev', password: PASSWORD});
 
     expect(wrongPassword.status).toBe(401);
     expect(unknownEmail.status).toBe(401);
@@ -98,7 +98,7 @@ describe('auth routes', () => {
   it('rejects a weak password at registration with per-field detail', async () => {
     const res = await request(app)
       .post('/api/auth/register')
-      .send({email: 'new@ethers-web3.dev', password: 'root'});
+      .send({email: 'new@nfter.dev', password: 'root'});
 
     expect(res.status).toBe(422);
     expect(res.body.details[0].field).toBe('password');
@@ -112,20 +112,20 @@ describe('auth routes', () => {
 
     const {body} = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     const authorized = await request(app)
       .get('/api/auth/me')
       .set('Authorization', `Bearer ${body.token}`);
 
     expect(authorized.status).toBe(200);
-    expect(authorized.body.email).toBe('user@ethers-web3.dev');
+    expect(authorized.body.email).toBe('user@nfter.dev');
   });
 
   it('makes the access token unusable after logout', async () => {
     const login = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     const token = login.body.token as string;
 
@@ -143,7 +143,7 @@ describe('auth routes', () => {
   it('rotates the refresh token, so a captured one cannot be spent twice', async () => {
     const login = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     const cookie = login.headers['set-cookie'];
 
@@ -154,11 +154,11 @@ describe('auth routes', () => {
   it('says the same thing whether or not the email has an account', async () => {
     const known = await request(app)
       .post('/api/auth/forgot-password')
-      .send({email: 'user@ethers-web3.dev'});
+      .send({email: 'user@nfter.dev'});
 
     const unknown = await request(app)
       .post('/api/auth/forgot-password')
-      .send({email: 'nobody@ethers-web3.dev'});
+      .send({email: 'nobody@nfter.dev'});
 
     expect(known.body).toEqual(unknown.body);
     expect(emailJobs).toHaveLength(1);
@@ -173,7 +173,7 @@ describe('auth routes', () => {
   it('serves a nonce to a signed-in caller', async () => {
     const {body} = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     const res = await request(app)
       .get('/api/auth/nonce')
@@ -188,7 +188,7 @@ describe('auth routes', () => {
 
     const login = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     expect(login.body.user.walletAddress).toBe('0xc78383353cd8f5315d3e147bb607a3bdc844ef22');
 
@@ -204,7 +204,7 @@ describe('auth routes', () => {
   it('refuses to unlink when there is nothing linked', async () => {
     const {body} = await request(app)
       .post('/api/auth/login')
-      .send({email: 'user@ethers-web3.dev', password: PASSWORD});
+      .send({email: 'user@nfter.dev', password: PASSWORD});
 
     await request(app)
       .post('/api/auth/wallet-unlink')

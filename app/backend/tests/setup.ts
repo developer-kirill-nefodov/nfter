@@ -6,7 +6,7 @@ Object.assign(process.env, {
 
   DB_HOST: 'localhost',
   DB_PORT: '5432',
-  DB_NAME: 'ethers_web3_test',
+  DB_NAME: 'nfter_test',
   DB_USERNAME: 'postgres',
   DB_PASSWORD: 'postgres',
 

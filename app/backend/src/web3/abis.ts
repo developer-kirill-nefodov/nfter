@@ -10,7 +10,7 @@ export const TIP_JAR_ABI = [
 export const MARKETPLACE_ABI = [
   'function list(address collection, uint256 tokenId, uint256 price)',
   'function cancel(address collection, uint256 tokenId)',
-  'function buy(address collection, uint256 tokenId) payable',
+  'function buy(address collection, uint256 tokenId, address referrer) payable',
   'function withdraw()',
   'function proceeds(address) view returns (uint256)',
   'function listingOf(address collection, uint256 tokenId) view returns (address seller, uint256 price)',

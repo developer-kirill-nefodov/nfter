@@ -1,4 +1,4 @@
-# Ethers Web3
+# Nfter
 
 Sign in with an Ethereum wallet, browse the ERC-721 tokens it holds.
 
@@ -76,8 +76,8 @@ captured refresh token can be spent exactly once. Changing a password signs out 
 Requires Docker and `make`.
 
 ```shell
-git clone git@github.com:developer-kirill-nefodov/ethers-web3.git
-cd ethers-web3
+git clone git@github.com:developer-kirill-nefodov/nfter.git
+cd nfter
 
 make init                 # writes the .env files, generates JWT secrets
 make build-img up migrate seed
@@ -96,7 +96,7 @@ open http://localhost:3000
 | API | http://localhost:3001/api |
 | Mail (password resets) | http://localhost:8025 |
 
-The seeded demo account is `user@ethers-web3.dev` / `DevPassword123`. For the wallet flow you
+The seeded demo account is `user@nfter.dev` / `DevPassword123`. For the wallet flow you
 need MetaMask on **Sepolia** — no API keys, no funded account, no deployment of your own.
 
 ```shell
