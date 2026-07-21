@@ -1,11 +1,13 @@
 #!/usr/bin/make
 
-include .env
+# Optional: absent on a fresh clone until `make init` creates it, so never hard-fail on it.
+-include .env
 
 #----------- Make Environment ----------------------
 docker_compose_bin = $(shell command -v docker-compose 2> /dev/null || echo "docker compose")
 SITE_SERVICE = site
 API_SERVICE = api
+PROJECT_NAME ?= nfter
 COMPOSE = --env-file .env -p $(PROJECT_NAME) -f docker/docker-compose.yml
 
 .DEFAULT_GOAL := help
